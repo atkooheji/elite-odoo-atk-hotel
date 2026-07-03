@@ -1,0 +1,388 @@
+{
+  "id": "hotel_management_dashboard_v1",
+  "title": "Hotel Management Dashboard",
+  "description": "MIS snapshot for rooms, reservations, and revenue (hotel management).",
+  "dataSources": [
+    {
+      "name": "hotel_data",
+      "type": "table",
+      "description": "Flattened dataset joining rooms, reservations, invoices, and payments.",
+      "fields": {
+        "date": "date",
+        "hotel_id": "string",
+        "hotel_name": "string",
+        "room_id": "string",
+        "room_name": "string",
+        "room_status": "string",
+        "guest_id": "string",
+        "guest_name": "string",
+        "reservation_id": "string",
+        "reservation_status": "string",
+        "check_in_date": "date",
+        "check_out_date": "date",
+        "nightly_rate": "number",
+        "invoice_id": "string",
+        "invoice_date": "date",
+        "invoice_due_date": "date",
+        "invoice_state": "string",
+        "invoice_amount": "number",
+        "payment_date": "date",
+        "payment_amount": "number",
+        "aging_bucket": "string"
+      }
+    }
+  ],
+  "globalFilters": [
+    {
+      "id": "filter_date_range",
+      "type": "date_range",
+      "field": "date",
+      "label": "Date Range",
+      "dataSource": "hotel_data"
+    },
+    {
+      "id": "filter_hotel",
+      "type": "dropdown",
+      "field": "hotel_id",
+      "label": "Hotel",
+      "dataSource": "hotel_data"
+    },
+    {
+      "id": "filter_room_status",
+      "type": "dropdown",
+      "field": "room_status",
+      "label": "Room Status",
+      "dataSource": "hotel_data"
+    },
+    {
+      "id": "filter_guest",
+      "type": "dropdown",
+      "field": "guest_id",
+      "label": "Guest",
+      "dataSource": "hotel_data"
+    },
+    {
+      "id": "filter_reservation_status",
+      "type": "dropdown",
+      "field": "reservation_status",
+      "label": "Reservation Status",
+      "dataSource": "hotel_data"
+    },
+    {
+      "id": "filter_payment_status",
+      "type": "dropdown",
+      "field": "invoice_state",
+      "label": "Payment Status",
+      "dataSource": "hotel_data"
+    }
+  ],
+  "tabs": [
+    {
+      "id": "overview",
+      "label": "Overview",
+      "rows": [
+        {
+          "type": "kpi_row",
+          "widgets": [
+            {
+              "id": "kpi_total_rooms",
+              "type": "kpi",
+              "title": "Total Rooms",
+              "dataSource": "hotel_data",
+              "aggregation": {
+                "type": "aggregation",
+                "aggregationType": "count_distinct",
+                "field": "room_id"
+              },
+              "comparison": {
+                "type": "previous_period",
+                "field": "date"
+              }
+            },
+            {
+              "id": "kpi_occupied_rooms",
+              "type": "kpi",
+              "title": "Occupied Rooms",
+              "dataSource": "hotel_data",
+              "aggregation": {
+                "type": "aggregation",
+                "aggregationType": "count_distinct",
+                "field": "room_id",
+                "filter": {
+                  "field": "room_status",
+                  "operator": "equals",
+                  "value": "occupied"
+                }
+              },
+              "comparison": {
+                "type": "previous_period",
+                "field": "date"
+              }
+            },
+            {
+              "id": "kpi_occupancy_rate",
+              "type": "kpi",
+              "title": "Occupancy Rate",
+              "dataSource": "hotel_data",
+              "format": "percentage",
+              "calculation": {
+                "type": "ratio",
+                "numerator": {
+                  "type": "aggregation",
+                  "aggregationType": "count_distinct",
+                  "field": "room_id",
+                  "filter": {
+                    "field": "room_status",
+                    "operator": "equals",
+                    "value": "occupied"
+                  }
+                },
+                "denominator": {
+                  "type": "aggregation",
+                  "aggregationType": "count_distinct",
+                  "field": "room_id"
+                }
+              },
+              "comparison": {
+                "type": "previous_period",
+                "field": "date"
+              }
+            }
+          ]
+        },
+        {
+          "type": "kpi_row",
+          "widgets": [
+            {
+              "id": "kpi_revenue_invoiced_mtd",
+              "type": "kpi",
+              "title": "Revenue Invoiced (MTD)",
+              "dataSource": "hotel_data",
+              "aggregation": {
+                "type": "aggregation",
+                "aggregationType": "sum",
+                "field": "invoice_amount",
+                "filter": {
+                  "field": "invoice_date",
+                  "operator": "in_current_month"
+                }
+              },
+              "format": "currency",
+              "comparison": {
+                "type": "previous_period",
+                "field": "invoice_date",
+                "period": "month"
+              }
+            },
+            {
+              "id": "kpi_payments_collected_mtd",
+              "type": "kpi",
+              "title": "Payments Collected (MTD)",
+              "dataSource": "hotel_data",
+              "aggregation": {
+                "type": "aggregation",
+                "aggregationType": "sum",
+                "field": "payment_amount",
+                "filter": {
+                  "field": "payment_date",
+                  "operator": "in_current_month"
+                }
+              },
+              "format": "currency",
+              "comparison": {
+                "type": "previous_period",
+                "field": "payment_date",
+                "period": "month"
+              }
+            },
+            {
+              "id": "kpi_outstanding_balances",
+              "type": "kpi",
+              "title": "Outstanding Balances",
+              "dataSource": "hotel_data",
+              "format": "currency",
+              "aggregation": {
+                "type": "aggregation",
+                "aggregationType": "sum",
+                "field": "invoice_amount",
+                "filter": {
+                  "field": "invoice_state",
+                  "operator": "equals",
+                  "value": "open"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "chart_row",
+          "widgets": [
+            {
+              "id": "chart_revenue_by_month",
+              "type": "chart",
+              "title": "Revenue by Month",
+              "dataSource": "hotel_data",
+              "chartType": "bar",
+              "groupBy": {
+                "field": "invoice_date",
+                "granularity": "month"
+              },
+              "series": [
+                {
+                  "name": "Revenue Invoiced",
+                  "aggregation": "sum",
+                  "field": "invoice_amount",
+                  "filter": {
+                    "field": "invoice_date",
+                    "operator": "in_year",
+                    "value": "current"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "chart_payments_vs_invoices",
+              "type": "chart",
+              "title": "Payments vs Invoices",
+              "dataSource": "hotel_data",
+              "chartType": "line",
+              "groupBy": {
+                "field": "invoice_date",
+                "granularity": "month"
+              },
+              "series": [
+                {
+                  "name": "Invoiced",
+                  "aggregation": "sum",
+                  "field": "invoice_amount"
+                },
+                {
+                  "name": "Payments",
+                  "aggregation": "sum",
+                  "field": "payment_amount",
+                  "groupByField": "payment_date"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reservations",
+      "label": "Reservations",
+      "rows": [
+        {
+          "type": "chart_row",
+          "widgets": [
+            {
+              "id": "chart_rooms_by_status",
+              "type": "chart",
+              "title": "Rooms by Status",
+              "dataSource": "hotel_data",
+              "chartType": "pie",
+              "groupBy": {
+                "field": "room_status"
+              },
+              "series": [
+                {
+                  "name": "Rooms",
+                  "aggregation": "count_distinct",
+                  "field": "room_id"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "table_row",
+          "widgets": [
+            {
+              "id": "table_reservations_departing_30_days",
+              "type": "table",
+              "title": "Reservations Departing in 30 Days",
+              "dataSource": "hotel_data",
+              "columns": [
+                "hotel_name",
+                "room_name",
+                "guest_name",
+                "check_out_date",
+                "nightly_rate"
+              ],
+              "filter": {
+                "field": "check_out_date",
+                "operator": "between",
+                "value": ["today", "today_plus_30"]
+              },
+              "sort": {
+                "field": "check_out_date",
+                "direction": "asc"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "finance",
+      "label": "Finance",
+      "rows": [
+        {
+          "type": "chart_row",
+          "widgets": [
+            {
+              "id": "chart_outstanding_by_aging",
+              "type": "chart",
+              "title": "Outstanding by Aging",
+              "dataSource": "hotel_data",
+              "chartType": "bar",
+              "groupBy": {
+                "field": "aging_bucket"
+              },
+              "series": [
+                {
+                  "name": "Outstanding",
+                  "aggregation": "sum",
+                  "field": "invoice_amount",
+                  "filter": {
+                    "field": "invoice_state",
+                    "operator": "equals",
+                    "value": "open"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "table_row",
+          "widgets": [
+            {
+              "id": "table_overdue_invoices",
+              "type": "table",
+              "title": "Overdue Invoices",
+              "dataSource": "hotel_data",
+              "columns": [
+                "hotel_name",
+                "guest_name",
+                "invoice_date",
+                "invoice_due_date",
+                "aging_bucket",
+                "invoice_amount"
+              ],
+              "filter": {
+                "field": "aging_bucket",
+                "operator": "in",
+                "value": ["30-60", "61-90", "90+"]
+              },
+              "sort": {
+                "field": "invoice_due_date",
+                "direction": "asc"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_room_inspection_tree" model="ir.ui.view">
+        <field name="name">hotel.room.inspection.tree</field>
+        <field name="model">hotel.room.inspection</field>
+        <field name="arch" type="xml">
+            <list multi_edit="1">
+                <field name="name" />
+                <field name="room_id" />
+                <field name="inspection_date" />
+                <field name="inspector_id" />
+                <field name="state" />
+                <field name="maintenance_request_id" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hotel_room_inspection_form" model="ir.ui.view">
+        <field name="name">hotel.room.inspection.form</field>
+        <field name="model">hotel.room.inspection</field>
+        <field name="arch" type="xml">
+            <form string="Room Inspection">
+                <header>
+                    <button name="action_start" string="Start" type="object" class="btn btn-secondary" invisible="state != 'scheduled'" />
+                    <button name="action_mark_passed" string="Mark as Passed" type="object" class="btn btn-success" invisible="state not in ['in_progress', 'failed']" />
+                    <button name="action_mark_failed" string="Mark as Failed" type="object" class="btn btn-danger" invisible="state not in ['in_progress', 'passed']" />
+                    <button name="action_request_maintenance" string="Create Maintenance Request" type="object" class="btn btn-primary" invisible="state != 'failed'" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1" />
+                        <field name="room_id" />
+                        <field name="inspection_date" />
+                        <field name="inspector_id" />
+                        <field name="state" />
+                        <field name="maintenance_request_id" readonly="1" />
+                    </group>
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes" nolabel="1" />
+                        </page>
+                        <page string="Follow-up Actions">
+                            <field name="follow_up_actions" nolabel="1" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+                <!-- <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
+                </div> -->
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hotel_room_inspection" model="ir.actions.act_window">
+        <field name="name">Room Inspections</field>
+        <field name="res_model">hotel.room.inspection</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- <menuitem id="menu_hotel_room_inspection" name="Room Inspections" parent="menu_hotel_root" action="action_hotel_room_inspection" sequence="7" /> -->
+</odoo>

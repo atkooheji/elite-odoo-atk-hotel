@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="atk_hotel_sale_order_view_form" model="ir.ui.view">
+        <field name="name">sale.order.view.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="hotel_book_history_count" invisible="1"/>
+                <button name="action_view_hotel_book_history"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-pencil-square-o">
+                    <field name="hotel_book_history_count" widget="statinfo" string="Room Booking"/>
+                </button>
+                <button name="action_view_customer_loyalty"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-star">
+                    <field name="partner_loyalty_points" widget="statinfo" string="Loyalty Points Remaining"/>
+                </button>
+                <field name="loyalty_points_accrued" invisible="1"/>
+                <button name="action_accrue_loyalty_points"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-plus-circle"
+                    invisible="loyalty_points_accrued or not partner_id">
+                    <field name="loyalty_points_amount" widget="statinfo" string="Accrued Points"/>
+                </button>
+
+            </xpath>
+
+            <!-- after date_order -->
+            <xpath expr="//field[@name='date_order']" position="after">
+                <field name="amount_total"/>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']//field[@name='price_unit']" position="before">
+                <field name="duration" string="Duration (Days)"/>
+            </xpath>
+
+            <!-- <xpath expr="//notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='price_total']" position="after">
+                <field name="price_total" string="Room Type" readonly="1"/>
+            </xpath> -->
+        </field>
+    </record>
+</odoo>

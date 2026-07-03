@@ -1,0 +1,9 @@
+<odoo>
+    <record id="spreadsheet_dashboard_hotel_management" model="spreadsheet.dashboard">
+        <field name="name">Hotel Management</field>
+        <field name="spreadsheet_binary_data" type="base64" file="atk_hotel/data/files/hotel_management_dashboard.json"/>
+        <field name="dashboard_group_id" ref="spreadsheet_dashboard.spreadsheet_dashboard_group_finance"/>
+        <field name="group_ids" eval="[(6, 0, [ref('base.group_user')]) ]"/>
+        <field name="sequence">210</field>
+    </record>
+</odoo>

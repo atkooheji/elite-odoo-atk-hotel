@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Premium Footer for Essentials 369 (Website 2) -->
+    <template id="essentials_369_footer_custom" inherit_id="website.layout" name="Essentials 369 Custom Footer" active="False">
+        <xpath expr="//div[@id='footer']" position="replace">
+            <!-- This only renders on Website 2 -->
+            <t t-if="website.id == 2">
+                <style>
+                    /* 1. HIDE THE ORIGINAL ODOO FOOTER SHARPLY */
+                    #footer, .o_footer:not(.custom-369-footer) { 
+                        display: none !important; 
+                    }
+
+                    /* 2. STYLE YOUR NEW PREMIUM FOOTER */
+                    .custom-369-footer {
+                        background-color: #1a3c34; /* Your Forest Green */
+                        color: #ffffff;
+                        padding: 60px 0;
+                        font-family: 'Manrope', sans-serif;
+                        border-top: 4px solid #8db600; /* Your Primary Sage color */
+                    }
+                    
+                    .custom-369-footer h4 { 
+                        color: #8db600; 
+                        font-weight: 800; 
+                        text-transform: uppercase;
+                        letter-spacing: 2px;
+                        margin-bottom: 20px;
+                        font-size: 1.2rem;
+                    }
+
+                    .custom-369-footer a { 
+                        color: rgba(255,255,255,0.7); 
+                        text-decoration: none; 
+                        transition: 0.3s;
+                    }
+
+                    .custom-369-footer a:hover { 
+                        color: #8db600; 
+                        padding-left: 5px;
+                    }
+
+                    /* WhatsApp Button Style */
+                    .whatsapp-float {
+                        position:fixed;
+                        right:18px;
+                        bottom:18px;
+                        z-index:9999;
+                        background:#7aa88f;
+                        color:#ffffff;
+                        padding:12px 18px;
+                        border-radius:999px;
+                        font-weight:600;
+                        font-family:Inter, Arial, sans-serif;
+                        box-shadow:0 12px 28px rgba(0,0,0,.18);
+                        text-decoration:none;
+                    }
+                </style>
+
+                <!-- WhatsApp Button -->
+                <a href="https://wa.me/97338181333" target="_blank" class="whatsapp-float">
+                    WhatsApp Us
+                </a>
+
+                <!-- 3. YOUR NEW FOOTER CONTENT -->
+                <footer class="custom-369-footer">
+                    <div class="container">
+                        <div class="row">
+                            <!-- Brand Column -->
+                            <div class="col-md-4 mb-4">
+                                <h4>Essentials 369</h4>
+                                <p class="opacity-75">Your purity journey starts here. Ethically sourced and naturally crafted oils for your ultimate wellness.</p>
+                            </div>
+
+                            <!-- Links Column -->
+                            <div class="col-md-3 mb-4">
+                                <h4>Explore</h4>
+                                <div class="d-flex flex-column gap-2">
+                                    <a href="/shop">Shop Collection</a>
+                                    <a href="/about-us">Our Story</a>
+                                    <a href="/contactus">Get in Touch</a>
+                                </div>
+                            </div>
+
+                            <!-- Contact Column -->
+                            <div class="col-md-5 mb-4 text-md-end">
+                                <h4>Contact</h4>
+                                <p class="opacity-75">
+                                    Office 310, Building 103 Road 1802<br/>
+                                    Block 318, Manama, kingdom of Bahrain <br/>
+                                    <strong>Email:</strong> info@369essentials.com
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <hr style="border-color: rgba(255,255,255,0.1); margin: 30px 0;"/>
+                        
+                        <div class="d-flex justify-content-between align-items-center opacity-50 small">
+                            <p class="m-0">Â© 2026 Essentials 369. All rights reserved.</p>
+                            <div class="d-flex gap-3 fs-5">
+                                <i class="fa fa-instagram"></i>
+                                <i class="fa fa-facebook"></i>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </t>
+            <!-- Fallback to original footer for other websites -->
+            <t t-else="">
+                <t t-call="website.footer_default"/>
+            </t>
+        </xpath>
+    </template>
+</odoo>

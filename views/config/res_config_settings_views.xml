@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="res_config_settings_view_form_hotel" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.hotel</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="90"/>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <app data-string="Hotel Management" string="Hotel Management" name="atk_hotel">
+                        <block title="Hotel Operations" name="hotel_ops_config">
+                            <setting title="Check-in Policy" help="Default check-in/out times for calculations.">
+                                <div class="content-group">
+                                    <div class="row mt16">
+                                        <label for="hotel_checkin_time" class="col-lg-3 o_light_label"/>
+                                        <field name="hotel_checkin_time" widget="float_time"/>
+                                    </div>
+                                    <div class="row">
+                                        <label for="hotel_checkout_time" class="col-lg-3 o_light_label"/>
+                                        <field name="hotel_checkout_time" widget="float_time"/>
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+
+                        <block title="AI Intelligence &amp; Orchestration" name="ai_provider_config">
+                            <setting title="Orchestration" help="Control which AI 'Brain' is used and how it handles failures.">
+                                <div class="content-group">
+                                    <div class="row mt16">
+                                        <label for="hotel_ai_primary_brain" class="col-lg-3 o_light_label"/>
+                                        <field name="hotel_ai_primary_brain" widget="selection"/>
+                                    </div>
+                                    <div class="row">
+                                        <label for="hotel_ai_enable_failover" class="col-lg-3 o_light_label"/>
+                                        <field name="hotel_ai_enable_failover"/>
+                                    </div>
+                                </div>
+                            </setting>
+
+                            <setting title="OpenAI (Primary for Analysis)" help="Configure OpenAI API Key (GPT-4o)">
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <label for="openai_api_key" string="OpenAI Key"/>
+                                        <field name="openai_api_key" password="True" placeholder="sk-..."/>
+                                    </div>
+                                    <div class="mt8">
+                                        <button name="action_test_openai" type="object" string="Test Connection" class="btn-primary"/>
+                                    </div>
+                                </div>
+                            </setting>
+
+                            <setting title="Google Gemini (Speed &amp; Flash)" help="Configure Google Gemini API Key">
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <label for="gemini_api_key" string="Gemini Key"/>
+                                        <field name="gemini_api_key" password="True" placeholder="AIza..."/>
+                                    </div>
+                                    <div class="mt8">
+                                        <button name="action_test_gemini" type="object" string="Test Connection" class="btn-secondary"/>
+                                    </div>
+                                </div>
+                            </setting>
+
+                            <setting title="Anthropic Claude (High Quality)" help="Configure Anthropic Claude API Key">
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <label for="claude_api_key" string="Claude Key"/>
+                                        <field name="claude_api_key" password="True" placeholder="sk-ant-..."/>
+                                    </div>
+                                    <div class="mt8">
+                                        <button name="action_test_claude" type="object" string="Test Connection" class="btn-secondary"/>
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+
+                        <block title="Financial Policies" name="hotel_finance_config">
+                            <setting title="Tax &amp; Service" help="Configure default rates for revenue split.">
+                                <div class="content-group">
+                                    <div class="row mt16">
+                                        <label for="hotel_vat_rate" class="col-lg-3 o_light_label"/>
+                                        <field name="hotel_vat_rate"/>
+                                    </div>
+                                    <div class="row">
+                                        <label for="hotel_service_rate" class="col-lg-3 o_light_label"/>
+                                        <field name="hotel_service_rate"/>
+                                    </div>
+                                </div>
+                            </setting>
+                            <setting title="Daily Fees" help="Configure fixed daily charges.">
+                                <div class="content-group">
+                                    <div class="row mt16">
+                                        <label for="hotel_accommodation_fee" class="col-lg-3 o_light_label"/>
+                                        <field name="hotel_accommodation_fee"/>
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+
+                        <block title="Housekeeping" name="hotel_housekeeping_config">
+                            <setting title="Default Team" help="Default cleaning team for checkout requests.">
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="hotel_default_cleaning_team_id"/>
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_hotel_config_settings" model="ir.actions.act_window">
+            <field name="name">Settings</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">current</field>
+            <field name="context">{'module': 'atk_hotel'}</field>
+        </record>
+</odoo>

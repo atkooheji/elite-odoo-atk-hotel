@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+        <!-- UNUSED? Consider removing if not referenced in code -->
+        <!--
+        <record id="hotel_reservation_sequence" model="ir.sequence">
+            <field name="name">Reservation Sequence</field>
+            <field name="code">hotel.reservation</field>
+            <field name="prefix">R</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+            <field name="implementation">standard</field>
+        </record>
+        -->
+
+        <!-- Primary Booking Sequence - Date-Based -->
+        <record id="hotel_booking_number_sequence" model="ir.sequence">
+            <field name="name">Booking Number</field>
+            <field name="code">hotel.booking.number</field>
+            <field name="prefix">B%(year)s-%(month)s-%(day)s-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+            <field name="implementation">standard</field>
+            <!-- Optional: Uncomment to reset yearly -->
+            <!-- <field name="use_date_range" eval="True"/> -->
+        </record>
+        <record id="seq_hotel_booking_number" model="ir.sequence">
+            <field name="name">Hotel Booking Number</field>
+            <field name="code">hotel.booking.number</field>
+            <field name="prefix">BOOK%(y)s%(month)s</field>
+            <field name="padding">4</field>
+            <field name="number_next_actual">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">no_gap</field>
+        </record>
+
+        <record id="seq_hotel_room_inspection" model="ir.sequence">
+            <field name="name">Hotel Room Inspection</field>
+            <field name="code">hotel.room.inspection</field>
+            <field name="prefix">INSP%(y)s%(month)s-</field>
+            <field name="padding">4</field>
+            <field name="number_next_actual">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">no_gap</field>
+        </record>
+
+
+</odoo>

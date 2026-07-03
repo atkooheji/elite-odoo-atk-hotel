@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_intelligence_kit_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="wizard">
+                <t t-set="data" t-value="wizard._get_report_data()"/>
+                <t t-call="web.external_layout">
+                    <!-- Luxury Styles -->
+                    <style>
+                        .alfaris-gold { color: #C7A447; }
+                        .bg-alfaris-gold { background-color: #C7A447; color: white; }
+                        .alfaris-charcoal { color: #2C2C2C; }
+                        .luxury-border { border: 1px solid #C7A447; }
+                        .kpi-card {
+                            border: 1px solid #e0e0e0;
+                            border-left: 4px solid #C7A447;
+                            padding: 10px;
+                            margin-bottom: 10px;
+                            border-radius: 4px;
+                        }
+                        .kpi-title { font-size: 10px; text-transform: uppercase; color: #666; font-weight: bold; }
+                        .kpi-value { font-size: 18px; font-weight: bold; color: #2C2C2C; }
+                        .section-header {
+                            border-bottom: 2px solid #C7A447;
+                            margin-top: 20px;
+                            margin-bottom: 15px;
+                            padding-bottom: 5px;
+                            font-weight: bold;
+                            text-transform: uppercase;
+                            letter-spacing: 1px;
+                        }
+                        .table-luxury thead th {
+                            background-color: #2C2C2C;
+                            color: white;
+                            border: none;
+                            font-size: 11px;
+                        }
+                        .table-luxury tbody td {
+                            font-size: 11px;
+                            vertical-align: middle;
+                        }
+                    </style>
+
+                    <div class="page">
+                        <!-- Header Section -->
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <h2 class="alfaris-charcoal mb-0">INTELLIGENCE KIT</h2>
+                                <h4 class="alfaris-gold"><t t-esc="wizard.report_type.upper()"/> OPERATIONS</h4>
+                            </div>
+                            <div class="col-6 text-end">
+                                <div class="text-muted small">Report Date: <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/></div>
+                                <div class="text-muted small">Period: <t t-esc="wizard.date_from"/> to <t t-esc="wizard.date_to"/></div>
+                            </div>
+                        </div>
+
+                        <!-- KPI Dashboard -->
+                        <div class="section-header">Executive Summary</div>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="kpi-card">
+                                    <div class="kpi-title">Occupancy</div>
+                                    <div class="kpi-value"><t t-esc="round(data['summary']['occupancy_pct'], 1)"/>%</div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="kpi-card">
+                                    <div class="kpi-title">ADR</div>
+                                    <div class="kpi-value"><span t-esc="data['summary']['adr']" t-options='{"widget": "monetary", "display_currency": wizard.company_id.currency_id}'/></div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="kpi-card">
+                                    <div class="kpi-title">RevPAR</div>
+                                    <div class="kpi-value"><span t-esc="data['summary']['revpar']" t-options='{"widget": "monetary", "display_currency": wizard.company_id.currency_id}'/></div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="kpi-card">
+                                    <div class="kpi-title">GOPPAR</div>
+                                    <div class="kpi-value"><span t-esc="data['summary']['goppar']" t-options='{"widget": "monetary", "display_currency": wizard.company_id.currency_id}'/></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Financial Core -->
+                        <div class="section-header">Financial Performance</div>
+                        <table class="table table-sm table-luxury">
+                            <thead>
+                                <tr>
+                                    <th>METRIC</th>
+                                    <th class="text-end">GROSS REVENUE</th>
+                                    <th class="text-end">NET REVENUE</th>
+                                    <th class="text-end">GOP</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background-color: #f9f9f9; font-weight: bold;">
+                                    <td>TOTAL PORTFOLIO</td>
+                                    <td class="text-end text-primary"><span t-esc="data['summary']['total_revenue']" t-options='{"widget": "monetary", "display_currency": wizard.company_id.currency_id}'/></td>
+                                    <td class="text-end text-success"><span t-esc="data['summary']['net_revenue']" t-options='{"widget": "monetary", "display_currency": wizard.company_id.currency_id}'/></td>
+                                    <td class="text-end alfaris-gold"><span t-esc="data['summary']['gop']" t-options='{"widget": "monetary", "display_currency": wizard.company_id.currency_id}'/></td>
+                                </tr>
+                                <tr>
+                                    <td>OTA Commissions Paid</td>
+                                    <td class="text-end text-danger" colspan="3">- <span t-esc="data['summary']['ota_commission']" t-options='{"widget": "monetary", "display_currency": wizard.company_id.currency_id}'/></td>
+                                </tr>
+                                <tr>
+                                    <td>Operating Expenses</td>
+                                    <td class="text-end text-danger" colspan="3">- <span t-esc="data['summary']['total_expenses']" t-options='{"widget": "monetary", "display_currency": wizard.company_id.currency_id}'/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Profitability Matrix -->
+                        <div class="section-header">Room Type Profitability Matrix</div>
+                        <table class="table table-sm table-luxury">
+                            <thead>
+                                <tr>
+                                    <th>CATEGORY</th>
+                                    <th class="text-end">OCC%</th>
+                                    <th class="text-end">ADR</th>
+                                    <th class="text-end">REVPAR</th>
+                                    <th class="text-end">REVENUE SHARE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="data['profitability']" t-as="row">
+                                    <td><t t-esc="row['room_type']"/></td>
+                                    <td class="text-end"><t t-esc="round(row['occ_pct'], 1)"/>%</td>
+                                    <td class="text-end"><span t-esc="row['adr']" t-options='{"widget": "monetary", "display_currency": wizard.company_id.currency_id}'/></td>
+                                    <td class="text-end"><span t-esc="row['revpar']" t-options='{"widget": "monetary", "display_currency": wizard.company_id.currency_id}'/></td>
+                                    <td class="text-end">
+                                        <div class="progress" style="height: 10px; width: 60px; display: inline-block;">
+                                            <div class="progress-bar bg-alfaris-gold" role="progressbar" t-attf-style="width: #{row['revenue_share']}%" t-att-aria-valuenow="row['revenue_share']" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <t t-esc="round(row['revenue_share'], 1)"/>%
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Operational Alerts -->
+                        <div class="section-header" t-if="data['alerts']['total_alerts'] > 0">Operational Risks &amp; Alerts</div>
+                        <div class="row" t-if="data['alerts']['total_alerts'] > 0">
+                            <div class="col-4" t-if="data['alerts']['dirty_arrivals'] > 0">
+                                <div class="alert alert-warning py-2 mb-1" role="alert">
+                                    <strong class="text-danger">DIRTY ARRIVALS: <t t-esc="data['alerts']['dirty_arrivals']"/></strong>
+                                </div>
+                            </div>
+                            <div class="col-4" t-if="data['alerts']['pending_deposits'] > 0">
+                                <div class="alert alert-info py-2 mb-1" role="status">
+                                    <strong>DEPOSITS DUE: <t t-esc="data['alerts']['pending_deposits']"/></strong>
+                                </div>
+                            </div>
+                            <div class="col-4" t-if="data['alerts']['missing_ids'] > 0">
+                                <div class="alert alert-dark py-2 mb-1" role="status">
+                                    <strong>MISSING IDs: <t t-esc="data['alerts']['missing_ids']"/></strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lead Time Analytics -->
+                        <div class="section-header">Booking Behavior</div>
+                        <p class="small text-muted">
+                            Average Lead Time: <strong><t t-esc="data['analytics']['lead_time']['avg_lead_time']"/> Days</strong>.
+                            Current Pickup: <strong><t t-esc="data['analytics']['pickup']['new_bookings_count']"/> New Bookings</strong> today.
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    </odoo>

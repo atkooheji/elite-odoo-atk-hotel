@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_room_type_tree" model="ir.ui.view">
+        <field name="name">hotel.room.type.tree</field>
+        <field name="model">hotel.room.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+                <field name="code" />
+                <field name="default_price" />
+                <field name="max_adults" />
+                <field name="max_children" />
+                <field name="is_published" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hotel_room_type_form" model="ir.ui.view">
+        <field name="name">hotel.room.type.form</field>
+        <field name="model">hotel.room.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="website_publish_button" type="object" class="btn btn-primary" icon="fa-globe">
+                        <field name="is_published" widget="website_publish_button"/>
+                    </button>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_rooms" type="object" class="oe_stat_button" icon="fa-bed">
+                            <field name="room_count" string="Rooms" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Deluxe Suite"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="default_price" widget="monetary"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="max_adults"/>
+                            <field name="max_children"/>
+                            <field name="size_sqm"/>
+                            <field name="amenity_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Website Description" name="website_desc">
+                            <field name="website_description" placeholder="Rich description for the website..." widget="html" options="{'style-inline': true}"/>
+                        </page>
+                        <page string="Rooms" name="rooms">
+                            <field name="room_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hotel_room_type" model="ir.actions.act_window">
+        <field name="name">Room Types</field>
+        <field name="res_model">hotel.room.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Define your room types (e.g., Deluxe, Suite, Penthouse)
+            </p>
+        </field>
+    </record>
+</odoo>

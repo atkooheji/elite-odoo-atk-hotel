@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="hotel_room_review_form" name="Submit Review" active="False">
+        <t t-call="website.layout">
+            <div id="wrap" class="py-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 offset-lg-3">
+                            <div class="text-center mb-5">
+                                <h1 class="display-4 fw-bold">How was your stay?</h1>
+                                <p class="lead text-muted">We'd love to hear your feedback on room <t t-esc="booking.room_id.name"/>.</p>
+                            </div>
+                            
+                            <div class="card border-0 shadow-lg rounded-4 p-5">
+                                <form action="/hotel/review/submit" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="booking_id" t-att-value="booking.id"/>
+                                    <input type="hidden" name="token" t-att-value="token"/>
+
+                                    
+                                    <div class="mb-4 text-center">
+                                        <label class="form-label d-block fw-bold mb-3">Rate your experience</label>
+                                        <div class="rating-input d-flex justify-content-center gap-3 h2 text-warning">
+                                            <input type="radio" name="rating" value="5" id="star5" class="d-none" checked="checked"/>
+                                            <label for="star5" class="fa fa-star cursor-pointer"></label>
+                                            <input type="radio" name="rating" value="4" id="star4" class="d-none"/>
+                                            <label for="star4" class="fa fa-star cursor-pointer"></label>
+                                            <input type="radio" name="rating" value="3" id="star3" class="d-none"/>
+                                            <label for="star3" class="fa fa-star cursor-pointer"></label>
+                                            <input type="radio" name="rating" value="2" id="star2" class="d-none"/>
+                                            <label for="star2" class="fa fa-star cursor-pointer"></label>
+                                            <input type="radio" name="rating" value="1" id="star1" class="d-none"/>
+                                            <label for="star1" class="fa fa-star cursor-pointer"></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">Your Comments</label>
+                                        <textarea name="comment" class="form-control rounded-4 border-0 bg-light p-3" rows="5" placeholder="What did you love? What can we improve?"></textarea>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill py-3">Submit Review</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <style>
+                .rating-input label { cursor: pointer; transition: transform 0.2s; }
+                .rating-input label:hover { transform: scale(1.2); }
+                .rating-input input:checked ~ label { color: #dee2e6; }
+                .rating-input label:has(~ input:checked),
+                .rating-input label:hover,
+                .rating-input label:hover ~ label { color: #ffc107 !important; }
+            </style>
+        </t>
+    </template>
+
+    <template id="hotel_review_thanks" name="Review Submitted" active="False">
+        <t t-call="website.layout">
+            <div id="wrap" class="py-120 text-center">
+                <div class="container">
+                    <div class="mb-4 text-success"><i class="fa fa-check-circle fa-5x"/></div>
+                    <h1 class="display-3 fw-bold">Thank You!</h1>
+                    <p class="lead text-muted mb-5">Your review has been submitted successfully and helps us provide a better experience.</p>
+                    <a href="/hotel" class="btn btn-primary btn-lg rounded-pill px-5">Back to Hotel</a>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

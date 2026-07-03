@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="hotel_dashboard_record" model="hotel.dashboard">
+        <field name="name">Hotel Dashboard</field>
+    </record>
+</odoo>

@@ -1,0 +1,144 @@
+<odoo>
+  <record id="action_report_grc" model="ir.actions.report">
+    <field name="name">Guest Registration Card</field>
+    <field name="model">hotel.book.history</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">atk_hotel.report_grc_template</field>
+    <field name="report_file">atk_hotel.report_grc_template</field>
+    <field name="print_report_name">'GRC - %s' % (object.name)</field>
+    <field name="binding_model_id" ref="model_hotel_book_history"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_hotel_mis_dashboard_pdf" model="ir.actions.report">
+    <field name="name">Hotel MIS Dashboard</field>
+    <field name="model">hotel.dashboard</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">atk_hotel.report_hotel_mis_dashboard_document</field>
+    <field name="report_file">atk_hotel.report_hotel_mis_dashboard_document</field>
+    <field name="print_report_name">'MIS Dashboard - %s' % (object.date_range_label or 'Summary')</field>
+    <field name="binding_model_id" ref="model_hotel_dashboard"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_hotel_mis_dashboard_html" model="ir.actions.report">
+    <field name="name">Hotel MIS Dashboard (HTML)</field>
+    <field name="model">hotel.dashboard</field>
+    <field name="report_type">qweb-html</field>
+    <field name="report_name">atk_hotel.report_hotel_mis_dashboard_document</field>
+    <field name="report_file">atk_hotel.report_hotel_mis_dashboard_document</field>
+    <field name="print_report_name">'MIS Dashboard - %s' % (object.date_range_label or 'Summary')</field>
+    <field name="binding_model_id" ref="model_hotel_dashboard"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_hotel_daily_status_pdf" model="ir.actions.report">
+    <field name="name">Hotel Daily Status</field>
+    <field name="model">hotel.dashboard</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">atk_hotel.report_hotel_daily_status_document</field>
+    <field name="report_file">atk_hotel.report_hotel_daily_status_document</field>
+    <field name="print_report_name">'Hotel Daily Status - %s' % (object.date_range_label or 'Today')</field>
+    <field name="binding_model_id" ref="model_hotel_dashboard"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_hotel_daily_status_html" model="ir.actions.report">
+    <field name="name">Hotel Daily Status (HTML)</field>
+    <field name="model">hotel.dashboard</field>
+    <field name="report_type">qweb-html</field>
+    <field name="report_name">atk_hotel.report_hotel_daily_status_document</field>
+    <field name="report_file">atk_hotel.report_hotel_daily_status_document</field>
+    <field name="print_report_name">'Hotel Daily Status - %s' % (object.date_range_label or 'Today')</field>
+    <field name="binding_model_id" ref="model_hotel_dashboard"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_hotel_mis_eod_pdf" model="ir.actions.report">
+    <field name="name">Hotel End of Day</field>
+    <field name="model">hotel.mis.report.wizard</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">atk_hotel.report_hotel_mis_eod_document</field>
+    <field name="report_file">atk_hotel.report_hotel_mis_eod_document</field>
+    <field name="print_report_name">'Hotel EOD - %s' % (object.date_from or '')</field>
+    <field name="binding_model_id" ref="model_hotel_mis_report_wizard"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_hotel_mis_eod_html" model="ir.actions.report">
+    <field name="name">Hotel End of Day (HTML)</field>
+    <field name="model">hotel.mis.report.wizard</field>
+    <field name="report_type">qweb-html</field>
+    <field name="report_name">atk_hotel.report_hotel_mis_eod_document</field>
+    <field name="report_file">atk_hotel.report_hotel_mis_eod_document</field>
+    <field name="print_report_name">'Hotel EOD - %s' % (object.date_from or '')</field>
+    <field name="binding_model_id" ref="model_hotel_mis_report_wizard"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_hotel_booking_summary_pdf" model="ir.actions.report">
+    <field name="name">Reservation Summary</field>
+    <field name="model">hotel.book.history</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">atk_hotel.report_hotel_booking_summary_document</field>
+    <field name="report_file">atk_hotel.report_hotel_booking_summary_document</field>
+    <field name="print_report_name">'Booking Summary - %s' % (object.name)</field>
+    <field name="binding_model_id" ref="model_hotel_book_history"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_hotel_booking_summary_html" model="ir.actions.report">
+    <field name="name">Reservation Summary (HTML)</field>
+    <field name="model">hotel.book.history</field>
+    <field name="report_type">qweb-html</field>
+    <field name="report_name">atk_hotel.report_hotel_booking_summary_document</field>
+    <field name="report_file">atk_hotel.report_hotel_booking_summary_document</field>
+    <field name="print_report_name">'Booking Summary - %s' % (object.name)</field>
+    <field name="binding_model_id" ref="model_hotel_book_history"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_hotel_room_summary_pdf" model="ir.actions.report">
+    <field name="name">Room Summary</field>
+    <field name="model">hotel.room</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">atk_hotel.report_hotel_room_summary_document</field>
+    <field name="report_file">atk_hotel.report_hotel_room_summary_document</field>
+    <field name="print_report_name">'Room Summary - %s' % (object.name)</field>
+    <field name="binding_model_id" ref="model_hotel_room"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_hotel_room_summary_html" model="ir.actions.report">
+    <field name="name">Room Summary (HTML)</field>
+    <field name="model">hotel.room</field>
+    <field name="report_type">qweb-html</field>
+    <field name="report_name">atk_hotel.report_hotel_room_summary_document</field>
+    <field name="report_file">atk_hotel.report_hotel_room_summary_document</field>
+    <field name="print_report_name">'Room Summary - %s' % (object.name)</field>
+    <field name="binding_model_id" ref="model_hotel_room"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_cleaning_request_summary_pdf" model="ir.actions.report">
+    <field name="name">Cleaning Request Summary</field>
+    <field name="model">cleaning.request</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">atk_hotel.report_cleaning_request_summary_document</field>
+    <field name="report_file">atk_hotel.report_cleaning_request_summary_document</field>
+    <field name="print_report_name">'Cleaning Request - %s' % (object.sequence or object.display_name)</field>
+    <field name="binding_model_id" ref="model_cleaning_request"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_cleaning_request_summary_html" model="ir.actions.report">
+    <field name="name">Cleaning Request Summary (HTML)</field>
+    <field name="model">cleaning.request</field>
+    <field name="report_type">qweb-html</field>
+    <field name="report_name">atk_hotel.report_cleaning_request_summary_document</field>
+    <field name="report_file">atk_hotel.report_cleaning_request_summary_document</field>
+    <field name="print_report_name">'Cleaning Request - %s' % (object.sequence or object.display_name)</field>
+    <field name="binding_model_id" ref="model_cleaning_request"/>
+    <field name="binding_type">report</field>
+  </record>
+</odoo>

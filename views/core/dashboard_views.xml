@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_hotel_dashboard_reservation_tree" model="ir.ui.view">
+        <field name="name">hotel.dashboard.reservation.tree</field>
+        <field name="model">hotel.book.history</field>
+        <field name="arch" type="xml">
+            <list string="Reservations" delete="false" default_order="check_in asc">
+                <field name="room_id"/>
+                <field name="partner_id"/>
+                <field name="check_in" options="{'format': 'dd/MM/yyyy HH:mm'}"/>
+                <field name="check_out"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'checked_out'"
+                       decoration-info="state == 'confirmed'"
+                       decoration-warning="state == 'checked_in'"
+                       decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hotel_dashboard_reservation_search" model="ir.ui.view">
+        <field name="name">hotel.dashboard.reservation.search</field>
+        <field name="model">hotel.book.history</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="room_id"/>
+                <field name="state"/>
+
+                <filter name="filter_checked_out" string="Checked Out" domain="[('state', '=', 'checked_out')]"/>
+                <filter name="filter_checked_in" string="Checked In" domain="[('state', '=', 'checked_in')]"/>
+                <filter name="filter_confirmed" string="Confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="filter_cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]"/>
+
+                <group>
+                    <filter name="group_by_room" string="Room" context="{'group_by': 'room_id'}"/>
+                    <filter name="group_by_checkin_date" string="Check-in Date" context="{'group_by': 'check_in'}"/>
+                    <filter name="group_by_checkout_date" string="Check-out Date" context="{'group_by': 'check_out'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hotel_reservations" model="ir.actions.act_window">
+        <field name="name">Reservations</field>        <field name="res_model">hotel.book.history</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hotel_dashboard_reservation_search"/>
+        <field name="view_id" ref="view_hotel_dashboard_reservation_tree"/>
+        <field name="context">{'search_default_filter_confirmed': 1, 'search_default_filter_checked_in': 1}</field>
+    </record>
+
+    <record id="action_hotel_dashboard_owl" model="ir.actions.client">
+        <field name="name">Hotel Dashboard</field>
+        <field name="tag">atk_hotel.dashboard</field>
+    </record>
+
+    <menuitem id="menu_hotel_dashboard_owl"
+        parent="atk_prop_mgmt.menu_facilities_assets_root"
+        name="Hotel Dashboard (OWL)"
+        action="action_hotel_dashboard_owl"
+        groups="base.group_user"
+        sequence="0"/>
+
+</odoo>

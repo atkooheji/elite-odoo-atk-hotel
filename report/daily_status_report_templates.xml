@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_hotel_daily_status_document">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <style type="text/css">/* --- Matrix Styles --- */
+                    .room-matrix {
+                        width: 100%;
+                        border-collapse: collapse;
+                        table-layout: fixed;
+                    }
+                    .room-matrix th,
+                    .room-matrix td {
+                        border: 1px solid #dfe6e9;
+                        padding: 6px;
+                        text-align: center;
+                        vertical-align: middle;
+                        font-size: 12px;
+                    }
+                    .room-matrix .room-type {
+                        background: #f4f6f7;
+                        font-weight: 700;
+                        text-align: left;
+                        width: 140px;
+                        font-size: 13px;
+                    }
+                    .room-matrix .room-header {
+                        background: #eef2f7;
+                        font-weight: 700;
+                        font-size: 11px;
+                    }
+                    .room-cell {
+                        height: 38px;
+                        font-weight: 700;
+                        color: #fff;
+                    }
+                    .room-cell.empty {
+                        background: #fafafa;
+                    }
+
+                    /* --- Status Colors --- */
+                    .status-occupied { background: #e74c3c !important; }
+                    .status-available { background: #3498db !important; }
+                    .status-dirty { background: #7f8c8d !important; }
+                    .status-maintenance { background: #8e44ad !important; }
+                    .status-reserved { background: #27ae60 !important; }
+                    .status-provision { background: #16a085 !important; }
+                    .status-blocked { background: #95a5a6 !important; }
+
+                    /* --- Summary Styles --- */
+                    .summary-panel {
+                        border: 1px solid #dfe6e9;
+                        padding: 12px;
+                        background: #fbfbfb;
+                        border-radius: 4px;
+                    }
+                    .summary-table th,
+                    .summary-table td {
+                        padding: 4px 2px;
+                        font-size: 12px;
+                    }
+                    .status-box {
+                        display: inline-block;
+                        padding: 4px 8px;
+                        margin: 3px 3px 0 0;
+                        border-radius: 3px;
+                        font-size: 11px;
+                        color: #fff;
+                    }
+                    .legend-title {
+                        font-weight: 700;
+                        margin-bottom: 4px;
+                    }
+                    .graph-wrapper {
+                        margin-top: 10px;
+                    }
+
+                    .occupancy-bar {
+                        width: 100%;
+                        height: 12px;
+                        background: #ecf0f1;
+                        border-radius: 6px;
+                        overflow: hidden;
+                        margin: 4px 0;
+                        display: flex;
+                        flex-wrap: nowrap;
+                    }
+                    .occupancy-bar .fill {
+                        height: 100%;
+                        display: inline-block;
+                    }</style>
+                <main class="page">
+                    <h3 class="text-center">
+                        Room View for the Business Date
+                        <span t-esc="format_date(report_date)" />
+                    </h3>
+                    <div class="row mt16">
+                        <div class="col-8">
+                            <table class="room-matrix">
+                                <thead>
+                                    <tr>
+                                        <th class="room-type">Room Type</th>
+                                        <t t-foreach="range(max_room_columns)" t-as="col_index">
+                                            <th t-esc="col_index + 1" class="room-header" />
+                                        </t>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="room_types" t-as="room_type_entry">
+                                        <tr>
+                                            <th t-esc="room_type_entry['room_type'].name" class="room-type" />
+                                            <t t-set="rooms" t-value="room_type_entry['rooms']" />
+                                            <t t-foreach="rooms" t-as="room">
+                                                <td t-attf-class="room-cell status-{{ room['status'] }}">
+                                                    <span t-esc="room['name']" />
+                                                </td>
+                                            </t>
+                                            <t t-foreach="range(max_room_columns - len(rooms))" t-as="empty_cell">
+                                                <td class="room-cell empty" />
+                                            </t>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-4">
+                            <div class="summary-panel">
+                                <h4 class="text-center">Details</h4>
+                                <table class="table table-sm table-borderless summary-table">
+                                    <tr>
+                                        <th>Total No. of Rooms</th>
+                                        <td t-esc="summary.get('total_rooms', 0)" class="text-right" />
+                                    </tr>
+                                    <tr>
+                                        <th>No. of Rooms Occupied</th>
+                                        <td t-esc="summary.get('occupied', 0)" class="text-right" />
+                                    </tr>
+                                    <tr>
+                                        <th>No. of Rooms Free</th>
+                                        <td t-esc="summary.get('vacant', 0)" class="text-right" />
+                                    </tr>
+                                    <tr>
+                                        <th>No. of Rooms Dirty</th>
+                                        <td t-esc="summary.get('dirty', 0)" class="text-right" />
+                                    </tr>
+                                    <tr>
+                                        <th>No. of Rooms Blocked</th>
+                                        <td t-esc="summary.get('blocked', 0)" class="text-right" />
+                                    </tr>
+                                    <tr>
+                                        <th>No. of Rooms Repair</th>
+                                        <td t-esc="summary.get('maintenance', 0)" class="text-right" />
+                                    </tr>
+                                    <tr>
+                                        <th>No. of Rooms Booking Confirmed</th>
+                                        <td t-esc="summary.get('reserved', 0)" class="text-right" />
+                                    </tr>
+                                    <tr>
+                                        <th>No. of Rooms Provision Booking</th>
+                                        <td t-esc="summary.get('provision', 0)" class="text-right" />
+                                    </tr>
+                                    <tr>
+                                        <th>No. of Rooms Check-out Today</th>
+                                        <td t-esc="summary.get('checkouts_today', 0)" class="text-right" />
+                                    </tr>
+                                    <tr>
+                                        <th>Room Occupancy %</th>
+                                        <td class="text-right">
+                                            <span t-esc="'%.2f' % (summary.get('occupancy_rate') or 0)" />
+                                            %
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div class="graph-wrapper">
+                                    <div class="legend-title">Room Status Distribution:</div>
+                                    <div class="occupancy-bar">
+                                        <t t-set="total_rooms" t-value="summary.get('total_rooms', 0) or 1" />
+                                        <t t-set="occupied_rate" t-value="float(summary.get('occupied', 0) or 0) * 100 / total_rooms" />
+                                        <div t-attf-style="width: #{occupied_rate}%;" class="fill status-occupied" />
+                                        <t t-set="available_rate" t-value="float(summary.get('vacant', 0) or 0) * 100 / total_rooms" />
+                                        <div t-attf-style="width: #{available_rate}%;" class="fill status-available" />
+                                        <t t-set="reserved_rate" t-value="float(summary.get('reserved', 0) or 0) * 100 / total_rooms" />
+                                        <div t-attf-style="width: #{reserved_rate}%;" class="fill status-reserved" />
+                                        <t t-set="dirty_rate" t-value="float(summary.get('dirty', 0) or 0) * 100 / total_rooms" />
+                                        <div t-attf-style="width: #{dirty_rate}%;" class="fill status-dirty" />
+                                        <t t-set="maintenance_rate" t-value="float(summary.get('maintenance', 0) or 0) * 100 / total_rooms" />
+                                        <div t-attf-style="width: #{maintenance_rate}%;" class="fill status-maintenance" />
+                                        <t t-set="blocked_rate" t-value="float(summary.get('blocked', 0) or 0) * 100 / total_rooms" />
+                                        <div t-attf-style="width: #{blocked_rate}%;" class="fill status-blocked" />
+                                        <t t-set="provision_rate" t-value="float(summary.get('provision', 0) or 0) * 100 / total_rooms" />
+                                        <div t-attf-style="width: #{provision_rate}%;" class="fill status-provision" />
+                                    </div>
+                                    <div class="text-right" style="font-size: 11px;">
+                                        Occupancy:
+                                        <span t-esc="'%.2f' % (summary.get('occupancy_rate') or 0)" />
+                                        %
+                                    </div>
+                                </div>
+                                <div class="legend mt8">
+                                    <div class="legend-title">Legend:</div>
+                                    <div>
+                                        <span class="status-box status-occupied">Occupied</span>
+                                        <span class="status-box status-available">Vacant</span>
+                                        <span class="status-box status-dirty">Dirty</span>
+                                        <span class="status-box status-reserved">Booking Confirmed</span>
+                                        <span class="status-box status-maintenance">Repair</span>
+                                        <span class="status-box status-provision">Provision Booking</span>
+                                        <span class="status-box status-blocked">Blocked</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </t>
+        </t>
+    </template>
+    </odoo>

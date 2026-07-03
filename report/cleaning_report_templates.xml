@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_cleaning_request_summary_document">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="text-center">Cleaning Request Summary</h2>
+                            <p class="text-muted">
+                                <span>Generated on</span>
+                                <span t-esc="format_datetime(doc.write_date or doc.create_date) if (doc.write_date or doc.create_date) else ''" />
+                            </p>
+                            <div class="row mt16">
+                                <div class="col-6">
+                                    <h4>Request Information</h4>
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            <strong>Reference:</strong>
+                                            <span t-esc="doc.sequence or doc.display_name" />
+                                        </li>
+                                        <li>
+                                            <strong>Type:</strong>
+                                            <span t-esc="dict(doc.fields_get(['cleaning_type'])['cleaning_type']['selection']).get(doc.cleaning_type, doc.cleaning_type)" />
+                                        </li>
+                                        <li>
+                                            <strong>Status:</strong>
+                                            <span t-esc="dict(doc.fields_get(['state'])['state']['selection']).get(doc.state, doc.state)" />
+                                        </li>
+                                        <li>
+                                            <strong>Inspection Status:</strong>
+                                            <span t-esc="dict(doc.fields_get(['inspection_status'])['inspection_status']['selection']).get(doc.inspection_status, doc.inspection_status)" />
+                                        </li>
+                                        <li>
+                                            <strong>Description:</strong>
+                                            <span t-esc="doc.description or '-'" />
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-6">
+                                    <h4>Assignment</h4>
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            <strong>Team:</strong>
+                                            <span t-esc="doc.team_id.display_name or '-'" />
+                                        </li>
+                                        <li>
+                                            <strong>Head:</strong>
+                                            <span t-esc="doc.head_id.display_name or '-'" />
+                                        </li>
+                                        <li>
+                                            <strong>Assigned To:</strong>
+                                            <span t-esc="doc.assigned_id.display_name or '-'" />
+                                        </li>
+                                        <li>
+                                            <strong>Support Team:</strong>
+                                            <span t-if="doc.support_team_ids" t-esc="', '.join(doc.support_team_ids.mapped('name'))" />
+                                            <span t-if="not doc.support_team_ids">-</span>
+                                        </li>
+                                        <li>
+                                            <strong>Support Reason:</strong>
+                                            <span t-esc="doc.support_reason or '-'" />
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row mt16">
+                                <div class="col-6">
+                                    <h4>Timing</h4>
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            <strong>Start:</strong>
+                                            <span t-esc="format_datetime(doc.cleaning_start) if doc.cleaning_start else '-'" />
+                                        </li>
+                                        <li>
+                                            <strong>Started By:</strong>
+                                            <span t-esc="doc.cleaning_start_employee_id.display_name or '-'" />
+                                        </li>
+                                        <li>
+                                            <strong>Completion:</strong>
+                                            <span t-esc="format_datetime(doc.cleaning_end) if doc.cleaning_end else '-'" />
+                                        </li>
+                                        <li>
+                                            <strong>Completed By:</strong>
+                                            <span t-esc="doc.cleaning_end_employee_id.display_name or '-'" />
+                                        </li>
+                                        <li>
+                                            <strong>Inspected By:</strong>
+                                            <span t-esc="doc.inspected_by_id.display_name or '-'" />
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-6">
+                                    <h4>Target</h4>
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            <strong>Room:</strong>
+                                            <span t-esc="doc.room_id.display_name or '-'" />
+                                        </li>
+                                        <li>
+                                            <strong>Hotel:</strong>
+                                            <span t-esc="doc.hotel or '-'" />
+                                        </li>
+                                        <li>
+                                            <strong>Vehicle:</strong>
+                                            <span t-esc="doc.vehicle_id.display_name or '-'" />
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <t t-if="doc.message_ids">
+                                <div class="col-12 mt32">
+                                    <h4>Notes</h4>
+                                    <table class="table table-sm o_main_table">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Author</th>
+                                                <th>Message</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-foreach="doc.message_ids" t-as="message">
+                                                <td>
+                                                    <span t-esc="format_datetime(message.date)" />
+                                                </td>
+                                                <td>
+                                                    <span t-esc="message.author_id.display_name or '-'" />
+                                                </td>
+                                                <td>
+                                                    <t t-raw="message.body" />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    </odoo>

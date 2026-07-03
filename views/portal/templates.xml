@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Progress Bar Component -->
+    <template id="booking_progress_bar" name="Booking Progress Bar" active="False">
+        <div class="container mb-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="d-flex justify-content-between position-relative">
+                        <div class="position-absolute top-50 start-0 translate-middle-y w-100 bg-secondary opacity-25" style="height: 2px; z-index: 0;"></div>
+                        <div class="position-absolute top-50 start-0 translate-middle-y bg-primary transition-all" t-attf-style="height: 2px; width: #{'0%' if step == 1 else '33%' if step == 2 else '66%' if step == 3 else '100%'}; z-index: 1; transition: width 0.5s ease;"></div>
+                        
+                        <div class="text-center position-relative" style="z-index: 2;">
+                            <div t-attf-class="rounded-pill d-flex align-items-center justify-content-center mb-2 mx-auto #{'bg-primary text-white shadow' if step >= 1 else 'bg-white border text-muted'}" style="width: 40px; height: 40px;">
+                                <i class="fa fa-bed small"/>
+                            </div>
+                            <span t-attf-class="small fw-bold #{'text-primary' if step == 1 else 'text-muted'}">Rooms</span>
+                        </div>
+                        <div class="text-center position-relative" style="z-index: 2;">
+                            <div t-attf-class="rounded-pill d-flex align-items-center justify-content-center mb-2 mx-auto #{'bg-primary text-white shadow' if step >= 2 else 'bg-white border text-muted'}" style="width: 40px; height: 40px;">
+                                <i class="fa fa-user small"/>
+                            </div>
+                            <span t-attf-class="small fw-bold #{'text-primary' if step == 2 else 'text-muted'}">Details</span>
+                        </div>
+                        <div class="text-center position-relative" style="z-index: 2;">
+                            <div t-attf-class="rounded-pill d-flex align-items-center justify-content-center mb-2 mx-auto #{'bg-primary text-white shadow' if step >= 3 else 'bg-white border text-muted'}" style="width: 40px; height: 40px;">
+                                <i class="fa fa-plus small"/>
+                            </div>
+                            <span t-attf-class="small fw-bold #{'text-primary' if step == 3 else 'text-muted'}">Enhance</span>
+                        </div>
+                        <div class="text-center position-relative" style="z-index: 2;">
+                            <div t-attf-class="rounded-pill d-flex align-items-center justify-content-center mb-2 mx-auto #{'bg-primary text-white shadow' if step >= 4 else 'bg-white border text-muted'}" style="width: 40px; height: 40px;">
+                                <i class="fa fa-credit-card small"/>
+                            </div>
+                            <span t-attf-class="small fw-bold #{'text-primary' if step == 4 else 'text-muted'}">Payment</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Stay Summary Card Component -->
+    <template id="stay_summary_card" name="Stay Summary Card" active="False">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+            <div class="card-header bg-dark text-white py-3 border-0">
+                <h5 class="mb-0 fw-bold"><i class="fa fa-calendar-check-o me-2 text-primary"/> Stay Summary</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <label class="text-muted small text-uppercase fw-bold d-block mb-1">Check In</label>
+                        <span class="fw-bold" t-esc="booking.check_in" t-options='{"widget": "date", "format": "MMM d, yyyy"}'/>
+                        <small class="d-block text-muted">From 3:00 PM</small>
+                    </div>
+                    <div class="col-6 text-end">
+                        <label class="text-muted small text-uppercase fw-bold d-block mb-1">Check Out</label>
+                        <span class="fw-bold" t-esc="booking.check_out" t-options='{"widget": "date", "format": "MMM d, yyyy"}'/>
+                        <small class="d-block text-muted">By 12:00 PM</small>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted" t-if="booking.room_id">
+                        <t t-esc="booking.room_id.room_type.name if booking.room_id.room_type else 'Room'"/> x <t t-esc="int(booking.duration_days_decimal) if booking.duration_days_decimal else 0"/> Nights
+                    </span>
+                    <span class="fw-bold" t-esc="booking.total_amount" t-options='{"widget": "monetary", "display_currency": booking.currency_id or website.currency_id}'/>
+                </div>
+                <div class="d-flex justify-content-between mb-4 pb-4 border-bottom border-dashed">
+                    <span class="text-muted">Guests</span>
+                    <span class="fw-bold"><t t-esc="booking.total_adults"/> Adults, <t t-esc="booking.total_children"/> Children</span>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0 fw-bold">Total Amount</h4>
+                    <h4 class="mb-0 fw-bold text-primary" t-esc="booking.total_amount" t-options='{"widget": "monetary", "display_currency": booking.currency_id or website.currency_id}'/>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Room Listing Page -->
+    <template id="hotel_room_listing" name="Hotel Room Selection" active="False">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <section class="s_cover pt120 pb120 bg-900" data-snippet="s_cover" data-name="Cover" style="background-image: url('/atk_hotel/static/src/img/hotel_hero.jpg'); background-size: cover; background-position: center;">
+                    <div class="alert alert-info" role="status">DEBUG: TEMPLATE ACTIVE v1.0</div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8 offset-lg-2 text-center text-white">
+                                <h1 class="display-3 fw-bold mb-4">Discover Your Perfect Sanctuary</h1>
+                                <p class="lead mb-5">Experience unparalleled luxury and comfort at Al Faris. Book your stay today.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="bg-light py-5">
+                    <t t-call="atk_hotel.booking_progress_bar"><t t-set="step" t-value="1"/></t>
+                    
+                    <div class="container">
+                        <div t-if="request.params.get('error')" class="alert alert-danger rounded-4 shadow-sm mb-5" role="alert">
+                            <i class="fa fa-exclamation-triangle me-2"/> 
+                            <t t-if="request.params.get('error') == 'no_availability'">Sorry, this room type is no longer available for the selected dates.</t>
+                        </div>
+
+                        <!-- Mini Search Bar -->
+                        <div class="booking-engine-wrapper luxury-glass p-3 rounded-4 shadow-sm mb-5" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);">
+                            <form action="/hotel/rooms" method="get" class="row g-2 align-items-end">
+                                <div class="col-md-3">
+                                    <label class="form-label small text-uppercase fw-bold mb-1 text-primary" style="font-size: 10px;">Check In</label>
+                                    <input type="date" name="check_in" t-att-value="stay['check_in']" class="form-control bg-transparent text-white border-0 border-bottom border-secondary p-0" required="1" style="border-radius: 0;"/>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small text-uppercase fw-bold mb-1 text-primary" style="font-size: 10px;">Check Out</label>
+                                    <input type="date" name="check_out" t-att-value="stay['check_out']" class="form-control bg-transparent text-white border-0 border-bottom border-secondary p-0" required="1" style="border-radius: 0;"/>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label small text-uppercase fw-bold mb-1 text-primary" style="font-size: 10px;">Adults</label>
+                                    <select name="adults" class="form-select bg-transparent text-white border-0 border-bottom border-secondary p-0" style="border-radius: 0;">
+                                        <option value="1" t-att-selected="stay['adults'] == 1" class="text-dark">1 Adult</option>
+                                        <option value="2" t-att-selected="stay['adults'] == 2" class="text-dark">2 Adults</option>
+                                        <option value="3" t-att-selected="stay['adults'] == 3" class="text-dark">3 Adults</option>
+                                        <option value="4" t-att-selected="stay['adults'] == 4" class="text-dark">4+ Adults</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label small text-uppercase fw-bold mb-1 text-primary" style="font-size: 10px;">Children</label>
+                                    <select name="children" class="form-select bg-transparent text-white border-0 border-bottom border-secondary p-0" style="border-radius: 0;">
+                                        <option value="0" t-att-selected="stay['children'] == 0" class="text-dark">0 Children</option>
+                                        <option value="1" t-att-selected="stay['children'] == 1" class="text-dark">1 Child</option>
+                                        <option value="2" t-att-selected="stay['children'] == 2" class="text-dark">2 Children</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill fw-bold text-uppercase tracking-wider">
+                                        Update
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="row g-4" t-if="room_types">
+                            <t t-foreach="room_types" t-as="rt">
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="card h-100 border-0 shadow-sm hover-elevate rounded-4 overflow-hidden transition-all">
+                                        <div class="position-relative">
+                                            <img t-if="rt.image_1920" t-attf-src="/web/image/hotel.room.type/#{rt.id}/image_1920" class="card-img-top" style="height: 250px; object-fit: cover;"/>
+                                            <img t-else="" src="/atk_hotel/static/src/img/placeholder_room.png" class="card-img-top" style="height: 250px; object-fit: cover;"/>
+                                            
+                                            <!-- Urgency Badge -->
+                                            <div class="position-absolute top-0 start-0 m-3">
+                                                <span class="badge bg-danger px-3 py-2 rounded-pill shadow-sm animate-pulse">
+                                                    <i class="fa fa-fire me-1"/> Limited Availability
+                                                </span>
+                                            </div>
+                                            
+                                            <div class="position-absolute bottom-0 end-0 m-3">
+                                                <span class="badge bg-white text-primary px-3 py-2 rounded-pill shadow-lg border border-primary border-opacity-25">
+                                                    <t t-esc="rt.default_price" t-options='{"widget": "monetary", "display_currency": rt.currency_id or website.currency_id}'/> / Night
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="card-body p-4">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h4 class="card-title fw-bold mb-0" t-esc="rt.name"/>
+                                                <div t-if="rt.review_count > 0" class="text-warning small mt-1">
+                                                    <span class="text-muted ms-1">(<t t-esc="rt.review_count"/> Reviews)</span>
+                                                </div>
+                                            </div>
+                                            <p class="text-muted small mb-3">
+                                                <i class="fa fa-users me-2 text-primary"/> Up to <t t-esc="rt.max_occupancy"/> Guests
+                                            </p>
+
+                                            <!-- Live Total Calculation -->
+                                            <div t-if="stay['nights'] > 0" class="bg-primary bg-opacity-10 p-3 rounded-4 mb-4">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="small text-primary fw-bold">Total for <t t-esc="stay['nights']"/> nights:</span>
+                                                    <span class="h5 mb-0 fw-bold text-primary" t-esc="rt.default_price * stay['nights']" t-options='{"widget": "monetary", "display_currency": rt.currency_id or website.currency_id}'/>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex gap-2">
+                                                <a t-attf-href="/hotel/room/#{rt.id}" class="btn btn-outline-primary flex-grow-1 rounded-pill fw-bold">Details</a>
+                                                <a t-attf-href="/hotel/reserve?room_type_id=#{rt.id}&amp;check_in=#{stay['check_in']}&amp;check_out=#{stay['check_out']}&amp;adults=#{stay['adults']}&amp;children=#{stay['children']}" 
+                                                   class="btn btn-primary flex-grow-1 rounded-pill fw-bold">Book Now</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                        <!-- Empty State -->
+                        <div class="text-center py-5" t-if="not room_types">
+                            <div class="mb-4">
+                                <i class="fa fa-calendar-times-o fa-5x text-muted opacity-25"/>
+                            </div>
+                            <h2 class="fw-bold">No Availability Found</h2>
+                            <p class="text-muted mb-5">We couldn't find any rooms matching your criteria for these dates.<br/>Try adjusting your dates or guest count.</p>
+                            <a href="/" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold">
+                                <i class="fa fa-arrow-left me-2"/> Return to Search
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Room Details Page -->
+    <template id="hotel_room_details" name="Room Details" active="False">
+        <t t-call="website.layout">
+            <div id="wrap" class="py-5 bg-light">
+                <div class="container">
+                    <t t-call="atk_hotel.booking_progress_bar"><t t-set="step" t-value="1"/></t>
+                    
+                    <nav aria-label="breadcrumb" class="mb-4">
+                        <ol class="breadcrumb bg-transparent p-0">
+                            <li class="breadcrumb-item"><a href="/hotel">Hotel</a></li>
+                            <li class="breadcrumb-item active" t-esc="room_type.name"/>
+                        </ol>
+                    </nav>
+
+                    <div class="row g-5">
+                        <div class="col-lg-8">
+                            <div class="room-gallery mb-5 rounded-4 overflow-hidden shadow-lg border-4 border-white">
+                                <img t-if="room_type.image_1920" t-attf-src="/web/image/hotel.room.type/#{room_type.id}/image_1920" class="img-fluid w-100" style="max-height: 500px; object-fit: cover;"/>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h1 class="display-4 fw-bold mb-0" t-esc="room_type.name"/>
+                                <div t-if="room_type.review_count > 0" class="text-warning h4 mb-0">
+                                    <t t-foreach="range(int(room_type.rating_avg))" t-as="i"><i class="fa fa-star"/></t>
+                                    <span class="text-muted ms-2 small">(<t t-esc="room_type.review_count"/> reviews)</span>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex gap-4 mb-5">
+                                <span class="badge bg-white text-dark shadow-sm px-3 py-2 rounded-pill"><i class="fa fa-users me-2 text-primary"/> <t t-esc="room_type.max_occupancy"/> Guests</span>
+                                <span t-if="room_type.bed_type" class="badge bg-white text-dark shadow-sm px-3 py-2 rounded-pill"><i class="fa fa-bed me-2 text-primary"/> <t t-esc="room_type.bed_type.capitalize()"/> Bed</span>
+                                <span t-if="room_type.view" class="badge bg-white text-dark shadow-sm px-3 py-2 rounded-pill"><i class="fa fa-eye me-2 text-primary"/> <t t-esc="dict(room_type._fields['view'].selection).get(room_type.view)"/></span>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-4 shadow-sm mb-5">
+                                <h3 class="fw-bold mb-4">About this room</h3>
+                                <div class="lead text-muted mb-0" t-field="room_type.website_description"/>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-4 shadow-sm mb-5">
+                                <h3 class="fw-bold mb-4">Amenities</h3>
+                                <div class="row g-3">
+                                    <t t-foreach="room_type.amenity_ids" t-as="amenity">
+                                        <div class="col-md-4">
+                                            <div class="d-flex align-items-center p-3 bg-light rounded-4 border border-white transition-all hover-shadow-sm">
+                                                <i class="fa fa-check-circle text-primary me-3"/>
+                                                <span class="fw-medium" t-esc="amenity.name"/>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <section class="reviews bg-white p-5 rounded-4 shadow-sm">
+                                <h3 class="fw-bold mb-4">Guest Reviews</h3>
+                                <t t-if="reviews">
+                                    <div class="list-group list-group-flush">
+                                        <t t-foreach="reviews" t-as="rev">
+                                            <div class="list-group-item border-0 px-0 py-4 border-bottom">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <h5 class="fw-bold mb-0" t-esc="rev.partner_id.name"/>
+                                                    <div class="text-warning">
+                                                        <t t-foreach="range(int(rev.rating))" t-as="i"><i class="fa fa-star"/></t>
+                                                    </div>
+                                                </div>
+                                                <p class="text-muted mb-2" t-esc="rev.comment"/>
+                                                <small class="text-muted"><i class="fa fa-clock-o me-1"/> <t t-field="rev.create_date" t-options='{"widget": "date"}'/></small>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                                <div t-else="" class="text-center py-5">
+                                    <i class="fa fa-comments-o fa-3x text-muted mb-3 opacity-25"/>
+                                    <p class="mb-0 text-muted">No reviews yet. Be the first to share your experience!</p>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="sticky-top" style="top: 100px; z-index: 10;">
+                                <div class="card border-0 shadow-lg rounded-4 p-4 mb-4">
+                                    <h3 class="fw-bold mb-4">Book Your Stay</h3>
+                                    <form action="/hotel/book/start" method="post">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="room_type_id" t-att-value="room_type.id"/>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label small fw-bold text-uppercase tracking-wider">Check In</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-0"><i class="fa fa-calendar text-primary"/></span>
+                                                <input type="date" name="check_in" t-att-value="check_in" class="form-control form-control-lg bg-light border-0" required="1"/>
+                                            </div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label small fw-bold text-uppercase tracking-wider">Check Out</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-0"><i class="fa fa-calendar-plus-o text-primary"/></span>
+                                                <input type="date" name="check_out" t-att-value="check_out" class="form-control form-control-lg bg-light border-0" required="1"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-4">
+                                            <div class="col-6">
+                                                <label class="form-label small fw-bold text-uppercase tracking-wider">Adults</label>
+                                                <select name="adults" class="form-select form-select-lg bg-light border-0">
+                                                    <option value="1">1</option>
+                                                    <option value="2" selected="1">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4+</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label small fw-bold text-uppercase tracking-wider">Children</label>
+                                                <select name="children" class="form-select form-select-lg bg-light border-0">
+                                                    <option value="0" selected="1">0</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div t-if="stay['nights'] > 0" class="border-top pt-4 mt-4">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span class="text-muted">Rate / Night</span>
+                                                <span class="fw-bold" t-esc="room_type.default_price" t-options='{"widget": "monetary", "display_currency": room_type.currency_id or website.currency_id}'/>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-4">
+                                                <span class="text-muted"><t t-esc="stay['nights']"/> Nights Total</span>
+                                                <span class="h4 fw-bold text-primary mb-0" t-esc="room_type.default_price * stay['nights']" t-options='{"widget": "monetary", "display_currency": room_type.currency_id or website.currency_id}'/>
+                                            </div>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill py-3 shadow-lg">Confirm Selection</button>
+                                        <div class="d-flex align-items-center justify-content-center mt-3 text-success small fw-bold">
+                                            <i class="fa fa-shield me-2"/> Best Price Guaranteed
+                                        </div>
+                                    </form>
+                                </div>
+                                
+                                <!-- Assistance Card -->
+                                <div class="bg-dark text-white rounded-4 p-4 shadow-sm">
+                                    <h6 class="fw-bold mb-2">Need help booking?</h6>
+                                    <p class="small text-white-50 mb-3">Our concierge is available 24/7 to assist with your reservation.</p>
+                                    <a href="tel:+123456789" class="btn btn-outline-light btn-sm rounded-pill w-100"><i class="fa fa-phone me-2"/> Call +123 456 789</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Step 2: Guest Details Template -->
+    <template id="hotel_booking_details" name="Guest Details" active="False">
+        <t t-call="website.layout">
+            <div id="wrap" class="py-5 bg-light">
+                <div class="container">
+                    <t t-call="atk_hotel.booking_progress_bar"><t t-set="step" t-value="2"/></t>
+                    
+                    <div class="row g-5">
+                        <div class="col-lg-8">
+                            <form t-attf-action="/hotel/booking/#{booking.id}/details/save" method="post" class="needs-validation">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="access_token" t-att-value="access_token"/>
+                                
+                                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-4">
+                                    <h3 class="fw-bold mb-4">Guest Information</h3>
+                                    <p class="text-muted mb-5">Please provide your details to secure your reservation.</p>
+                                    
+                                    <t t-if="is_public">
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-bold text-uppercase tracking-widest">Full Name</label>
+                                                <input type="text" name="name" class="form-control form-control-lg bg-light border-0" placeholder="John Doe" required="1"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-bold text-uppercase tracking-widest">Email Address</label>
+                                                <input type="email" name="email" class="form-control form-control-lg bg-light border-0" placeholder="john@example.com" required="1"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-bold text-uppercase tracking-widest">Phone Number</label>
+                                                <input type="tel" name="phone" class="form-control form-control-lg bg-light border-0" placeholder="+1 234 567 890"/>
+                                            </div>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="d-flex align-items-center p-4 bg-primary bg-opacity-10 rounded-4 border border-primary border-opacity-10">
+                                            <div class="me-4 rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow" style="width: 70px; height: 70px;">
+                                                <i class="fa fa-user fa-2x"/>
+                                            </div>
+                                            <div>
+                                                <h5 class="mb-1 fw-bold">Booking for <t t-esc="request.env.user.partner_id.name"/></h5>
+                                                <p class="mb-0 text-muted">Signed in as <t t-esc="request.env.user.partner_id.email"/></p>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+
+                                <div class="d-flex flex-column flex-md-row gap-3 mt-5">
+                                    <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow-lg">Continue to Add-ons</button>
+                                    <a href="/hotel/rooms" class="btn btn-link text-muted">Back to Room Selection</a>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="sticky-top" style="top: 100px;">
+                                <t t-call="atk_hotel.stay_summary_card"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Step 3: Enhance Stay (Add-ons) Template -->
+    <template id="hotel_booking_addons" name="Enhance Your Stay" active="False">
+        <t t-call="website.layout">
+            <div id="wrap" class="py-5 bg-light">
+                <div class="container">
+                    <t t-call="atk_hotel.booking_progress_bar"><t t-set="step" t-value="3"/></t>
+                    
+                    <div class="row g-5">
+                        <div class="col-lg-8">
+                            <form t-attf-action="/hotel/booking/#{booking.id}/enhance/save" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="access_token" t-att-value="access_token"/>
+                                
+                                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-4">
+                                    <h3 class="fw-bold mb-2">Enhance Your Experience</h3>
+                                    <p class="text-muted mb-5">Customize your stay with our exclusive add-ons and services.</p>
+                                    
+                                    <div class="row g-4">
+                                        <t t-foreach="add_ons" t-as="addon">
+                                            <div class="col-md-6">
+                                                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden transition-all hover-elevate bg-white">
+                                                    <div class="card-body p-4">
+                                                        <div class="d-flex align-items-center mb-3">
+                                                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3 text-primary">
+                                                                <i class="fa fa-star fa-lg"/>
+                                                            </div>
+                                                            <div>
+                                                                <h5 class="fw-bold mb-0" t-esc="addon.name"/>
+                                                                <span class="text-primary fw-bold" t-esc="addon.list_price" t-options='{"widget": "monetary", "display_currency": addon.currency_id or website.currency_id}'/>
+                                                            </div>
+                                                        </div>
+                                                        <p class="text-muted small mb-4" t-esc="addon.description_sale or 'Premium hotel service to enhance your stay experience.'"/>
+                                                        
+                                                        <div class="form-check form-switch custom-switch">
+                                                            <input class="form-check-input" type="checkbox" t-att-name="'addon_' + str(addon.id)" t-att-id="'addon_' + str(addon.id)"/>
+                                                            <label class="form-check-label fw-bold" t-att-for="'addon_' + str(addon.id)">Add to Stay</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex flex-column flex-md-row gap-3 mt-5">
+                                    <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow-lg">Proceed to Checkout</button>
+                                    <a t-attf-href="/hotel/booking/#{booking.id}/confirm?access_token=#{access_token}" class="btn btn-link text-muted">Back to Details</a>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="sticky-top" style="top: 100px;">
+                                <t t-call="atk_hotel.stay_summary_card"/>
+                                
+                                <div class="card border-0 glass-card rounded-4 p-4 mt-4">
+                                    <h6 class="fw-bold mb-3"><i class="fa fa-info-circle me-2 text-primary"/> Why book add-ons now?</h6>
+                                    <ul class="small mb-0 ps-3 text-muted">
+                                        <li class="mb-2">Guaranteed availability for popular services.</li>
+                                        <li class="mb-2">Lower rates than booking upon arrival.</li>
+                                        <li>Priority scheduling for SPA and Dining.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    <!-- Success / Thank You Template -->
+    <template id="hotel_booking_thank_you" name="Booking Confirmed" active="False">
+        <t t-call="website.layout">
+            <div id="wrap" class="py-5 bg-light">
+                <div class="container text-center py-5">
+                    <t t-call="atk_hotel.booking_progress_bar"><t t-set="step" t-value="4"/></t>
+                    
+                    <div class="glass-card p-5 rounded-5 shadow-2xl mx-auto" style="max-width: 700px;">
+                        <div class="mb-4">
+                            <i class="fa fa-check-circle fa-5x text-success animate-fade-up"/>
+                        </div>
+                        <h1 class="display-4 fw-bold mb-3">Reservation Confirmed!</h1>
+                        <p class="lead text-muted mb-5">Thank you, <t t-esc="booking.partner_id.name"/>. Your sanctuary at Al Faris awaits.</p>
+                        
+                        <div class="bg-white p-4 rounded-4 shadow-sm mb-5 text-start">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <small class="text-uppercase text-faris-gold fw-bold">Booking Ref</small>
+                                    <h5 class="fw-bold mb-0" t-esc="booking.name"/>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <small class="text-uppercase text-faris-gold fw-bold">Total Amount</small>
+                                    <h5 class="fw-bold mb-0" t-esc="booking.total_amount" t-options='{"widget": "monetary", "display_currency": booking.currency_id or website.currency_id}'/>
+                                </div>
+                                <div class="col-12 mt-4 border-top pt-4">
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="fa fa-calendar me-2 text-primary"/> <t t-esc="booking.check_in" t-options='{"widget": "date"}'/> - <t t-esc="booking.check_out" t-options='{"widget": "date"}'/></span>
+                                        <span><i class="fa fa-bed me-2 text-primary"/> <t t-esc="booking.room_id.name"/></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+                            <a href="/my/stays" class="btn btn-faris-gold rounded-pill px-5 py-3 shadow-lg">Manage My Stays</a>
+                            <a href="/" class="btn btn-outline-dark rounded-pill px-5 py-3">Return Home</a>
+                        </div>
+                        
+                        <p class="text-muted small mt-5 mb-0">A confirmation email has been sent to <t t-esc="booking.partner_id.email"/>.</p>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

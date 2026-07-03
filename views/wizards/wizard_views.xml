@@ -1,0 +1,32 @@
+<odoo>
+    <record id="view_hotel_booking_wizard_form" model="ir.ui.view">
+        <field name="name">hotel.booking.wizard.form</field>
+        <field name="model">hotel.booking.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="guest_id" required="1"/>
+                        <button name="action_open_guest_form" string="Create Guest" type="object" class="oe_link oe_inline"/>
+                        <field name="room_id" required="1"/>
+                        <field name="check_in" required="1"/>
+                        <field name="check_out" required="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_create_booking" string="Create Booking" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hotel_booking_wizard" model="ir.actions.act_window">
+        <field name="name">Create Hotel Booking</field>
+        <field name="res_model">hotel.booking.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    
+</odoo>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_move_form_inherit_rental" model="ir.ui.view">
+      <field name="name">account.move.form.rental.inherit</field>
+      <field name="model">account.move</field>
+      <field name="inherit_id" ref="account.view_move_form"/>
+      <field name="arch" type="xml">
+
+        <!-- Add rental info below the invoice date and customer info -->
+        <xpath expr="//field[@name='invoice_date']" position="after">
+<!--              <group string="Rental Information">-->
+            <field name="check_in" invisible="company_id != 5"/>
+            <field name="check_out" invisible="company_id != 5"/>
+            <field name="duration" readonly="1" invisible="company_id != 5"/>
+<!--              </group>-->
+        </xpath>
+
+      </field>
+    </record>
+    <record id="account_move_line_tree_inherit" model="ir.ui.view">
+        <field name="name">account.move.line.tree.inherit</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='credit']" position="after">
+                <field name="duration" string="Duration (days)"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

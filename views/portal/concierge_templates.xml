@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Live Stay Dashboard / Digital Concierge -->
+    <template id="portal_my_stay_dashboard" name="Live Stay Dashboard" active="False">
+        <t t-call="website.layout">
+            <div id="wrap" class="py-5 bg-light">
+                <div class="container">
+                    <!-- Dashboard Header -->
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 animate-fade-up">
+                        <div>
+                            <h1 class="display-5 fw-bold mb-0">Welcome Back, <t t-esc="booking.partner_id.name"/></h1>
+                            <p class="text-muted lead">You are currently staying in Room <t t-esc="booking.room_id.name"/></p>
+                        </div>
+                        <div class="glass-card px-4 py-2 rounded-pill shadow-sm">
+                            <span class="text-faris-gold fw-bold"><i class="fa fa-clock-o me-2"/> Checkout: <t t-esc="booking.check_out" t-options='{"widget": "date"}'/></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <!-- Left Col: Stay Details & Controls -->
+                        <div class="col-lg-8 animate-fade-up">
+                            <!-- Quick Actions Grid -->
+                            <div class="row g-4 mb-4">
+                                <div class="col-md-4">
+                                    <div class="glass-card p-4 rounded-4 text-center h-100 hover-elevate cursor-pointer">
+                                        <div class="bg-primary-subtle p-3 rounded-circle d-inline-block mb-3">
+                                            <i class="fa fa-broom fa-2x text-primary"/>
+                                        </div>
+                                        <h5 class="fw-bold">Housekeeping</h5>
+                                        <p class="small text-muted mb-0">Request room cleaning or extra towels.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="glass-card p-4 rounded-4 text-center h-100 hover-elevate cursor-pointer">
+                                        <div class="bg-success-subtle p-3 rounded-circle d-inline-block mb-3">
+                                            <i class="fa fa-cutlery fa-2x text-success"/>
+                                        </div>
+                                        <h5 class="fw-bold">In-Room Dining</h5>
+                                        <p class="small text-muted mb-0">Order from our exclusive menu.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="glass-card p-4 rounded-4 text-center h-100 hover-elevate cursor-pointer">
+                                        <div class="bg-info-subtle p-3 rounded-circle d-inline-block mb-3">
+                                            <i class="fa fa-info-circle fa-2x text-info"/>
+                                        </div>
+                                        <h5 class="fw-bold">Hotel Info</h5>
+                                        <p class="small text-muted mb-0">WiFi details, SPA hours, and more.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Booking Details Card -->
+                            <div class="glass-card rounded-5 p-4 p-md-5 mb-4 shadow-lg border-0 overflow-hidden position-relative">
+                                <div class="position-absolute top-0 end-0 p-4 opacity-10">
+                                    <i class="fa fa-bed fa-10x"/>
+                                </div>
+                                <h3 class="fw-bold mb-4">Your Stay Package</h3>
+                                <div class="row g-4">
+                                    <div class="col-md-6 border-end">
+                                        <div class="mb-3">
+                                            <small class="text-uppercase text-muted fw-bold">Room Type</small>
+                                            <h5 class="fw-bold" t-esc="booking.room_type_id.name"/>
+                                        </div>
+                                        <div>
+                                            <small class="text-uppercase text-muted fw-bold">Daily Rate</small>
+                                            <h5 class="fw-bold text-faris-gold" t-esc="booking.daily_amount" t-options='{"widget": "monetary", "display_currency": booking.currency_id or website.currency_id}'/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <small class="text-uppercase text-muted fw-bold">Add-ons Selected</small>
+                                            <ul class="list-unstyled mb-0 mt-1">
+                                                <t t-foreach="booking.additional_product_line_ids" t-as="line">
+                                                    <li class="small mb-1"><i class="fa fa-check text-success me-2"/> <t t-esc="line.product_id.name"/></li>
+                                                </t>
+                                                <t t-if="not booking.additional_product_line_ids">
+                                                    <li class="small text-muted italic">No add-ons selected.</li>
+                                                </t>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Col: Billing & Concierge Chat -->
+                        <div class="col-lg-4 animate-fade-up" style="animation-delay: 0.1s">
+                            <!-- Billing Quick View -->
+                            <div class="glass-dark rounded-5 p-4 text-white mb-4 shadow-xl">
+                                <h5 class="fw-bold mb-4">Current Folio</h5>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="opacity-75">Room Charges</span>
+                                    <span t-esc="booking.total_amount" t-options='{"widget": "monetary", "display_currency": booking.currency_id or website.currency_id}'/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-4 pb-4 border-bottom border-white border-opacity-10">
+                                    <span class="opacity-75">Service Charges</span>
+                                    <span>$0.00</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h4 class="fw-bold mb-0">Total Due</h4>
+                                    <h4 class="fw-bold text-faris-gold mb-0" t-esc="booking.total_amount" t-options='{"widget": "monetary", "display_currency": booking.currency_id or website.currency_id}'/>
+                                </div>
+                                <button class="btn btn-faris-gold w-100 rounded-pill py-3 fw-bold">Settle Invoice Early</button>
+                            </div>
+
+                            <!-- Concierge Card -->
+                            <div class="glass-card rounded-5 p-4 shadow-lg border-0 text-center">
+                                <img src="/web/image/res.partner/1/image_128" class="rounded-circle mb-3 shadow-sm" style="width: 80px; height: 80px;" t-att-alt="booking.partner_id.name"/>
+                                <h6 class="fw-bold mb-1">Stay Concierge</h6>
+                                <p class="small text-muted mb-4">Available 24/7 for your requests.</p>
+                                <a href="https://wa.me/+97312345678" target="_blank" class="btn btn-success w-100 rounded-pill py-2 shadow-sm">
+                                    <i class="fa fa-whatsapp me-2"/> Chat via WhatsApp
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+        <!-- VIP Breakfast Buffet -->
+        <record id="product_addon_breakfast" model="product.template">
+            <field name="name">VIP Breakfast Buffet</field>
+            <field name="is_hotel_service" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="type">service</field>
+            <field name="list_price">25.0</field>
+            <field name="description_sale">Start your day with our premium international buffet featuring live cooking stations and fresh juices.</field>
+        </record>
+
+        <!-- Airport Executive Transfer -->
+        <record id="product_addon_airport_transfer" model="product.template">
+            <field name="name">Airport Executive Transfer</field>
+            <field name="is_hotel_service" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="type">service</field>
+            <field name="list_price">50.0</field>
+            <field name="description_sale">Professional chauffeur service in a luxury sedan from the airport directly to our lobby.</field>
+        </record>
+
+        <!-- Late Check-out -->
+        <record id="product_addon_late_checkout" model="product.template">
+            <field name="name">Late Check-out (4 PM)</field>
+            <field name="is_hotel_service" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="type">service</field>
+            <field name="list_price">30.0</field>
+            <field name="description_sale">Extend your relaxation. Keep your room until 4:00 PM on your day of departure.</field>
+        </record>
+
+        <!-- Spa Access -->
+        <record id="product_addon_spa" model="product.template">
+            <field name="name">Spa &amp; Wellness Access</field>
+            <field name="is_hotel_service" eval="True"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="type">service</field>
+            <field name="list_price">40.0</field>
+            <field name="description_sale">Full access to our thermal suite, sauna, steam room, and infinity pool for the duration of your stay.</field>
+        </record>
+</odoo>

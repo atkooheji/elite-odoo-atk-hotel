@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 
+        Revised Menu Structure:
+        1. Dashboard (Sequence 1)
+        2. Front Desk (Sequence 10)
+        3. Rooms (Sequence 20)
+        4. Housekeeping (Sequence 30)
+        5. Reporting (Sequence 40)
+    -->
+
+    <!-- Top Level Sub-Menus -->
+    <menuitem id="menu_hotel_dashboard_root" name="Dashboard" parent="menu_hotel_root" sequence="1" />
+    <menuitem id="menu_hotel_front_desk_root" name="Front Desk" parent="menu_hotel_root" sequence="10" />
+    <menuitem id="menu_hotel_rooms_root" name="Rooms" parent="menu_hotel_root" sequence="20" />
+    <menuitem id="menu_hotel_housekeeping_root" name="Housekeeping" parent="menu_hotel_root" sequence="30" />
+    <!-- Reusing existing ID from mis_report_views.xml to capture existing reports -->
+    <menuitem id="menu_hotel_reports_root" name="Reporting" parent="menu_hotel_root" sequence="40" />
+    
+    <!-- Dashboard -->
+    <menuitem id="menu_hotel_dashboard" name="Executive Dashboard" parent="menu_hotel_dashboard_root" action="action_hotel_dashboard_owl" sequence="10"/>
+
+    <!-- Front Desk Actions -->
+    <menuitem id="menu_hotel_reservations" name="Reservations" parent="menu_hotel_front_desk_root" action="action_hotel_reservations" sequence="10" />
+    <menuitem id="menu_hotel_booking_wizard" name="Create Booking" parent="menu_hotel_front_desk_root" action="action_hotel_booking_wizard" sequence="20" />
+    <!-- Using generic partner action for Guests -->
+    <menuitem id="menu_hotel_customers" name="Guests" parent="menu_hotel_front_desk_root" action="base.action_partner_form" sequence="30" />
+
+    <!-- Rooms Actions -->
+    <menuitem id="menu_hotel_room" name="Rooms" parent="menu_hotel_rooms_root" action="action_hotel_room" sequence="10" />
+    <menuitem id="menu_hotel_room_type" name="Room Types" parent="menu_hotel_rooms_root" action="action_hotel_room_type" sequence="20" />
+    <menuitem id="menu_hotel_amenity" name="Amenities" parent="menu_hotel_rooms_root" action="action_hotel_amenity" sequence="30" />
+
+    <!-- Housekeeping Actions -->
+    <menuitem id="menu_hotel_cleaning" name="Cleaning Requests" parent="menu_hotel_housekeeping_root" action="cleaning_request_action" sequence="10"/>
+    <menuitem id="menu_hotel_inspection" name="Room Inspections" parent="menu_hotel_housekeeping_root" action="action_hotel_room_inspection" sequence="20"/>
+
+    <!-- Reports -->
+    <!-- Note: Intelligence Kit was previously defined in menu_views.xml. 
+         mis_report_views.xml defines other reports attached to menu_hotel_reports_root.
+         I'll add Intelligence Kit here explicitly. -->
+    <menuitem id="menu_hotel_intelligence_kit" name="Intelligence Kit" parent="menu_hotel_reports_root" action="action_hotel_report_kit_wizard" sequence="10"/>
+    
+    <!-- Configuration -->
+    <menuitem id="menu_hotel_config_settings" name="Settings" parent="menu_hotel_root" action="action_hotel_config_settings" sequence="100" groups="base.group_system"/>
+
+    <!-- Other reports from mis_report_views.xml (Snapshot, Booking Matrix, etc) will appear here automatically because they use parent="menu_hotel_reports_root" -->
+
+</odoo>

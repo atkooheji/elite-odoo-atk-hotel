@@ -1,0 +1,159 @@
+.hover-elevate {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-elevate:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+}
+
+.mt-n5 {
+    margin-top: -3rem !important;
+}
+
+.rounded-4 {
+    border-radius: 1.5rem !important;
+}
+
+.border-dashed {
+    border: 2px dashed #dee2e6;
+}
+
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+
+.text-primary {
+    color: #C7A447 !important; /* Al Faris Gold */
+}
+
+.btn-primary {
+    background-color: #C7A447 !important;
+    border-color: #C7A447 !important;
+}
+
+.btn-outline-primary {
+    color: #C7A447 !important;
+    border-color: #C7A447 !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: #C7A447 !important;
+    color: white !important;
+}
+
+.badge.bg-primary {
+    background-color: #C7A447 !important;
+}
+
+/* Booking Engine Snippet Styles */
+.s_booking_engine {
+    .booking-engine-wrapper {
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        &:hover {
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+    }
+    
+    .form-control, .form-select {
+        height: 50px;
+        padding-left: 1rem;
+        &:focus {
+            background-color: #fff !important;
+            box-shadow: none;
+            border: 1px solid #C7A447 !important;
+        }
+    }
+
+    .input-group-text {
+        font-size: 1.1rem;
+    }
+    
+    .btn-primary {
+        transition: all 0.3s ease;
+        &:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+        }
+    }
+}
+
+/* Room Card Enhancements */
+.card-img-top {
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.hover-elevate:hover .card-img-top {
+    transform: scale(1.1);
+}
+
+/* Premium Variables */
+:root {
+    --faris-gold: #C7A447;
+    --faris-gold-dark: #A6893A;
+    --faris-charcoal: #1A1A1A;
+    --faris-sand: #F4F1EA;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.3);
+}
+
+.bg-faris-charcoal { background-color: var(--faris-charcoal) !important; }
+.text-faris-gold { color: var(--faris-gold) !important; }
+.btn-faris-gold {
+    background-color: var(--faris-gold) !important;
+    border-color: var(--faris-gold) !important;
+    color: white !important;
+    transition: all 0.3s ease;
+    &:hover {
+        background-color: var(--faris-gold-dark) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(199, 164, 71, 0.3);
+    }
+}
+
+/* Glassmorphism */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+.glass-dark {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+.section-padding {
+    padding: 100px 0;
+}
+
+.tracking-widest { letter-spacing: 0.2em; }
+
+.shadow-2xl {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Form Styling */
+.form-control-lg {
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+}
+
+.hover-shadow-sm:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}

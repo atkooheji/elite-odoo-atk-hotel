@@ -1,0 +1,416 @@
+.o_hotel_dashboard {
+    // Brand Colors
+    $gold: #C7A447;
+    $charcoal: #2E2E2E;
+    $ivory: #F7F7F5;
+    $beige: #D8C7A1;
+    $success: #22c55e;
+    $danger: #ef4444;
+    $warning: #f59e0b;
+
+    background-color: $ivory;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-family: 'Outfit', 'Inter', sans-serif;
+    color: $charcoal;
+    padding-bottom: 50px; // Add bottom padding for better scrolling experience
+
+    .luxury-text {
+        color: $charcoal;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        position: relative;
+
+        &::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: $gold;
+            margin-top: 5px;
+        }
+    }
+
+    // Alert Bar
+    .operational-alerts {
+        .alert {
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+
+            i {
+                font-size: 1.2rem;
+                margin-right: 1rem;
+            }
+
+            &.alert-danger {
+                background: #fee2e2;
+                color: #991b1b;
+                border-left: 5px solid $danger;
+            }
+
+            &.alert-warning {
+                background: #ffedd5;
+                color: #9a3412;
+                border-left: 5px solid $warning;
+            }
+        }
+    }
+
+    .luxury-period-selector {
+        .btn {
+            border-radius: 4px;
+            padding: 0.6rem 1.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-color: $beige;
+            color: $charcoal;
+            background: white;
+
+            &.active {
+                background: $charcoal;
+                border-color: $charcoal;
+                color: $gold;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+
+            &:hover:not(.active) {
+                background: $ivory;
+                border-color: $gold;
+            }
+        }
+    }
+
+    .luxury-tabs {
+        border-bottom: 1px solid $beige;
+        margin-bottom: 2.5rem;
+
+        .nav-link {
+            border: none;
+            color: #6d6d6d;
+            font-weight: 600;
+            padding: 1.2rem 2rem;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+
+            &.active {
+                color: $gold;
+                background: transparent;
+                position: relative;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 20%;
+                    right: 20%;
+                    height: 3px;
+                    background: $gold;
+                }
+            }
+
+            &:hover:not(.active) {
+                color: $charcoal;
+            }
+        }
+    }
+
+    .luxury-card {
+        border: 1px solid rgba($beige, 0.3);
+        border-radius: 4px;
+        background: white;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        overflow: hidden;
+
+        &:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+            border-color: $gold;
+        }
+
+        .card-header {
+            background: transparent;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba($beige, 0.2);
+
+            h5 {
+                font-weight: 700;
+                color: $charcoal;
+                text-transform: uppercase;
+                font-size: 0.9rem;
+                letter-spacing: 0.05em;
+            }
+        }
+
+        &.gold-gradient {
+            background: linear-gradient(135deg, $charcoal 0%, #1a1a1a 100%);
+            color: $ivory;
+            border: none;
+
+            .text-muted {
+                color: rgba($ivory, 0.6) !important;
+            }
+
+            h2,
+            h1 {
+                color: $gold;
+            }
+        }
+
+        .display-4 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: $charcoal;
+        }
+    }
+
+    // Revenue KPI Cards
+    .kpi-card {
+        .kpi-label {
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: $gold;
+        }
+
+        .kpi-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+    }
+
+    // Forecast List
+    .forecast-item {
+        padding: 1rem;
+        border-bottom: 1px solid rgba($beige, 0.2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        .date-box {
+            font-weight: 700;
+            color: $charcoal;
+        }
+
+        .occ-badge {
+            background: $ivory;
+            color: $gold;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+    }
+
+    .progress-gold {
+        height: 6px;
+        background: #eee;
+        border-radius: 0;
+
+        .progress-bar {
+            background: $gold;
+        }
+    }
+
+    .table {
+        thead th {
+            border: none;
+            background: $charcoal;
+            color: $gold;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            padding: 1.2rem;
+        }
+
+        tbody td {
+            padding: 1.2rem;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba($beige, 0.2);
+        }
+
+        tbody tr:hover {
+            background-color: rgba($ivory, 0.5);
+        }
+    }
+
+    .clickable-card,
+    .clickable-stat,
+    .clickable-cell,
+    .clickable-row {
+        cursor: pointer;
+
+        &:hover {
+            opacity: 0.85;
+        }
+    }
+
+    .btn-gold {
+        background-color: $gold;
+        border-color: $gold;
+        color: white;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+
+        &:hover {
+            background-color: darken($gold, 10%);
+            border-color: darken($gold, 10%);
+            color: white;
+        }
+    }
+
+    // --- New Styles for Dashboard 2.0 ---
+
+    .extra-small {
+        font-size: 0.65rem;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+    }
+
+    .heatmap-cell {
+        transition: transform 0.2s;
+        cursor: default;
+
+        &:hover {
+            transform: scale(1.1);
+            z-index: 2;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        &.bg-danger {
+            background-color: #ef4444 !important;
+        }
+
+        &.bg-warning {
+            background-color: #f59e0b !important;
+        }
+
+        &.bg-light {
+            background-color: #f8f9fa !important;
+        }
+    }
+
+    .bg-gradient-gold {
+        background: linear-gradient(135deg, #d4af37 0%, #f4e4a6 100%);
+        color: $charcoal !important;
+        border: none;
+
+        .card-header {
+            border-bottom: 1px solid rgba($charcoal, 0.1);
+        }
+    }
+
+    .text-gold {
+        color: $gold !important;
+    }
+
+    // --- Clickable Element Styles ---
+    .clickable-card,
+    .clickable-stat,
+    .clickable-cell,
+    .clickable-row {
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background-color: rgba($gold, 0.05);
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+    }
+
+    .clickable-row:hover {
+        background-color: rgba($gold, 0.08) !important;
+    }
+
+    .clickable-row:hover {
+        background-color: rgba($gold, 0.08) !important;
+    }
+
+    .clickable-stat:hover {
+        background-color: rgba($gold, 0.1);
+        border-radius: 4px;
+    }
+
+    // --- Chat Widget ---
+    .fixed-bottom-right {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 1000;
+    }
+
+    .chat-widget {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+
+        .chat-toggle-btn {
+            border: 2px solid $gold;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+
+        .chat-window {
+            width: 350px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            animation: slideInUp 0.3s ease-out;
+
+            .card-header {
+                font-size: 0.95rem;
+                letter-spacing: 0.05em;
+            }
+
+            .badge-dark {
+                background-color: $charcoal;
+                color: $ivory;
+            }
+
+            .badge-light {
+                background-color: white;
+                color: $charcoal;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            }
+        }
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}

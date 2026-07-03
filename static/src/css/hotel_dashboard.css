@@ -1,0 +1,204 @@
+.o_hotel_dashboard .o_dashboard_header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.o_hotel_dashboard .o_dashboard_header .o_dashboard_title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.o_hotel_dashboard .o_dashboard_section {
+    margin-top: 2rem;
+}
+
+.o_hotel_dashboard .o_dashboard_section:first-of-type {
+    margin-top: 0;
+}
+
+.o_hotel_dashboard .o_dashboard_section .o_dashboard_section_title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.o_hotel_dashboard .o_dashboard_cards .o_dashboard_card_button {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    text-align: left;
+}
+
+.o_hotel_dashboard .o_dashboard_cards .o_dashboard_card_button:focus-visible {
+    outline: 3px solid rgba(81, 69, 205, 0.35);
+    outline-offset: 2px;
+}
+
+.o_hotel_dashboard .o_dashboard_cards .o_stat_box {
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 10px 30px rgba(58, 34, 126, 0.08);
+    background-color: #ffffff;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.o_hotel_dashboard .o_dashboard_cards .o_dashboard_card_button:hover .o_stat_box,
+.o_hotel_dashboard .o_dashboard_cards .o_dashboard_card_button:focus-visible .o_stat_box {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 35px rgba(58, 34, 126, 0.15);
+}
+
+.o_hotel_dashboard .o_dashboard_cards .o_stat_box .o_stat_box_content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.o_hotel_dashboard .o_dashboard_cards .o_stat_box .o_stat_title {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6c6f85;
+}
+
+.o_hotel_dashboard .o_dashboard_cards .o_stat_box .o_stat_value {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.o_hotel_dashboard .o_dashboard_cards .o_stat_box .o_stat_value .oe_inline {
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.o_hotel_dashboard .o_dashboard_cards .o_stat_box .o_stat_help {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.o_hotel_dashboard .o_dashboard_cards .o_stat_box footer {
+    margin-top: 0.75rem;
+}
+
+.o_hotel_dashboard .o_dashboard_cards .o_stat_box footer .o_stat_box_link {
+    font-weight: 600;
+    color: #5145cd;
+    text-decoration: none;
+}
+
+.o_hotel_dashboard .o_dashboard_cards .o_dashboard_today .o_stat_box {
+    background: linear-gradient(135deg, #5145cd, #7c3aed);
+    color: #ffffff;
+}
+
+.o_hotel_dashboard .o_dashboard_cards .o_dashboard_today .o_stat_box .o_stat_title,
+.o_hotel_dashboard .o_dashboard_cards .o_dashboard_today .o_stat_box .o_stat_value {
+    color: #ffffff;
+}
+
+.o_hotel_dashboard .o_dashboard_cards .o_dashboard_today .o_stat_box .o_stat_help,
+.o_hotel_dashboard .o_dashboard_cards .o_dashboard_today .o_stat_box .text-white-50 {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.o_hotel_dashboard .o_dashboard_cards .o_dashboard_today .o_stat_box footer .o_stat_box_link {
+    color: #ffffff;
+}
+
+/* Enhanced Clickable & Luxury Styles */
+.luxury-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: #fff;
+    overflow: hidden;
+}
+
+.clickable-card:hover,
+.clickable-stat:hover {
+    cursor: pointer;
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(184, 134, 11, 0.15);
+    background: linear-gradient(to bottom right, #ffffff, #fffdf0);
+}
+
+.clickable-row {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.clickable-row:hover {
+    background-color: rgba(184, 134, 11, 0.05) !important;
+}
+
+.clickable-cell {
+    cursor: pointer;
+    text-decoration: underline dotted transparent;
+    transition: all 0.2s;
+}
+
+.clickable-cell:hover {
+    color: #b8860b !important;
+    text-decoration-color: #b8860b;
+}
+
+.gold-gradient {
+    background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+    color: #d4af37;
+}
+
+.gold-gradient .text-muted {
+    color: rgba(212, 175, 55, 0.6) !important;
+}
+
+.progress-gold .progress-bar {
+    background-color: #d4af37;
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+    background-size: 1rem 1rem;
+}
+
+.luxury-text {
+    font-family: 'Playfair Display', serif;
+    background: linear-gradient(to right, #b8860b, #e5c100);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
+}
+
+.uppercase-tracking {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Glassmorphism for KPI cards */
+.kpi-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(184, 134, 11, 0.1);
+}
+
+.kpi-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 0.5rem;
+}
+
+.kpi-value {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #111;
+}

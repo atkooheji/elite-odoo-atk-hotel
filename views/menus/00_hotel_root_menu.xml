@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 
+        ROOT MENU: Defined purely to be loaded FIRST.
+        We removed the action here to prevent circular dependency errors.
+    -->
+    <menuitem id="menu_hotel_root" 
+              name="Hotel Management" 
+              web_icon="atk_hotel,static/description/icon.svg"
+              sequence="10" 
+              groups="atk_telegram_bot_tracker.group_appearance_hotel" />
+</odoo>

@@ -1,0 +1,36 @@
+<odoo>
+    <!-- Inherit Loyalty Card form -->
+    <record id="view_loyalty_card_form_inherit_ism" model="ir.ui.view">
+        <field name="name">loyalty.card.form.inherit.ism</field>
+        <field name="model">loyalty.card</field>
+        <field name="inherit_id" ref="loyalty.loyalty_card_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Add elements after partner_id - very stable field -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="hotel_total_points" readonly="1" force_save="1"/>
+                <button name="atk_hotel.action_loyalty_points_update_wizard"
+                    string="Adjust Points"
+                    type="action"
+                    class="oe_link"
+                    context="{'default_card_id': id}"/>
+            </xpath>
+
+            <!-- Add history tab -->
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Hotel Points History" name="hotel_points_history">
+                        <field name="hotel_history_ids" readonly="1">
+                            <list>
+                                <field name="date"/>
+                                <field name="description"/>
+                                <field name="points"/>
+                                <field name="balance"/>
+                                <field name="new_balance"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+</odoo>

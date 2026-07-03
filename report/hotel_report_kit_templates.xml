@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_daily_operations_document">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+            <main>
+            <div class="page" style="font-family: 'Helvetica', sans-serif; color: #2E2E2E;">
+                <!-- Header -->
+                <div class="text-center mb-4">
+                    <h2 style="color: #C7A447; letter-spacing: 2px;">DAILY OPERATIONS REPORT</h2>
+                    <h5 class="text-muted"><span t-esc="doc.date_from"/></h5>
+                </div>
+
+                <!-- SECTION A: DAILY SNAPSHOT -->
+                <h3 style="background-color: #2E2E2E; color: #F7F7F5; padding: 5px 10px; margin-top: 20px;">1. DAILY SNAPSHOT</h3>
+                <t t-set="kpi" t-value="doc._get_day_kpi_data()"/>
+                <div class="row mt-3">
+                    <div class="col-3 text-center">
+                        <div style="font-size: 24px; font-weight: bold; color: #C7A447;" t-esc="kpi['occupancy_pct']" t-options='{"widget": "float", "precision": 1}'/>%
+                        <div class="text-muted text-uppercase small">Occupancy</div>
+                    </div>
+                     <div class="col-3 text-center">
+                        <div style="font-size: 24px; font-weight: bold;" t-esc="kpi['adr']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/>
+                        <div class="text-muted text-uppercase small">ADR</div>
+                    </div>
+                     <div class="col-3 text-center">
+                        <div style="font-size: 24px; font-weight: bold;" t-esc="kpi['revpar']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/>
+                        <div class="text-muted text-uppercase small">RevPAR</div>
+                    </div>
+                     <div class="col-3 text-center">
+                        <div style="font-size: 24px; font-weight: bold;" t-esc="kpi['revenue']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/>
+                        <div class="text-muted text-uppercase small">Revenue</div>
+                    </div>
+                </div>
+
+                <table class="table table-sm table-bordered mt-3">
+                    <thead style="background-color: #D8C7A1;">
+                        <tr>
+                            <th>Rooms Available</th>
+                            <th>Rooms Sold</th>
+                            <th>Arrivals</th>
+                            <th>Departures</th>
+                            <th>In-House</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span t-esc="kpi['available_rooms']"/></td>
+                            <td><span t-esc="kpi['occupied_rooms']"/></td>
+                            <td><span t-esc="kpi['arrivals']"/></td>
+                            <td><span t-esc="kpi['departures']"/></td>
+                            <td><span t-esc="kpi['occupied_rooms']"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- SECTION B: OPERATIONAL ALERTS -->
+                <h3 style="background-color: #2E2E2E; color: #F7F7F5; padding: 5px 10px; margin-top: 30px;">2. OPERATIONAL ALERTS</h3>
+                <t t-set="alerts" t-value="doc._get_operational_alerts()"/>
+                <div class="row text-center mt-3">
+                    <div class="col-3">
+                        <div class="alert alert-danger p-2" t-if="alerts['dirty_arrivals'] > 0" role="alert">
+                            <strong><span t-esc="alerts['dirty_arrivals']"/></strong> Dirty Arrivals
+                        </div>
+                        <div class="p-2 text-muted bg-light" t-else="">
+                            <i class="fa fa-check text-success"/> No Dirty Arrivals
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="alert alert-warning p-2" t-if="alerts['pending_deposits'] > 0" role="status">
+                            <strong><span t-esc="alerts['pending_deposits']"/></strong> Deposits Due
+                        </div>
+                         <div class="p-2 text-muted bg-light" t-else="">
+                            <i class="fa fa-check text-success"/> Payments OK
+                        </div>
+                    </div>
+                     <div class="col-3">
+                        <div class="alert alert-warning p-2" t-if="alerts['missing_ids'] > 0" role="alert">
+                            <strong><span t-esc="alerts['missing_ids']"/></strong> Missing IDs
+                        </div>
+                         <div class="p-2 text-muted bg-light" t-else="">
+                            <i class="fa fa-check text-success"/> IDs OK
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="bg-light p-2 border">
+                            <strong><span t-esc="alerts['ooo_rooms']"/></strong> Rooms OOO
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- SECTION C: REVENUE OPPORTUNITIES -->
+                <h3 style="background-color: #2E2E2E; color: #F7F7F5; padding: 5px 10px; margin-top: 30px;">3. REVENUE OPPORTUNITIES</h3>
+                <div class="alert alert-info" role="status">
+                    <strong>Upsell Opportunity:</strong> You have <span t-esc="kpi['available_rooms']"/> unsold rooms for tonight. Consider last-minute upgrades for standard bookings.
+                </div>
+            </div>
+            </main>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_weekly_performance_document">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+            <main>
+            <div class="page" style="font-family: 'Helvetica', sans-serif; color: #2E2E2E;">
+                <div class="text-center mb-4">
+                    <h2 style="color: #C7A447; letter-spacing: 2px;">WEEKLY PERFORMANCE REPORT</h2>
+                    <h5 class="text-muted"><span t-esc="doc.date_from"/> to <span t-esc="doc.date_to"/></h5>
+                </div>
+
+                <!-- SECTION A: REVENUE SUMMARY -->
+                <t t-set="data" t-value="doc._get_period_data()"/>
+                <t t-set="summary" t-value="data['summary']"/>
+                
+                <h3 style="border-bottom: 2px solid #C7A447; padding-bottom: 5px;">A. KEY METRICS</h3>
+                <table class="table table-bordered">
+                     <thead style="background-color: #F7F7F5;">
+                        <tr>
+                            <th>Metric</th>
+                            <th>Total / Avg</th>
+                            <th>Target</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                             <td>Total Revenue</td>
+                             <td><span t-esc="summary['total_revenue']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
+                             <td class="text-muted">-</td>
+                             <td>-</td>
+                        </tr>
+                        <tr>
+                             <td>Occupancy %</td>
+                             <td><span t-esc="summary['occupancy_pct']"/>%</td>
+                             <td>85%</td>
+                             <td>
+                                <span t-if="summary['occupancy_pct'] >= 85" class="text-success">● On Track</span>
+                                <span t-elif="summary['occupancy_pct'] >= 75" class="text-warning">● Risk</span>
+                                <span t-else="" class="text-danger">● Behind</span>
+                             </td>
+                        </tr>
+                         <tr>
+                             <td>ADR</td>
+                             <td><span t-esc="summary['adr']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
+                             <td>48.00</td>
+                             <td>-</td>
+                        </tr>
+                        <tr>
+                             <td>RevPAR</td>
+                             <td><span t-esc="summary['revpar']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
+                             <td>40.00</td>
+                             <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- SECTION B: CHANNEL PERFORMANCE -->
+                <h3 style="border-bottom: 2px solid #C7A447; padding-bottom: 5px; margin-top: 30px;">B. CHANNEL PERFORMANCE</h3>
+                 <t t-set="channels" t-value="doc._get_channel_performance()"/>
+                 <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Channel</th>
+                            <th class="text-right">Nights</th>
+                            <th class="text-right">Revenue</th>
+                            <th class="text-right">ADR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="channels" t-as="ch">
+                            <td><span t-esc="ch['channel']"/></td>
+                            <td class="text-right"><span t-esc="ch['nights']"/></td>
+                            <td class="text-right"><span t-esc="ch['revenue']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
+                            <td class="text-right"><span t-esc="ch['revenue'] / ch['nights'] if ch['nights'] else 0" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
+                        </tr>
+                    </tbody>
+                 </table>
+                 
+                 <!-- SECTION C: ROOM TYPE PERFORMANCE -->
+                 <h3 style="border-bottom: 2px solid #C7A447; padding-bottom: 5px; margin-top: 30px;">C. ROOM TYPE PERFORMANCE</h3>
+                  <t t-set="rooms" t-value="doc._get_room_type_performance()"/>
+                  <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Room Type</th>
+                            <th class="text-right">Occ %</th>
+                            <th class="text-right">ADR</th>
+                            <th class="text-right">RevPAR</th>
+                            <th class="text-right">Share %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="rooms" t-as="r">
+                            <td><span t-esc="r['room_type']"/></td>
+                            <td class="text-right"><span t-esc="round(r['occ_pct'], 1)"/>%</td>
+                            <td class="text-right"><span t-esc="r['adr']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
+                            <td class="text-right"><span t-esc="r['revpar']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
+                            <td class="text-right"><span t-esc="round(r['revenue_share'], 1)"/>%</td>
+                        </tr>
+                    </tbody>
+                 </table>
+             </div>
+             </main>
+             </t>
+         </t>
+     </template>
+
+    <template id="report_monthly_owner_document">
+         <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+            <main>
+            <div class="page" style="font-family: 'Helvetica', sans-serif; color: #333;">
+                <div class="text-center mb-5">
+                    <h1 style="color: #C7A447;">MONTHLY OWNER REPORT</h1>
+                    <h4 class="text-muted"><span t-esc="doc.date_from"/> to <span t-esc="doc.date_to"/></h4>
+                </div>
+
+                <!-- SECTION 1: EXECUTIVE SUMMARY -->
+                <t t-set="data" t-value="doc._get_period_data()"/>
+                <t t-set="summary" t-value="data['summary']"/>
+                
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <div class="card" style="border: 2px solid #C7A447;">
+                            <div class="card-header bg-white text-center">
+                                <h3 class="m-0">Executive Financial Snapshot</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-4 border-right">
+                                        <h5>Total Revenue</h5>
+                                        <h2 style="color: #2E2E2E;"><span t-esc="summary['total_revenue']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></h2>
+                                    </div>
+                                    <div class="col-4 border-right">
+                                        <h5>GOP</h5>
+                                        <h2 class="text-success"><span t-esc="summary['gop']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></h2>
+                                    </div>
+                                    <div class="col-4">
+                                        <h5>Occupancy</h5>
+                                        <h2><span t-esc="summary['occupancy_pct']"/>%</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: EXPENSE BREAKDOWN -->
+                 <h3 style="border-bottom: 2px solid #C7A447; margin-top: 30px;">EXPENSE BREAKDOWN</h3>
+                 <t t-set="expenses" t-value="doc._get_expense_breakdown()"/>
+                 <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th class="text-right">Amount</th>
+                            <th class="text-right">% of Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                         <t t-foreach="expenses['breakdown']" t-as="cat">
+                            <tr>
+                                <td class="text-capitalize"><span t-esc="cat"/></td>
+                                <td class="text-right"><span t-esc="expenses['breakdown'][cat]" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
+                                <td class="text-right">
+                                    <span t-esc="round((expenses['breakdown'][cat] / summary['total_revenue'] * 100), 1) if summary['total_revenue'] else 0"/>%
+                                </td>
+                            </tr>
+                         </t>
+                         <tr class="font-weight-bold" style="background-color: #D8C7A1;">
+                            <td>TOTAL OPERATING EXPENSES</td>
+                            <td class="text-right"><span t-esc="expenses['total']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
+                            <td class="text-right"><span t-esc="round((expenses['total'] / summary['total_revenue'] * 100), 1) if summary['total_revenue'] else 0"/>%</td>
+                         </tr>
+                    </tbody>
+                 </table>
+                 
+                 <!-- SECTION 4: PROFITABILITY -->
+                 <div class="row mt-4">
+                    <div class="col-6">
+                        <div class="alert alert-secondary text-center" role="status">
+                            <h5>GOP PAR</h5>
+                            <h3><span t-esc="summary['goppar']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></h3>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="alert alert-secondary text-center" role="status">
+                            <h5>GOP Margin</h5>
+                            <h3><span t-esc="round((summary['gop'] / summary['total_revenue'] * 100), 1) if summary['total_revenue'] else 0"/>%</h3>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+            </main>
+            </t>
+        </t>
+    </template>
+    
+    <template id="report_quarterly_strategic_document">
+         <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+            <main>
+            <div class="page" style="font-family: 'Helvetica', sans-serif;">
+                <div class="text-center mb-5">
+                    <h1 style="color: #2E2E2E;">QUARTERLY STRATEGIC REPORT</h1>
+                    <h4 class="text-muted"><span t-esc="doc.date_from"/> to <span t-esc="doc.date_to"/></h4>
+                </div>
+                
+                 <!-- SECTION 1: OVERVIEW -->
+                 <t t-set="data" t-value="doc._get_period_data()"/>
+                 <t t-set="summary" t-value="data['summary']"/>
+                 
+                 <div class="row">
+                    <div class="col-12">
+                        <h3>Performance Overview</h3>
+                        <p>Total Revenue for the quarter closed at <strong t-esc="summary['total_revenue']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/> with an average occupancy of <strong t-esc="summary['occupancy_pct']"/>%.</p>
+                    </div>
+                 </div>
+
+                 <!-- SECTION 5: RISK ASSESSMENT -->
+                 <h3 style="background-color: #2E2E2E; color: #FFF; padding: 10px; margin-top: 30px;">RISK ASSESSMENT</h3>
+                 <table class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th>Risk Category</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Revenue Risk</td>
+                            <td><span class="badge badge-success p-2">LOW</span></td>
+                            <td>Revenue is tracking above base targets.</td>
+                        </tr>
+                        <tr>
+                            <td>Operational Risk</td>
+                             <td>
+                                <span t-if="summary['occupancy_pct'] > 90" class="badge badge-warning p-2">MEDIUM</span>
+                                <span t-else="" class="badge badge-success p-2">LOW</span>
+                             </td>
+                            <td><span t-if="summary['occupancy_pct'] > 90">High occupancy straining housekeeping resources.</span><span t-else="">Operations stable.</span></td>
+                        </tr>
+                        <tr>
+                            <td>Cash Flow Risk</td>
+                             <td><span class="badge badge-success p-2">LOW</span></td>
+                            <td>Collection rates are healthy.</td>
+                        </tr>
+                    </tbody>
+                 </table>
+             </div>
+             </main>
+             </t>
+         </t>
+     </template>
+    </odoo>
+

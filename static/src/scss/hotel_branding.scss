@@ -1,0 +1,61 @@
+/* Al Faris Suite 2 - Elite Design Tokens */
+:root {
+    --faris-gold: #C7A447;
+    --faris-gold-light: #E5C767;
+    --faris-gold-dark: #A68736;
+    --faris-charcoal: #2E2E2E;
+    --faris-charcoal-light: #404040;
+    --faris-ivory: #F7F7F5;
+    --faris-beige: #D8C7A1;
+    --faris-glass: rgba(255, 255, 255, 0.05);
+    --faris-glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Typography Enhancements */
+h1, h2, h3, .luxury-font {
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.02em;
+}
+
+/* Utility Classes */
+.bg-faris-charcoal { background-color: var(--faris-charcoal) !important; }
+.bg-faris-ivory { background-color: var(--faris-ivory) !important; }
+.text-faris-gold { color: var(--faris-gold) !important; }
+.btn-faris-gold {
+    background: linear-gradient(45deg, var(--faris-gold), var(--faris-gold-light));
+    color: #fff;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(199, 164, 71, 0.2);
+}
+.btn-faris-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(199, 164, 71, 0.4);
+    color: #fff;
+}
+
+/* Glassmorphism Components */
+.glass-card {
+    background: var(--faris-glass);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--faris-glass-border);
+    border-radius: 20px;
+}
+
+/* Section Spacing */
+.section-padding { padding: 100px 0; }
+@media (max-width: 768px) {
+    .section-padding { padding: 60px 0; }
+}
+
+/* Animations */
+.reveal-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+}
+.reveal-up.active {
+    opacity: 1;
+    transform: translateY(0);
+}

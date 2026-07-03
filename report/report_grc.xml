@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_grc_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-size:14px;">
+                        <!-- Force Update Comment -->
+                        <h2 style="text-align:center; margin-bottom:0;">Al Faris Suite 2; Bahrain</h2>
+                        <h3 style="text-align:center; margin-top:0;">Registration Card</h3>
+                        <br />
+                        <!-- MAIN TABLE -->
+                        <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
+                            <!-- GUEST DETAILS -->
+                            <tr>
+                                <td style="width:50%; vertical-align:top; border-right:1px solid #000; padding:8px;">
+                                    <strong>GUEST DETAILS</strong>
+                                    <br />
+                                    <br />
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <td>Registration No.</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.name" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Name</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.partner_id.name" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Designation</td>
+                                            <td>:</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Address</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.partner_id.street" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>City and State</td>
+                                            <td>:</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Country</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.partner_id.country_id.name" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Birth Date</td>
+                                            <td>:</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Contact</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.partner_id.phone or doc.partner_id.mobile" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Corporate</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.corporate" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Arrived From</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.arrived_from" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Proceed To</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.proceed_to" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Arrival Date and Time</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.check_in" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Departure Date and Time</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.check_out" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <!-- ROOM DETAILS -->
+                                <td style="width:50%; vertical-align:top; padding:8px;">
+                                    <strong>ROOM DETAILS</strong>
+                                    <br />
+                                    <br />
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <td>Room No.</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.room_id.name" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Room Type</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.room_id.room_type.name" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total No. of Adults</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.total_adults" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total No. of Children</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.total_children" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total No. of Infants</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.total_infants" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Days Stay</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.duration" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <!-- PASSPORT + VISA -->
+                            <tr>
+                                <td style="width:50%; vertical-align:top; border-right:1px solid #000; padding:8px;">
+                                    <strong>PASSPORT DETAILS</strong>
+                                    <br />
+                                    <br />
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <td>Passport No.</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.passport_no" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Place of Issue</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.passport_place" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Expiry Date</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.passport_expiry" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td style="width:50%; vertical-align:top; padding:8px;">
+                                    <strong>VISA DETAILS</strong>
+                                    <br />
+                                    <br />
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <td>Visa No.</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.visa_no" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Place of Issue</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.visa_place" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Expiry Date</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.visa_expiry" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Visa Entry Type</td>
+                                            <td>
+                                                :
+                                                <t t-esc="doc.visa_type" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <br />
+                        <br />
+                        <!-- SIGNATURE SECTION -->
+                        <table style="width:100%; margin-top:40px;">
+                            <tr>
+                                <td style="width:33%; text-align:center;">
+                                    ___________________________
+                                    <br />
+                                    Reception
+                                </td>
+                                <td style="width:33%; text-align:center;">
+                                    ___________________________
+                                    <br />
+                                    F.O.M
+                                </td>
+                                <td style="width:33%; text-align:center;">
+                                    ___________________________
+                                    <br />
+                                    Guest Signature
+                                </td>
+                            </tr>
+                        </table>
+                        <br />
+                        <!-- CREATED BY -->
+                        <div style="text-align:right; margin-top:20px;">
+                            <strong>Created By:</strong>
+                            <!-- <t t-esc="doc.x_studio_employee.name"/> -->
+                            <t t-esc="doc.create_uid.name" />
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    <record id="action_report_grc" model="ir.actions.report">
+        <field name="name">Guest Registration Card</field>
+        <field name="model">hotel.book.history</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">atk_hotel.report_grc_template</field>
+        <field name="report_file">atk_hotel.report_grc_template</field>
+        <field name="print_report_name">'GRC - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_hotel_book_history"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

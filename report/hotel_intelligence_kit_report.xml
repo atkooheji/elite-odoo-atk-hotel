@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_hotel_intelligence_kit" model="ir.actions.report">
+        <field name="name">Al Faris Intelligence Kit</field>
+        <field name="model">hotel.report.kit.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">atk_hotel.report_intelligence_kit_template</field>
+        <field name="report_file">atk_hotel.report_intelligence_kit_template</field>
+        <field name="print_report_name">'Intelligence Kit - %s' % (object.report_type)</field>
+        <field name="binding_model_id" ref="atk_hotel.model_hotel_report_kit_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_hotel_daily" model="ir.actions.report">
+        <field name="name">Daily Operations Report</field>
+        <field name="model">hotel.report.kit.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">atk_hotel.report_daily_operations_document</field>
+        <field name="report_file">atk_hotel.report_daily_operations_document</field>
+        <field name="print_report_name">'Daily Operations - ' + object.date_from.strftime('%Y-%m-%d')</field>
+        <field name="binding_model_id" ref="atk_hotel.model_hotel_report_kit_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_hotel_weekly" model="ir.actions.report">
+        <field name="name">Weekly Performance Report</field>
+        <field name="model">hotel.report.kit.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">atk_hotel.report_weekly_performance_document</field>
+        <field name="report_file">atk_hotel.report_weekly_performance_document</field>
+        <field name="print_report_name">'Weekly Performance - ' + object.date_from.strftime('%Y-%m-%d')</field>
+        <field name="binding_model_id" ref="atk_hotel.model_hotel_report_kit_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_hotel_monthly" model="ir.actions.report">
+        <field name="name">Monthly Owner Report</field>
+        <field name="model">hotel.report.kit.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">atk_hotel.report_monthly_owner_document</field>
+        <field name="report_file">atk_hotel.report_monthly_owner_document</field>
+        <field name="print_report_name">'Monthly Owner Report - ' + object.date_from.strftime('%Y-%m')</field>
+        <field name="binding_model_id" ref="atk_hotel.model_hotel_report_kit_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_hotel_quarterly" model="ir.actions.report">
+        <field name="name">Quarterly Strategic Report</field>
+        <field name="model">hotel.report.kit.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">atk_hotel.report_quarterly_strategic_document</field>
+        <field name="report_file">atk_hotel.report_quarterly_strategic_document</field>
+        <field name="print_report_name">'Quarterly Strategic - ' + object.date_from.strftime('%Y-%m')</field>
+        <field name="binding_model_id" ref="atk_hotel.model_hotel_report_kit_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

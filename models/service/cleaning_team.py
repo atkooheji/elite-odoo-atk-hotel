@@ -1,0 +1,41 @@
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+#    Cybrosys Technologies Pvt. Ltd.
+#
+#    Copyright (C) 2024-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
+#    Author: Vishnu K P (odoo@cybrosys.com)
+#
+#    You can modify it under the terms of the GNU LESSER
+#    GENERAL PUBLIC LICENSE (LGPL v3), Version 3.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU LESSER GENERAL PUBLIC LICENSE (LGPL v3) for more details.
+#
+#    You should have received a copy of the GNU LESSER GENERAL PUBLIC LICENSE
+#    (LGPL v3) along with this program.
+#    If not, see <http://www.gnu.org/licenses/>.
+#
+###############################################################################
+from odoo import fields, models
+
+
+class CleaningTeam(models.Model):
+    """ Model for creating Cleaning team and assigns Cleaning requests to
+    each team"""
+    _name = "cleaning.team"
+    _description = "Cleaning Team"
+
+    name = fields.Char(string="Team Name", help="Name of the Team")
+    team_head_id = fields.Many2one(
+        'hr.employee',
+        string="Team Head",
+        help="Choose the Team Head",
+    )
+    member_ids = fields.Many2many(
+        'hr.employee',
+        string="Member",
+        help="Team Members",
+    )

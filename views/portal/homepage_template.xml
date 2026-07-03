@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Al Faris Home Page Template -->
+    <template id="alfaris_homepage" name="Al Faris Home" active="False">
+        <t t-call="website.layout">
+            
+            <!-- Self-sufficiency for Editor/Direct Access -->
+            <t t-set="homepage_rooms" t-value="request.env['hotel.room.type'].sudo().search([('is_published', '=', True)], limit=3) or request.env['hotel.room.type'].sudo().search([], limit=3)"/>
+
+            <div id="wrap">
+                <div class="oe_structure oe_empty"/>
+                <!-- HERO SECTION -->
+                <section class="s_hero_section d-flex align-items-center position-relative overflow-hidden" style="min-height: 90vh; background: url('/atk_hotel/static/src/img/hotel_hero.jpg') no-repeat center center; background-size: cover;">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-black opacity-50"></div>
+                    <div class="container position-relative z-index-1 text-center text-white">
+                        <div class="reveal-up active">
+                            <h4 class="text-faris-gold text-uppercase tracking-widest mb-3">Welcome to</h4>
+                            <h1 class="display-2 fw-bold mb-4">Al Faris Suite 2</h1>
+                            <p class="lead mb-5 px-md-5 mx-md-5">Experience the pinnacle of hospitality in Juffair, where Arabian heritage meets modern luxury.</p>
+                        </div>
+                        
+                        <!-- Inline Booking Snippet -->
+                        <div class="mt-5 glass-card p-2 p-md-0 shadow-2xl">
+                             <t t-call="atk_hotel.s_booking_engine"/>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="oe_structure"/>
+
+                <!-- BRAND STORY -->
+                <section class="section-padding bg-faris-ivory">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 mb-4 mb-lg-0">
+                                <h2 class="display-5 mb-4">A Legacy of <span class="text-faris-gold">Excellence</span></h2>
+                                <p class="text-muted fs-5">Located in the heart of Juffair, Al Faris Suite 2 offers a sanctuary for the discerning traveler. Our suites are designed with a focus on space, elegance, and comfort, ensuring every guest feels at home while enjoying world-class services.</p>
+                                <div class="mt-4 d-flex gap-4">
+                                    <div class="text-center">
+                                        <h3 class="text-faris-gold mb-0">100+</h3>
+                                        <small class="text-uppercase tracking-wider">Luxury Suites</small>
+                                    </div>
+                                    <div class="divider-vertical"></div>
+                                    <div class="text-center">
+                                        <h3 class="text-faris-gold mb-0">5â˜…</h3>
+                                        <small class="text-uppercase tracking-wider">Service Rating</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <img src="/atk_hotel/static/src/img/hotel_hero.png" alt="Al Faris Suite" class="img-fluid rounded-5 shadow-lg"/>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="oe_structure"/>
+
+                <!-- EXPERIENCE GRID -->
+                <section class="section-padding bg-faris-charcoal text-white">
+                    <div class="container">
+                        <div class="text-center mb-5">
+                            <h2 class="display-6">Beyond the <span class="text-faris-gold">Stay</span></h2>
+                            <p class="text-white-50">Indulge in our curated world-class facilities</p>
+                        </div>
+                        <div class="row g-4">
+                            <t t-foreach="homepage_rooms" t-as="room">
+                                <div class="col-md-4">
+                                    <a t-attf-href="/hotel/room/#{room.id}" class="text-decoration-none">
+                                        <div class="experience-card position-relative overflow-hidden rounded-4">
+                                            <img t-if="room.image_1920" t-attf-src="/web/image/hotel.room.type/#{room.id}/image_1920" class="img-fluid w-100" style="height: 400px; object-fit: cover;"/>
+                                            <div class="experience-overlay position-absolute bottom-0 start-0 w-100 p-4">
+                                                <h4 class="mb-1 text-white" t-esc="room.name"/>
+                                                <p class="small text-white-50 mb-0">From <t t-esc="room.default_price" t-options='{"widget": "monetary", "display_currency": room.currency_id or website.currency_id}'/></p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="oe_structure"/>
+
+                <!-- FOOTER / CONTACT OVERLAY -->
+                <section class="section-padding bg-faris-ivory border-top">
+                    <div class="container">
+                        <div class="row g-5">
+                            <div class="col-lg-4">
+                                <img src="/atk_hotel/static/description/icon.svg" width="80" class="mb-4" alt="Al Faris Logo"/>
+                                <h3 class="mb-3">Al Faris Suite 2</h3>
+                                <p class="text-muted">A premier destination for luxury living in the Kingdom of Bahrain. Discover comfort redefine.</p>
+                                <div class="d-flex gap-3 mt-4">
+                                    <a href="#" class="btn btn-outline-dark rounded-circle btn-sm"><i class="fa fa-instagram"/></a>
+                                    <a href="#" class="btn btn-outline-dark rounded-circle btn-sm"><i class="fa fa-facebook"/></a>
+                                    <a href="#" class="btn btn-outline-dark rounded-circle btn-sm"><i class="fa fa-twitter"/></a>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <h4 class="text-faris-gold mb-4">Location</h4>
+                                <ul class="list-unstyled text-muted lh-lg">
+                                    <li><i class="fa fa-map-marker text-faris-gold me-2"/> Juffair 324, Road 2423, Bldg 1368</li>
+                                    <li>Kingdom of Bahrain</li>
+                                    <li><i class="fa fa-phone text-faris-gold me-2"/> (+973) 178 115 71</li>
+                                    <li><i class="fa fa-whatsapp text-faris-gold me-2"/> (+973) 322 394 44</li>
+                                    <li><i class="fa fa-envelope text-faris-gold me-2"/> alfarissuite2bh@gmail.com</li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-4">
+                                <h4 class="text-faris-gold mb-4">Our Instagram</h4>
+                                <div class="instagram-feed text-muted">
+                                    Follow @alfaris.suite2 for latest updates and offers.
+                                </div>
+                                <div class="mt-4">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&amp;data=https://www.instagram.com/alfaris.suite2" alt="QR Code" class="img-thumbnail" style="width: 100px;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <div class="oe_structure"/>
+            </div>
+
+            <!-- Custom Styles for Homepage -->
+            <style>
+                .experience-card img { transition: transform 0.6s ease; }
+                .experience-card:hover img { transform: scale(1.1); }
+                .experience-overlay {
+                    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+                }
+                .divider-vertical {
+                    width: 1px;
+                    height: 50px;
+                    background: #ddd;
+                }
+                .instagram-feed {
+                    padding: 20px;
+                    background: #fff;
+                    border: 1px dashed var(--faris-gold);
+                    border-radius: 10px;
+                }
+            </style>
+        </t>
+    </template>
+
+    <!-- Home Page Record -->
+    <record id="alfaris_homepage_page" model="website.page">
+        <field name="name">Al Faris Home</field>
+        <field name="url">/hotel-home</field>
+        <field name="type">qweb</field>
+        <field name="view_id" ref="alfaris_homepage"/>
+        <field name="is_published">False</field>
+    </record>
+</odoo>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Amenities & Lifestyle Page Template -->
+    <template id="alfaris_amenities" name="Al Faris Lifestyle" active="False">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <!-- HERO SECTION -->
+                <section class="section-padding bg-faris-charcoal text-white text-center">
+                    <div class="container">
+                        <h4 class="text-faris-gold text-uppercase tracking-widest mb-3">The Lifestyle</h4>
+                        <h1 class="display-3 fw-bold">Elevated Living</h1>
+                        <p class="lead text-white-50">Discover the world-class facilities designed for your comfort.</p>
+                    </div>
+                </section>
+
+                <!-- DYNAMIC SERVICES SECTION -->
+                <section class="section-padding">
+                    <div class="container">
+                        <t t-foreach="services" t-as="service">
+                            <div t-attf-class="row align-items-center mb-5 #{'flex-row-reverse' if service_index % 2 != 0 else ''}">
+                                <div class="col-lg-6">
+                                    <span class="badge bg-faris-gold-light text-dark px-3 py-2 mb-3" t-esc="service.category_id.name if service.category_id else 'LUXURY'"/>
+                                    <h2 class="display-5 mb-4" t-esc="service.name"/>
+                                    <p class="text-muted fs-5" t-esc="service.description"/>
+                                    <div class="mt-4">
+                                        <a href="/contactus" class="btn btn-faris-gold rounded-pill px-4 py-2 text-uppercase fw-bold">Inquire Now</a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mt-5 mt-lg-0">
+                                    <div class="position-relative">
+                                        <img t-if="service.image_1920" t-attf-src="/web/image/hotel.service/#{service.id}/image_1920" class="img-fluid rounded-5 shadow-2xl" style="height: 450px; width: 100%; object-fit: cover;"/>
+                                        <img t-else="" src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&amp;fit=crop&amp;q=80&amp;w=1000" class="img-fluid rounded-5 shadow-2xl"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- Amenities Page Record -->
+    <record id="alfaris_amenities_page" model="website.page">
+        <field name="name">Al Faris Lifestyle</field>
+        <field name="url">/hotel/lifestyle</field>
+        <field name="type">qweb</field>
+        <field name="view_id" ref="alfaris_amenities"/>
+        <field name="is_published">False</field>
+    </record>
+</odoo>

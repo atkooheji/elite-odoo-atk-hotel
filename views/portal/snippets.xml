@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Booking Engine Block Template -->
+    <template id="s_booking_engine" name="Booking Engine Block" active="False">
+        <section class="s_booking_engine py-5" data-snippet="atk_hotel.s_booking_engine" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);">
+            <div class="container">
+                <div class="booking-engine-wrapper luxury-glass p-4 p-md-5 rounded-5 shadow-lg border border-secondary border-opacity-25">
+                    <div class="row mb-4 align-items-center">
+                        <div class="col-md-6">
+                            <h2 class="text-white fw-bold mb-0">Plan Your Escape</h2>
+                            <p class="text-gold small text-uppercase tracking-widest mb-0">Elite Sanctuary &amp; Spa</p>
+                        </div>
+                        <div class="col-md-6 text-md-end d-none d-md-block">
+                            <span class="text-white-50 small"><i class="fa fa-shield me-2"/> Best Price Guaranteed</span>
+                        </div>
+                    </div>
+                    <form action="/hotel/rooms" method="get" class="row g-3 align-items-end">
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label small text-gold text-uppercase fw-bold mb-2">Check In</label>
+                            <div class="input-group luxury-input">
+                                <span class="input-group-text bg-transparent border-0"><i class="fa fa-calendar-minus-o text-gold"/></span>
+                                <input type="date" name="check_in" class="form-control bg-transparent text-white border-0 p-0" required="1"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label small text-gold text-uppercase fw-bold mb-2">Check Out</label>
+                            <div class="input-group luxury-input">
+                                <span class="input-group-text bg-transparent border-0"><i class="fa fa-calendar-plus-o text-gold"/></span>
+                                <input type="date" name="check_out" class="form-control bg-transparent text-white border-0 p-0" required="1"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <label class="form-label small text-gold text-uppercase fw-bold mb-2">Adults</label>
+                            <div class="input-group luxury-input">
+                                <span class="input-group-text bg-transparent border-0"><i class="fa fa-users text-gold"/></span>
+                                <select name="adults" class="form-select bg-transparent text-white border-0 p-0">
+                                    <option value="1" class="text-dark">1 Adult</option>
+                                    <option value="2" selected="1" class="text-dark">2 Adults</option>
+                                    <option value="3" class="text-dark">3 Adults</option>
+                                    <option value="4" class="text-dark">4+ Adults</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <label class="form-label small text-gold text-uppercase fw-bold mb-2">Children</label>
+                            <div class="input-group luxury-input">
+                                <span class="input-group-text bg-transparent border-0"><i class="fa fa-child text-gold"/></span>
+                                <select name="children" class="form-select bg-transparent text-white border-0 p-0">
+                                    <option value="0" selected="1" class="text-dark">No Children</option>
+                                    <option value="1" class="text-dark">1 Child</option>
+                                    <option value="2" class="text-dark">2 Children</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-12">
+                            <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold text-uppercase tracking-wider shadow-lg">
+                                <i class="fa fa-search me-2"/> Search Now
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <style>
+                .luxury-glass {
+                    background: rgba(255, 255, 255, 0.05);
+                    backdrop-filter: blur(10px);
+                    -webkit-backdrop-filter: blur(10px);
+                }
+                .luxury-input {
+                    background: rgba(255, 255, 255, 0.1);
+                    border-bottom: 2px solid #C7A447;
+                    padding: 8px 12px;
+                    transition: all 0.3s ease;
+                }
+                .luxury-input:focus-within {
+                    background: rgba(255, 255, 255, 0.15);
+                    border-color: #fff;
+                }
+                .btn-gold-gradient {
+                    background: linear-gradient(45deg, #C7A447 0%, #E5C767 100%);
+                    color: #1a1a1a;
+                    border: none;
+                    transition: all 0.3s ease;
+                }
+                .btn-gold-gradient:hover {
+                    background: linear-gradient(45deg, #E5C767 0%, #C7A447 100%);
+                    transform: translateY(-2px);
+                    box-shadow: 0 5px 15px rgba(199, 164, 71, 0.4);
+                }
+                .text-gold { color: #C7A447 !important; }
+                .tracking-widest { letter-spacing: 0.2em; }
+                .animate-pulse { animation: pulse 2s infinite; }
+                @keyframes pulse {
+                    0% { opacity: 1; }
+                    50% { opacity: 0.7; }
+                    100% { opacity: 1; }
+                }
+                .hover-shadow-sm:hover {
+                    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+                }
+            </style>
+        </section>
+    </template>
+
+    <template id="s_booking_engine_register" inherit_id="website.snippets" name="Booking Engine Block Registration" active="False">
+        <xpath expr="." position="inside">
+            <t t-snippet="atk_hotel.s_booking_engine" string="Booking Engine" t-thumbnail="/atk_hotel/static/description/hotel-reservation-form.png"/>
+        </xpath>
+    </template>
+
+</odoo>

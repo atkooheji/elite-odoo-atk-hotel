@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add 'My Stays' to Portal Home -->
+    <template id="portal_my_home_menu_hotel" inherit_id="portal.portal_my_home" priority="25" active="False">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">My Stays</t>
+                <t t-set="url" t-value="'/my/stays'"/>
+                <t t-set="placeholder_count" t-value="'hotel_booking_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_hotel" inherit_id="portal.portal_breadcrumbs" priority="25" active="False">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'hotel_stays'" class="breadcrumb-item active">
+                My Reservations
+            </li>
+        </xpath>
+    </template>
+
+    <!-- My Stays Listing Page -->
+    <template id="portal_my_stays" name="My Stays" active="False">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">My Reservations</t>
+            </t>
+
+            <t t-if="not bookings">
+                <p>You have no reservations at this time.</p>
+            </t>
+
+            <t t-if="bookings" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Reference</th>
+                        <th>Room</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="bookings" t-as="booking">
+                        <tr>
+                            <td>
+                                <a t-attf-href="/hotel/booking/#{booking.id}/confirm">
+                                    <t t-esc="booking.name"/>
+                                </a>
+                            </td>
+                            <td><t t-esc="booking.room_id.name"/></td>
+                            <td><span t-field="booking.check_in" t-options='{"widget": "date"}'/></td>
+                            <td><span t-field="booking.check_out" t-options='{"widget": "date"}'/></td>
+                            <td class="text-center">
+                                <span t-if="booking.state == 'draft'" class="badge rounded-pill bg-info">Draft</span>
+                                <span t-if="booking.state == 'to_approve'" class="badge rounded-pill bg-warning">Pending Approval</span>
+                                <span t-if="booking.state == 'confirmed'" class="badge rounded-pill bg-success">Confirmed</span>
+                                <span t-if="booking.state == 'checked_in'" class="badge rounded-pill bg-primary">In House</span>
+                                <span t-if="booking.state == 'checked_out'" class="badge rounded-pill bg-dark">Completed</span>
+                            </td>
+                            <td class="text-end">
+                                <span t-field="booking.total_amount" t-options='{"widget": "monetary", "display_currency": booking.currency_id or website.currency_id}'/>
+                            </td>
+                        </tr>
+                        <tr t-if="booking.state == 'checked_out' and not booking.has_review">
+                            <td colspan="6" class="bg-light text-center py-2">
+                                <span class="small text-muted me-2">How was your stay?</span>
+                                <a t-attf-href="/hotel/booking/#{booking.id}/review" class="btn btn-sm btn-outline-primary rounded-pill">Leave a Review</a>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+</odoo>

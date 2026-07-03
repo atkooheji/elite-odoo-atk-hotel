@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="0">
+    <function model="ir.config_parameter" name="set_param">
+        <value eval="'hotel.api.company_name'"/>
+        <value eval="'Al Faris Suite 2 W.L.L'"/>
+    </function>
+
+    <record id="room_type_penthouse_3bhk" model="hotel.room.type">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="size_sqm">185</field>
+        <field name="website_description">Signature penthouse suite with three bedrooms, expansive living space, dining area, equipped kitchen, and premium privacy for family or executive stays.</field>
+    </record>
+    <record id="room_type_superior_2bhk" model="hotel.room.type">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="size_sqm">95</field>
+        <field name="website_description">Comfortable two-bedroom suite with a separate living room, full kitchen, practical storage, and space for families or long-stay guests.</field>
+    </record>
+    <record id="room_type_premium_2bhk" model="hotel.room.type">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="size_sqm">105</field>
+        <field name="website_description">Premium two-bedroom suite with refined finishing, generous lounge space, full kitchen facilities, and a calm residential feel.</field>
+    </record>
+    <record id="room_type_deluxe_2bhk" model="hotel.room.type">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="size_sqm">90</field>
+        <field name="website_description">Deluxe two-bedroom suite designed for easy short or extended stays, with bright living space and essential apartment comforts.</field>
+    </record>
+    <record id="room_type_grand_2bhk" model="hotel.room.type">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="size_sqm">115</field>
+        <field name="website_description">Grand two-bedroom suite with larger living and dining areas, full kitchen, comfortable bedrooms, and a polished serviced-apartment experience.</field>
+    </record>
+    <record id="room_type_grand_1bhk" model="hotel.room.type">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="size_sqm">70</field>
+        <field name="website_description">Grand one-bedroom suite with a private bedroom, separate lounge, kitchen facilities, and the right balance of comfort and privacy.</field>
+    </record>
+    <record id="room_type_grand_studio" model="hotel.room.type">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="size_sqm">45</field>
+        <field name="website_description">Grand studio suite with a smart open-plan layout, kitchenette, work area, and everything needed for a comfortable stay in Juffair.</field>
+    </record>
+
+    <record id="hotel_room_1001" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_101" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_102" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_103" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_104" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_201" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_202" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_203" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_204" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_301" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_302" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_303" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_304" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_401" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_402" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_403" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_404" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_501" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_502" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_503" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_504" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_601" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_602" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_603" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_604" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_701" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_702" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_731" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_732" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_741" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_742" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_801" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_802" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_803" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_804" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_903" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+    <record id="hotel_room_904" model="hotel.room"><field name="company_id" ref="base.main_company"/></record>
+</odoo>

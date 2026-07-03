@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_reporting_agent_form" model="ir.ui.view">
+        <field name="name">hotel.reporting.agent.form</field>
+        <field name="model">hotel.reporting.agent</field>
+        <field name="arch" type="xml">
+            <form string="Hotel AI Reporting Agent">
+                <header>
+                    <button name="action_generate" string="Generate Report" type="object" class="btn-primary" icon="fa-magic"/>
+                    <button name="action_download_pdf" string="Save as PDF" type="object" class="btn-secondary" icon="fa-file-pdf-o" invisible="not generated_content"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>AI Report Generator</h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="report_type"/>
+                            <field name="period"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Report Content">
+                            <field name="generated_content" widget="html" options="{'style-inline': true}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hotel_reporting_agent" model="ir.actions.act_window">
+        <field name="name">AI Reporting Agent</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hotel.reporting.agent</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_hotel_ai_reporting"
+              name="AI Reporting"
+              parent="atk_hotel.menu_hotel_reports_root"
+              action="action_hotel_reporting_agent"
+              sequence="100"/>
+</odoo>

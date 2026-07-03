@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_hotel_mis_report_wizard_form" model="ir.ui.view">
+        <field name="name">hotel.mis.report.wizard.form</field>
+        <field name="model">hotel.mis.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Hotel End of Day">
+                <sheet>
+                    <group string="Filters" col="4">
+                        <group string="Period" col="2">
+                            <field name="period_preset"/>
+                            <field name="date_from" required="1" readonly="period_preset != 'custom'"/>
+                            <field name="date_to" required="1" readonly="period_preset != 'custom'"/>
+                        </group>
+                        <group string="Options" col="2">
+                            <field name="grouping_mode"/>
+                        </group>
+                    </group>
+                    <group string="Audience" col="2">
+                        <field name="report_audience" widget="radio"/>
+                    </group>
+                    <group string="Appendices" col="2">
+                        <field name="include_reservation_appendix"/>
+                        <field name="include_revenue_appendix"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_print_gm_eod_pdf" type="object" string="GM PDF" class="btn-primary"/>
+                    <button name="action_print_gm_eod_html" type="object" string="GM HTML" class="btn-secondary"/>
+                    <button name="action_print_finance_eod_pdf" type="object" string="Finance PDF" class="btn-primary"/>
+                    <button name="action_print_finance_eod_html" type="object" string="Finance HTML" class="btn-secondary"/>
+                    <button string="Cancel" class="btn-link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

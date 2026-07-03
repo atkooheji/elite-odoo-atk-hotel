@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="module_category_hotel_cleaning" model="ir.module.category">
+            <field name="name">Hotel Cleaning</field>
+            <field name="sequence">35</field>
+        </record>
+
+        <record id="privilege_hotel_cleaning" model="res.groups.privilege">
+            <field name="name">Hotel Cleaning Access</field>
+            <field name="category_id" ref="module_category_hotel_cleaning"/>
+        </record>
+
+        <record id="cleaning_team_group_user" model="res.groups">
+            <field name="name">Cleaning Team Member</field>
+            <field name="privilege_id" ref="privilege_hotel_cleaning"/>
+        </record>
+
+        <record id="cleaning_team_group_head" model="res.groups">
+            <field name="name">Cleaning Team Head</field>
+            <field name="privilege_id" ref="privilege_hotel_cleaning"/>
+            <field name="implied_ids" eval="[(4, ref('atk_hotel.cleaning_team_group_user'))]" />
+        </record>
+</odoo>

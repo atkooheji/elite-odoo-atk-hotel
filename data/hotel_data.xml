@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <!-- Default Product -->
+        <record id="product_room_standard" model="product.product">
+            <field name="name">Standard Room Service</field>
+            <field name="type">service</field>
+            <field name="list_price">100.0</field>
+            <field name="is_room" eval="True"/>
+            <field name="website_published" eval="True"/>
+        </record>
+
+        <!-- Default Room Type -->
+        <record id="room_type_standard" model="hotel.room.type">
+            <field name="name">Standard Room</field>
+            <field name="code">STD</field>
+            <field name="default_price">100.0</field>
+            <field name="max_adults">2</field>
+            <field name="max_children">1</field>
+            <field name="is_published" eval="True"/>
+            <field name="product_id" ref="product_room_standard"/>
+            <field name="website_description" type="html">
+                <p>Enjoy a comfortable stay in our Standard Room, equipped with all modern amenities.</p>
+            </field>
+        </record>
+
+        <!-- Default Room -->
+        <record id="room_101" model="hotel.room">
+            <field name="name">Room 101</field>
+            <field name="room_type_id" ref="room_type_standard"/>
+            <field name="room_type" ref="product_room_standard"/>
+            <field name="floor">1</field>
+        </record>
+
+        <record id="room_102" model="hotel.room">
+            <field name="name">Room 102</field>
+            <field name="room_type_id" ref="room_type_standard"/>
+            <field name="room_type" ref="product_room_standard"/>
+            <field name="floor">1</field>
+        </record>
+</odoo>

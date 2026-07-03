@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+    <record id="view_maintenance_request_form_inherit_hotel" model="ir.ui.view">
+        <field name="name">maintenance.request.form.inherit.hotel</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='maintenance_type']" position="after">
+                <field name="hotel_room_id" options="{'no_create': False}" />
+                <field name="inspection_id" readonly="1" domain="[('room_id', '=', hotel_room_id)]" />
+            </xpath>
+        </field>
+    </record>
+    -->
+
+    <record id="view_maintenance_request_tree_inherit_hotel" model="ir.ui.view">
+        <field name="name">maintenance.request.tree.inherit.hotel</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="hotel_room_id" optional="show" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

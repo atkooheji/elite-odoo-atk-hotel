@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Safeguard the Sale Order report for Odoo 19 and iOS Mobile Printing -->
+    <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
+        <!-- iOS Mobile Alignment Fix -->
+        <xpath expr="//div[hasclass('page')]" position="before">
+            <style>
+                /* Odoo 19 PDF Engine Fix for Mobile/iOS */
+                .o_main_table {
+                    width: 100% !important;
+                    table-layout: fixed !important;
+                    word-wrap: break-word !important;
+                }
+                @media print {
+                    .o_main_navbar, .o_header_standard, .o_footer, .o_header_fixed { 
+                        display: none !important; 
+                    }
+                    body { 
+                        background: none !important; 
+                        margin: 0 !important; 
+                        font-family: Arial, sans-serif !important;
+                    }
+                }
+            </style>
+        </xpath>
+        
+        <!-- Robust XPath for Header -->
+        <xpath expr="//table[hasclass('o_main_table')]//th[@name='th_quantity']" position="after">
+            <th name="th_duration" class="text-center">Duration</th>
+        </xpath>
+        
+        <!-- Robust XPath for Data Lines -->
+        <xpath expr="//table[hasclass('o_main_table')]//tbody//span[@t-field='line.product_uom_qty']/.." position="after">
+            <td name="td_duration" class="text-center">
+                <span t-if="line.duration" t-esc="line.duration" />
+                <span t-else="">1</span>
+                Day(s)
+            </td>
+        </xpath>
+    </template>
+    </odoo>

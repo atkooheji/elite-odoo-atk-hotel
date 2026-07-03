@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Menus restored to allow navigation -->
+    <!--
+    <delete id="menu_hotel_home" model="website.menu"/>
+    <delete id="menu_hotel_rooms_portal" model="website.menu"/>
+    <delete id="menu_hotel_amenities" model="website.menu"/>
+    <delete id="menu_hotel_dining" model="website.menu"/>
+    <delete id="menu_hotel_stays_portal" model="website.menu"/>
+    -->
+</odoo>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+        <record id="mail_template_daily_intelligence_kit" model="mail.template">
+            <field name="name">Hotel Daily Intelligence Kit</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="subject">Al Faris Intelligence Kit: Daily Operations Summary ({{ object.name }})</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.email_formatted }}</field>
+            <field name="description">Morning executive snapshot of hotel performance.</field>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f4f4;">
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top: 20px;">
+        <tr>
+            <td align="center">
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background-color: #2C2C2C; padding: 30px; text-align: center;">
+                            <h1 style="color: #C7A447; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px;">Intelligence Kit</h1>
+                            <p style="color: #ffffff; margin: 5px 0 0; font-size: 14px; opacity: 0.8;">Executive Morning Snapshot</p>
+                        </td>
+                    </tr>
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 40px;">
+                            <p style="font-size: 16px; color: #333333; margin-bottom: 20px;">
+                                Dear <strong><t t-out="object.name"/></strong>,
+                            </p>
+                            <p style="font-size: 14px; color: #555555; line-height: 1.6; margin-bottom: 30px;">
+                                Please find attached your daily <strong>Al Faris Intelligence Kit</strong> for yesterday's operations. This report includes critical KPIs, revenue breakdowns, and operational alerts to keep you informed of the property's performance.
+                            </p>
+                            
+                            <div style="background-color: #f9f9f9; border-left: 4px solid #C7A447; padding: 20px; margin-bottom: 30px;">
+                                <h3 style="margin-top: 0; color: #2C2C2C; font-size: 18px;">Quick Status</h3>
+                                <ul style="list-style: none; padding: 0; margin: 0; color: #444;">
+                                    <li style="margin-bottom: 8px;">â€¢ Report Period: Yesterday</li>
+                                    <li style="margin-bottom: 8px;">â€¢ Analysis Scope: Full Portfolio</li>
+                                    <li>â€¢ Attached Format: PDF</li>
+                                </ul>
+                            </div>
+
+                            <p style="font-size: 14px; color: #555555; line-height: 1.6;">
+                                You can also access the live <strong>Intelligence Suite Dashboard</strong> directly in Odoo for real-time drill-downs and forecasting.
+                            </p>
+                            
+                            <div style="text-align: center; margin: 40px 0;">
+                                <a t-att-href="'/web#action=atk_hotel.action_hotel_dashboard_owl'" 
+                                   style="background-color: #C7A447; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
+                                   Open Dashboard
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f8f8f8; padding: 20px; text-align: center; font-size: 12px; color: #999999; border-top: 1px solid #eeeeee;">
+                            Sent by Elite Sport Management â€¢ Al Faris Intelligence Engine<br/>
+                            This is an automated report. Please do not reply directly to this email.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+            </field>
+        </record>
+        <record id="mail_template_hotel_review_request" model="mail.template">
+            <field name="name">Hotel: Review Request</field>
+            <field name="model_id" ref="atk_hotel.model_hotel_book_history"/>
+            <field name="subject">How was your stay at Al Faris? (Ref: {{ object.name }})</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.partner_id.email_formatted }}</field>
+            <field name="description">Post-stay review request for guests.</field>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f4f4;">
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top: 20px;">
+        <tr>
+            <td align="center">
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background-color: #2C2C2C; padding: 30px; text-align: center;">
+                            <h1 style="color: #C7A447; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px;">Your Stay at Al Faris</h1>
+                            <p style="color: #ffffff; margin: 5px 0 0; font-size: 14px; opacity: 0.8;">We Value Your Feedback</p>
+                        </td>
+                    </tr>
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 40px;">
+                            <p style="font-size: 16px; color: #333333; margin-bottom: 20px;">
+                                Dear <strong><t t-out="object.partner_id.name"/></strong>,
+                            </p>
+                            <p style="font-size: 14px; color: #555555; line-height: 1.6; margin-bottom: 30px;">
+                                Thank you for choosing Al Faris for your recent stay. We hope you enjoyed your time with us in Room <strong><t t-out="object.room_id.name"/></strong>.
+                            </p>
+                            <p style="font-size: 14px; color: #555555; line-height: 1.6; margin-bottom: 30px;">
+                                We are constantly striving to improve our guest experience, and your feedback is incredibly valuable to us. Would you mind taking a moment to tell us about your stay?
+                            </p>
+                            
+                            <div style="text-align: center; margin: 40px 0;">
+                                <a t-attf-href="{{ object.get_base_url() }}/hotel/review/token/{{ object.access_token }}" 
+                                   style="background-color: #C7A447; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
+                                   Rate My Stay
+                                </a>
+                            </div>
+
+                            
+                            <p style="font-size: 14px; color: #555555; line-height: 1.6;">
+                                It only takes a minute, and it helps us ensure that every guest has a perfect experience.
+                            </p>
+                        </td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f8f8f8; padding: 20px; text-align: center; font-size: 12px; color: #999999; border-top: 1px solid #eeeeee;">
+                            Sent by Al Faris Guest Relations â€¢ Ref: <t t-out="object.name"/><br/>
+                            Thank you for being our guest.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+            </field>
+        </record>
+</odoo>

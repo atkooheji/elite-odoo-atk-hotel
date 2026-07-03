@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="alfaris_dining" name="Al Faris Dining" active="False">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <!-- HERO SECTION -->
+                <section class="section-padding bg-faris-charcoal text-white text-center" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&amp;fit=crop&amp;q=80&amp;w=2000') no-repeat center center; background-size: cover; min-height: 50vh; display: flex; align-items: center;">
+                    <div class="container">
+                        <h4 class="text-faris-gold text-uppercase tracking-widest mb-3">Culinary Excellence</h4>
+                        <h1 class="display-3 fw-bold">Gourmet Dining</h1>
+                        <p class="lead text-white-50">Savor a world of flavors in our award-winning restaurants.</p>
+                    </div>
+                </section>
+
+                <!-- DYNAMIC DINING SECTION -->
+                <section class="section-padding">
+                    <div class="container">
+                        <t t-foreach="dining_services" t-as="dining">
+                            <div class="row align-items-center mb-5 pb-5 border-bottom border-light">
+                                <div class="col-lg-6">
+                                    <div class="pe-lg-5">
+                                        <h2 class="display-5 mb-4" t-esc="dining.name"/>
+                                        <p class="text-muted fs-5 mb-4" t-esc="dining.description"/>
+                                        
+                                        <div class="d-flex gap-4 mb-5">
+                                            <div t-if="dining.category_id">
+                                                <small class="text-uppercase text-faris-gold fw-bold d-block mb-1">Cuisine</small>
+                                                <span class="fw-bold" t-esc="dining.category_id.name"/>
+                                            </div>
+                                            <div>
+                                                <small class="text-uppercase text-faris-gold fw-bold d-block mb-1">Hours</small>
+                                                <span class="fw-bold">07:00 AM - 11:00 PM</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex gap-3">
+                                            <a href="/contactus" class="btn btn-faris-gold rounded-pill px-5 py-3 text-uppercase fw-bold shadow-lg">Reserve a Table</a>
+                                            <a href="#" class="btn btn-outline-dark rounded-pill px-4 py-3 text-uppercase fw-bold">View Menu</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mt-5 mt-lg-0">
+                                    <div class="position-relative overflow-hidden rounded-5 shadow-2xl" style="height: 500px;">
+                                        <img t-if="dining.image_1920" t-attf-src="/web/image/hotel.service/#{dining.id}/image_1920" class="img-fluid w-100 h-100" style="object-fit: cover;"/>
+                                        <img t-else="" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&amp;fit=crop&amp;q=80&amp;w=1000" class="img-fluid w-100 h-100" style="object-fit: cover;"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </section>
+
+                <!-- CALL TO ACTION -->
+                <section class="py-5 bg-faris-charcoal text-white">
+                    <div class="container text-center py-4">
+                        <h3 class="mb-4">Planning a Private Event?</h3>
+                        <p class="lead text-white-50 mb-5">Our dining venues are available for private parties and corporate events.</p>
+                        <a href="/contactus" class="btn btn-faris-gold btn-lg rounded-pill px-5">Contact Events Team</a>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- Dining Page Record -->
+    <record id="alfaris_dining_page" model="website.page">
+        <field name="name">Al Faris Dining</field>
+        <field name="url">/hotel/dining</field>
+        <field name="type">qweb</field>
+        <field name="view_id" ref="alfaris_dining"/>
+        <field name="is_published">False</field>
+    </record>
+</odoo>

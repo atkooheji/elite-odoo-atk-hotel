@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_hotel_mis_audit_wizard_form_v2" model="ir.ui.view">
+        <field name="name">hotel.mis.audit.wizard.form.v2</field>
+        <field name="model">hotel.mis.audit.wizard</field>
+        <field name="arch" type="xml">
+            <form string="MIS Audit">
+                <sheet>
+                    <group col="4">
+                        <field name="date_from" required="1"/>
+                        <field name="date_to" required="1"/>
+                        <field name="company_id" required="1"/>
+                        <field name="check_dashboard_vs_snapshot"/>
+                        <field name="check_snapshot_vs_eod"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Run Audit" type="object" name="action_run_audit" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hotel_mis_audit_result_tree_v2" model="ir.ui.view">
+        <field name="name">hotel.mis.audit.result.tree.v2</field>
+        <field name="model">hotel.mis.audit.result</field>
+        <field name="arch" type="xml">
+            <list string="Audit Results">
+                <field name="date"/>
+                <field name="metric"/>
+                <field name="dashboard_value"/>
+                <field name="snapshot_value"/>
+                <field name="eod_value"/>
+                <field name="difference"/>
+            </list>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Explicitly restore Header and Footer for Al Faris Website -->
+    <template id="alfaris_layout_fix" inherit_id="website.layout" priority="99" active="False">
+        <xpath expr="//header" position="attributes">
+            <attribute name="t-if">not no_header</attribute>
+            <attribute name="class" add="o_header_standard" separator=" "/>
+        </xpath>
+        <xpath expr="//footer" position="attributes">
+            <attribute name="t-if">not no_footer</attribute>
+            <attribute name="class" add="o_footer" separator=" "/>
+        </xpath>
+    </template>
+</odoo>

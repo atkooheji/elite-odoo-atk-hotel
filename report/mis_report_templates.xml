@@ -1,0 +1,972 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_hotel_mis_dashboard_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="dashboard">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Hotel MIS Dashboard</h2>
+                        <p class="text-muted">
+                            Company:
+                            <t t-esc="dashboard.env.company.name" />
+                        </p>
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Total Rooms</th>
+                                    <td>
+                                        <t t-esc="dashboard.total_rooms" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Occupied Rooms</th>
+                                    <td>
+                                        <t t-esc="dashboard.occupied_rooms" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Available Rooms</th>
+                                    <td>
+                                        <t t-esc="dashboard.available_rooms" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Maintenance Rooms</th>
+                                    <td>
+                                        <t t-esc="dashboard.maintenance_rooms" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Occupancy %</th>
+                                    <td>
+                                        <t t-esc="format_float(dashboard.occupancy_rate, 2)" />
+                                        %
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Revenue</th>
+                                    <td>
+                                        <span t-esc="formatLang(dashboard.revenue_amount, currency_obj=currency)" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_hotel_mis_eod_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="wizard">
+                <t t-set="payload" t-value="wizard.get_eod_payload()" />
+                <t t-set="summary" t-value="payload['summary']" />
+                <t t-set="snapshots" t-value="payload['snapshots']" />
+                <t t-set="movements" t-value="wizard.get_today_movements()" />
+                <t t-if="wizard.report_audience == 'finance'">
+                    <t t-call="atk_hotel.report_finance_eod_v33">
+                        <t t-set="payload" t-value="payload" />
+                        <t t-set="summary" t-value="summary" />
+                        <t t-set="snapshots" t-value="snapshots" />
+                    </t>
+                </t>
+                <t t-else="">
+                    <t t-call="atk_hotel.report_gm_eod">
+                        <t t-set="payload" t-value="payload" />
+                        <t t-set="summary" t-value="summary" />
+                        <t t-set="snapshots" t-value="snapshots" />
+                        <t t-set="movements" t-value="movements" />
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_gm_eod">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <h2 class="mb-1">Hotel End of Day â€“ GM Report</h2>
+                        <div class="text-muted">
+                            Period:
+                            <t t-esc="format_date(payload['start_date'])" />
+                            -
+                            <t t-esc="format_date(payload['end_date'])" />
+                            <t t-if="payload.get('period_label')">
+                                (
+                                <t t-esc="payload['period_label']" />
+                                )
+                            </t>
+                        </div>
+                    </div>
+                    <t t-if="wizard.company_id.logo">
+                        <img t-att-src="'data:image/png;base64,%s' % (wizard.company_id.logo.decode() if isinstance(wizard.company_id.logo, bytes) else wizard.company_id.logo)" alt="logo" class="img img-fluid" style="max-height:60px;" />
+                    </t>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Occupancy %</th>
+                                    <td>
+                                        <t t-esc="format_float(summary['occupancy_pct'], 2)" />
+                                        %
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>ADR</th>
+                                    <td>
+                                        <span t-esc="formatLang(summary['adr'], currency_obj=currency)" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>RevPAR</th>
+                                    <td>
+                                        <span t-esc="formatLang(summary['revpar'], currency_obj=currency)" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Total Revenue</th>
+                                    <td>
+                                        <span t-esc="formatLang(summary['total_revenue'], currency_obj=currency)" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Nights Sold</th>
+                                    <td>
+                                        <t t-esc="summary['nights_sold']" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-6">
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Total Rooms</th>
+                                    <td>
+                                        <t t-esc="summary['total_rooms']" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Total Nights</th>
+                                    <td>
+                                        <t t-esc="summary.get('total_nights')" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Vacant</th>
+                                    <td>
+                                        <t t-esc="summary['rooms_available']" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Occupied</th>
+                                    <td>
+                                        <t t-esc="summary['rooms_occupied']" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>OOO</th>
+                                    <td>
+                                        <t t-esc="summary['rooms_ooo']" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Arrivals / Departures / Cancellations</th>
+                                    <td>
+                                        <t t-esc="summary['arrivals']" />
+                                        /
+                                        <t t-esc="summary['departures']" />
+                                        /
+                                        <t t-esc="summary['cancellations']" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="text-end text-muted">Hotel End of Day â€“ v3.4 (GM)</div>
+            </div>
+            <t t-call="atk_hotel.report_daily_snapshot_block">
+                <t t-set="snapshots" t-value="snapshots" />
+                <t t-set="summary" t-value="summary" />
+                <t t-set="payload" t-value="payload" />
+            </t>
+            <t t-call="atk_hotel.report_movements_block">
+                <t t-set="movements" t-value="movements" />
+                <t t-set="wizard" t-value="wizard" />
+                <t t-set="payload" t-value="payload" />
+            </t>
+            <t t-if="wizard.include_reservation_appendix">
+                <div class="page">
+                    <div class="eod-section">
+                        <h3>
+                            Appendix A â€” Reservations
+                            <a href="#appendix_reservations_table" data-bs-toggle="collapse" role="button">(Expand / Collapse)</a>
+                        </h3>
+                        <div id="appendix_reservations_table" class="collapse show">
+                            <t t-if="payload.get('grouping_mode') == 'reservation'">
+                                <table class="table table-sm table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Guest</th>
+                                            <th>Room</th>
+                                            <th>Arrival</th>
+                                            <th>Departure</th>
+                                            <th>Nights</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="payload.get('bookings', [])" t-as="booking">
+                                            <td>
+                                                <t t-esc="booking.partner_id.name" />
+                                            </td>
+                                            <td>
+                                                <t t-esc="booking.room_id.name or booking.room_type_id.display_name" />
+                                            </td>
+                                            <td>
+                                                <t t-esc="format_datetime(booking.check_in)" />
+                                            </td>
+                                            <td>
+                                                <t t-esc="format_datetime(booking.check_out)" />
+                                            </td>
+                                            <td>
+                                                <t t-esc="booking.duration_days_decimal" />
+                                            </td>
+                                            <td>
+                                                <span t-esc="formatLang(booking.total_amount, currency_obj=currency)" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <t t-elif="payload.get('grouping_mode') == 'day'">
+                                <table class="table table-sm table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th class="text-end">Reservations</th>
+                                            <th class="text-end">Nights Sold</th>
+                                            <th class="text-end">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="payload.get('appendix_grouped', [])" t-as="group_line">
+                                            <td>
+                                                <t t-esc="format_date(group_line.get('date'))" />
+                                            </td>
+                                            <td class="text-end">
+                                                <t t-esc="group_line.get('reservations_count', 0)" />
+                                            </td>
+                                            <td class="text-end">
+                                                <t t-esc="group_line.get('nights', 0.0)" />
+                                            </td>
+                                            <td class="text-end">
+                                                <span t-esc="formatLang(group_line.get('amount', 0.0), currency_obj=currency)" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_finance_eod_v33">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <h2 class="mb-1">Hotel End of Day â€“ Finance Report 3.4</h2>
+                        <div class="text-muted">
+                            Period:
+                            <t t-esc="format_date(payload['start_date'])" />
+                            -
+                            <t t-esc="format_date(payload['end_date'])" />
+                        </div>
+                    </div>
+                </div>
+                <t t-set="total_revenue" t-value="summary.get('total_revenue', 0.0)" />
+                <div class="row g-2">
+                    <div class="col-3">
+                        <div class="border rounded p-2 h-100">
+                            <div class="text-muted small">Total Revenue</div>
+                            <div class="fw-bold fs-6 text-end">
+                                <span t-esc="formatLang(total_revenue, currency_obj=currency)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border rounded p-2 h-100">
+                            <div class="text-muted small">ADR</div>
+                            <div class="fw-bold fs-6 text-end">
+                                <span t-esc="formatLang(summary['adr'], currency_obj=currency)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border rounded p-2 h-100">
+                            <div class="text-muted small">RevPAR</div>
+                            <div class="fw-bold fs-6 text-end">
+                                <span t-esc="formatLang(summary['revpar'], currency_obj=currency)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border rounded p-2 h-100">
+                            <div class="text-muted small">Nights Sold</div>
+                            <div class="fw-bold fs-6 text-end">
+                                <t t-esc="summary['nights_sold']" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border rounded p-2 h-100">
+                            <div class="text-muted small">Room Revenue</div>
+                            <div class="fw-bold text-end">
+                                <span t-esc="formatLang(summary['room_revenue'], currency_obj=currency)" />
+                            </div>
+                            <div t-if="total_revenue" class="text-muted text-end small">
+                                <t t-esc="format_float((summary['room_revenue'] / total_revenue) * 100, 1)" />
+                                % of total
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border rounded p-2 h-100">
+                            <div class="text-muted small">Extra Revenue</div>
+                            <div class="fw-bold text-end">
+                                <span t-esc="formatLang(summary['extra_revenue'], currency_obj=currency)" />
+                            </div>
+                            <div t-if="total_revenue" class="text-muted text-end small">
+                                <t t-esc="format_float((summary['extra_revenue'] / total_revenue) * 100, 1)" />
+                                % of total
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border rounded p-2 h-100">
+                            <div class="text-muted small">Taxes</div>
+                            <div class="fw-bold text-end">
+                                <span t-esc="formatLang(summary['tax_amount'], currency_obj=currency)" />
+                            </div>
+                            <div t-if="total_revenue" class="text-muted text-end small">
+                                <t t-esc="format_float((summary['tax_amount'] / total_revenue) * 100, 1)" />
+                                % of total
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border rounded p-2 h-100">
+                            <div class="text-muted small">Discounts</div>
+                            <div class="fw-bold text-end">
+                                <span t-esc="formatLang(summary['discount_amount'], currency_obj=currency)" />
+                            </div>
+                            <div t-if="total_revenue" class="text-muted text-end small">
+                                <t t-esc="format_float((summary['discount_amount'] / total_revenue) * 100, 1)" />
+                                % of total
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <div class="border rounded p-2 h-100">
+                            <div class="text-muted small">Sellable Nights</div>
+                            <div class="fw-bold text-end">
+                                <t t-esc="format_float(summary.get('sellable_nights', 0.0), 2)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="border rounded p-2 h-100">
+                            <div class="text-muted small">Unsold Nights</div>
+                            <div class="fw-bold text-end">
+                                <t t-esc="format_float(summary.get('unsold_nights', 0.0), 2)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-end text-muted mt-2">Finance KPIs</div>
+            </div>
+            <div class="page">
+                <h3>Revenue Breakdown â€“ By Type</h3>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th class="text-end">Revenue</th>
+                            <th class="text-end">% of Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Room</td>
+                            <td class="text-end">
+                                <span t-esc="formatLang(summary['room_revenue'], currency_obj=currency)" />
+                            </td>
+                            <td t-if="total_revenue" class="text-end">
+                                <t t-esc="format_float((summary['room_revenue']/total_revenue)*100, 1)" />
+                                %
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Extra</td>
+                            <td class="text-end">
+                                <span t-esc="formatLang(summary['extra_revenue'], currency_obj=currency)" />
+                            </td>
+                            <td t-if="total_revenue" class="text-end">
+                                <t t-esc="format_float((summary['extra_revenue']/total_revenue)*100, 1)" />
+                                %
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Taxes</td>
+                            <td class="text-end">
+                                <span t-esc="formatLang(summary['tax_amount'], currency_obj=currency)" />
+                            </td>
+                            <td t-if="total_revenue" class="text-end">
+                                <t t-esc="format_float((summary['tax_amount']/total_revenue)*100, 1)" />
+                                %
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Discount</td>
+                            <td class="text-end">
+                                <span t-esc="formatLang(summary['discount_amount'], currency_obj=currency)" />
+                            </td>
+                            <td t-if="total_revenue" class="text-end">
+                                <t t-esc="format_float((summary['discount_amount']/total_revenue)*100, 1)" />
+                                %
+                            </td>
+                        </tr>
+                        <tr class="table-active">
+                            <th>Total</th>
+                            <th class="text-end">
+                                <span t-esc="formatLang(total_revenue, currency_obj=currency)" />
+                            </th>
+                            <th class="text-end">100%</th>
+                        </tr>
+                    </tbody>
+                </table>
+                <h4>Revenue Breakdown â€“ By Channel</h4>
+                <t t-set="channels" t-value="sorted(payload.get('channel_breakdown', []), key=lambda l: l.get('revenue', 0.0), reverse=True)" />
+                <t t-if="channels">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Channel</th>
+                                <th>Nights</th>
+                                <th class="text-end">Revenue</th>
+                                <th class="text-end">% of Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="channels" t-as="line">
+                                <td>
+                                    <t t-esc="line.get('channel')" />
+                                </td>
+                                <td>
+                                    <t t-esc="format_float(line.get('nights') or 0.0, 2)" />
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="formatLang(line.get('revenue'), currency_obj=currency)" />
+                                </td>
+                                <td t-if="total_revenue" class="text-end">
+                                    <t t-esc="format_float((line.get('revenue',0.0)/total_revenue)*100, 1)" />
+                                    %
+                                </td>
+                            </tr>
+                            <tr class="table-active">
+                                <th>Total</th>
+                                <th>
+                                    <t t-esc="format_float(sum([c.get('nights',0.0) for c in channels]), 2)" />
+                                </th>
+                                <th class="text-end">
+                                    <span t-esc="formatLang(sum([c.get('revenue',0.0) for c in channels]), currency_obj=currency)" />
+                                </th>
+                                <th class="text-end">100%</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-else="">
+                    <p class="text-muted">No data for this period.</p>
+                </t>
+            </div>
+            <div class="page">
+                <h3>Revenue Breakdown â€“ By Market</h3>
+                <t t-set="markets" t-value="sorted(payload.get('market_breakdown', []), key=lambda l: l.get('revenue', 0.0), reverse=True)" />
+                <t t-if="markets">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Market</th>
+                                <th>Nights</th>
+                                <th class="text-end">Revenue</th>
+                                <th class="text-end">% of Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="markets" t-as="line">
+                                <td>
+                                    <t t-esc="line.get('market')" />
+                                </td>
+                                <td>
+                                    <t t-esc="format_float(line.get('nights') or 0.0, 2)" />
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="formatLang(line.get('revenue'), currency_obj=currency)" />
+                                </td>
+                                <td t-if="total_revenue" class="text-end">
+                                    <t t-esc="format_float((line.get('revenue',0.0)/total_revenue)*100, 1)" />
+                                    %
+                                </td>
+                            </tr>
+                            <tr class="table-active">
+                                <th>Total</th>
+                                <th>
+                                    <t t-esc="format_float(sum([m.get('nights',0.0) for m in markets]), 2)" />
+                                </th>
+                                <th class="text-end">
+                                    <span t-esc="formatLang(sum([m.get('revenue',0.0) for m in markets]), currency_obj=currency)" />
+                                </th>
+                                <th class="text-end">100%</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-else="">
+                    <p class="text-muted">No data for this period.</p>
+                </t>
+                <h3>Revenue Breakdown â€“ By Room Type</h3>
+                <t t-set="room_types" t-value="sorted(payload.get('room_type_breakdown', []), key=lambda l: l.get('revenue', 0.0), reverse=True)" />
+                <t t-if="room_types">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Room Type</th>
+                                <th>Nights</th>
+                                <th class="text-end">Revenue</th>
+                                <th class="text-end">% of Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="room_types" t-as="line">
+                                <td>
+                                    <t t-esc="line.get('room_type')" />
+                                </td>
+                                <td>
+                                    <t t-esc="format_float(line.get('nights') or 0.0, 2)" />
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="formatLang(line.get('revenue'), currency_obj=currency)" />
+                                </td>
+                                <td t-if="total_revenue" class="text-end">
+                                    <t t-esc="format_float((line.get('revenue',0.0)/total_revenue)*100, 1)" />
+                                    %
+                                </td>
+                            </tr>
+                            <tr class="table-active">
+                                <th>Total</th>
+                                <th>
+                                    <t t-esc="format_float(sum([r.get('nights',0.0) for r in room_types]), 2)" />
+                                </th>
+                                <th class="text-end">
+                                    <span t-esc="formatLang(sum([r.get('revenue',0.0) for r in room_types]), currency_obj=currency)" />
+                                </th>
+                                <th class="text-end">100%</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-else="">
+                    <p class="text-muted">No data for this period.</p>
+                </t>
+                <h3>Revenue Breakdown â€“ By Payment Method</h3>
+                <t t-set="payment_methods" t-value="sorted(payload.get('payment_method_breakdown', []), key=lambda l: l.get('revenue', 0.0), reverse=True)" />
+                <t t-if="payment_methods">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Payment Method</th>
+                                <th>Orders</th>
+                                <th>Nights</th>
+                                <th class="text-end">Revenue</th>
+                                <th class="text-end">% of Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="payment_methods" t-as="line">
+                                <td>
+                                    <t t-esc="line.get('payment_method')" />
+                                </td>
+                                <td>
+                                    <t t-esc="line.get('orders', 0)" />
+                                </td>
+                                <td>
+                                    <t t-esc="format_float(line.get('nights') or 0.0, 2)" />
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="formatLang(line.get('revenue'), currency_obj=currency)" />
+                                </td>
+                                <td t-if="total_revenue" class="text-end">
+                                    <t t-esc="format_float((line.get('revenue',0.0)/total_revenue)*100, 1)" />
+                                    %
+                                </td>
+                            </tr>
+                            <tr class="table-active">
+                                <th>Total</th>
+                                <th>
+                                    <t t-esc="sum([m.get('orders',0) for m in payment_methods])" />
+                                </th>
+                                <th>
+                                    <t t-esc="format_float(sum([m.get('nights',0.0) for m in payment_methods]), 2)" />
+                                </th>
+                                <th class="text-end">
+                                    <span t-esc="formatLang(sum([m.get('revenue',0.0) for m in payment_methods]), currency_obj=currency)" />
+                                </th>
+                                <th class="text-end">100%</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-else="">
+                    <p class="text-muted">No data for this period.</p>
+                </t>
+            </div>
+            <t t-if="payload.get('sales')">
+                <t t-set="payment_summary" t-value="payment_methods" />
+                <t t-set="orders" t-value="payload.get('sales')" />
+                <t t-set="total_collected" t-value="sum([m.get('revenue',0.0) for m in payment_summary]) or sum(orders.mapped('amount_total'))" />
+                <t t-set="orders_count" t-value="len(orders)" />
+                <t t-set="avg_bill" t-value="orders_count and (total_collected / orders_count) or 0.0" />
+                <div class="page">
+                    <h3>Collections and AR Snapshot</h3>
+                    <div class="row mb-2">
+                        <div class="col-3">
+                            <div class="border rounded p-2 h-100">
+                                <div class="text-muted small">Total Collected</div>
+                                <div class="fw-bold text-end">
+                                    <span t-esc="formatLang(total_collected, currency_obj=currency)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="border rounded p-2 h-100">
+                                <div class="text-muted small">Orders</div>
+                                <div class="fw-bold text-end">
+                                    <t t-esc="orders_count" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="border rounded p-2 h-100">
+                                <div class="text-muted small">Average Bill Size</div>
+                                <div class="fw-bold text-end">
+                                    <span t-esc="formatLang(avg_bill, currency_obj=currency)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="border rounded p-2 h-100">
+                                <div class="text-muted small">Payment Methods</div>
+                                <div class="fw-bold text-end">
+                                    <t t-esc="len(payment_summary)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <t t-if="payment_summary">
+                        <table class="table table-sm table-bordered mb-3">
+                            <thead>
+                                <tr>
+                                    <th>Payment Method</th>
+                                    <th>Orders</th>
+                                    <th class="text-end">Revenue</th>
+                                    <th class="text-end">% of Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="payment_summary" t-as="line">
+                                    <td>
+                                        <t t-esc="line.get('payment_method')" />
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.get('orders',0)" />
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-esc="formatLang(line.get('revenue'), currency_obj=currency)" />
+                                    </td>
+                                    <td t-if="total_collected" class="text-end">
+                                        <t t-esc="format_float((line.get('revenue',0.0)/total_collected)*100, 1)" />
+                                        %
+                                    </td>
+                                </tr>
+                                <tr class="table-active">
+                                    <th>Total</th>
+                                    <th>
+                                        <t t-esc="sum([l.get('orders',0) for l in payment_summary])" />
+                                    </th>
+                                    <th class="text-end">
+                                        <span t-esc="formatLang(total_collected, currency_obj=currency)" />
+                                    </th>
+                                    <th class="text-end">100%</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                    <t t-else="">
+                        <p class="text-muted">No payment data for this period.</p>
+                    </t>
+                    <t t-if="wizard.include_revenue_appendix">
+                        <h4>Appendix B â€“ Detailed Revenue Orders</h4>
+                    </t>
+                    <t t-else="">
+                        <h4>Appendix B â€“ Detailed Revenue Orders (hidden)</h4>
+                    </t>
+                    <t t-if="wizard.include_revenue_appendix">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Order</th>
+                                    <th>Guest</th>
+                                    <th>Room</th>
+                                    <th>Channel</th>
+                                    <th class="text-end">Net</th>
+                                    <th class="text-end">Tax</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="orders" t-as="order">
+                                    <t t-set="booking" t-value="order.hotel_book_history_ids[:1]" />
+                                    <td>
+                                        <t t-esc="format_datetime(order.date_order)" />
+                                    </td>
+                                    <td>
+                                        <t t-esc="order.name" />
+                                    </td>
+                                    <td>
+                                        <t t-esc="order.partner_id.name" />
+                                    </td>
+                                    <td>
+                                        <t t-esc="(booking and booking.room_id.name) or ''" />
+                                    </td>
+                                    <td>
+                                        <t t-esc="(booking and ('Direct')) or ''" />
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-esc="formatLang(order.amount_untaxed, currency_obj=order.currency_id or currency)" />
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-esc="formatLang(order.amount_tax, currency_obj=order.currency_id or currency)" />
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-esc="formatLang(order.amount_total, currency_obj=order.currency_id or currency)" />
+                                    </td>
+                                </tr>
+                                <tr class="table-active">
+                                    <th colspan="5">Totals</th>
+                                    <th class="text-end">
+                                        <span t-esc="formatLang(sum(orders.mapped('amount_untaxed')), currency_obj=currency)" />
+                                    </th>
+                                    <th class="text-end">
+                                        <span t-esc="formatLang(sum(orders.mapped('amount_tax')), currency_obj=currency)" />
+                                    </th>
+                                    <th class="text-end">
+                                        <span t-esc="formatLang(sum(orders.mapped('amount_total')), currency_obj=currency)" />
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                    <t t-else="">
+                        <p class="text-muted">Detailed revenue orders appendix is disabled for this report.</p>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_daily_snapshot_block">
+        <div class="page">
+            <div class="eod-section">
+                <h3>
+                    Daily Snapshot
+                    <a href="#daily_snapshot_table" data-bs-toggle="collapse" role="button">(Expand / Collapse)</a>
+                </h3>
+                <div id="daily_snapshot_table" class="collapse show">
+                    <table class="table table-sm table-striped table-bordered o_main_table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Rooms Available</th>
+                                <th>Rooms Occupied</th>
+                                <th>Occupancy %</th>
+                                <th>Nights Sold</th>
+                                <th>Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="snapshots" t-as="line" t-att-class="line.get('date') == payload['end_date'] and 'table-info' or ''">
+                                <td>
+                                    <t t-esc="format_date(line.get('date'))" />
+                                </td>
+                                <td>
+                                    <t t-esc="line.get('available_rooms')" />
+                                </td>
+                                <td>
+                                    <t t-esc="line.get('occupied_rooms')" />
+                                </td>
+                                <td>
+                                    <t t-esc="format_float(line.get('occupancy_pct'), 2)" />
+                                    %
+                                </td>
+                                <td>
+                                    <t t-esc="line.get('nights_sold')" />
+                                </td>
+                                <td>
+                                    <span t-esc="formatLang(line.get('revenue'), currency_obj=currency)" />
+                                </td>
+                            </tr>
+                            <tr class="table-active">
+                                <td>
+                                    <strong>Total</strong>
+                                </td>
+                                <td>
+                                    <strong>
+                                        <t t-esc="sum([l.get('available_rooms') for l in snapshots])" />
+                                    </strong>
+                                </td>
+                                <td>
+                                    <strong>
+                                        <t t-esc="sum([l.get('occupied_rooms') for l in snapshots])" />
+                                    </strong>
+                                </td>
+                                <td>
+                                    <strong>
+                                        <t t-esc="format_float(summary.get('occupancy_pct'), 2)" />
+                                        %
+                                    </strong>
+                                </td>
+                                <td>
+                                    <strong>
+                                        <t t-esc="sum([l.get('nights_sold') for l in snapshots])" />
+                                    </strong>
+                                </td>
+                                <td>
+                                    <strong>
+                                        <span t-esc="formatLang(sum([l.get('revenue') for l in snapshots]), currency_obj=currency)" />
+                                    </strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="report_movements_block">
+        <div class="page">
+            <h3>Today's Movements</h3>
+            <p class="text-muted">
+                Arrivals (
+                <t t-esc="movements['header']['arrivals']" />
+                ), Departures (
+                <t t-esc="movements['header']['departures']" />
+                ), Stayovers (
+                <t t-esc="movements['header']['stayovers']" />
+                )
+            </p>
+            <h4>Arrivals</h4>
+            <table class="table table-sm table-bordered">
+                <thead>
+                    <tr>
+                        <th>Guest</th>
+                        <th>Room</th>
+                        <th>Nights</th>
+                        <th>Source</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="movements['arrivals']" t-as="line">
+                        <td>
+                            <t t-esc="line.partner_id.name" />
+                        </td>
+                        <td>
+                            <t t-esc="line.room_id.name or line.room_type_id.display_name" />
+                        </td>
+                        <td>
+                            <t t-esc="line.duration_days_decimal" />
+                        </td>
+                        <td>
+                            <t t-esc="'Direct'" />
+                        </td>
+                        <td>
+                            <span t-esc="formatLang(line.total_amount, currency_obj=currency)" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Departures</h4>
+            <table class="table table-sm table-bordered">
+                <thead>
+                    <tr>
+                        <th>Guest</th>
+                        <th>Room</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="movements['departures']" t-as="line">
+                        <td>
+                            <t t-esc="line.partner_id.name" />
+                        </td>
+                        <td>
+                            <t t-esc="line.room_id.name or line.room_type_id.display_name" />
+                        </td>
+                        <td>
+                            <span t-esc="formatLang(line.total_amount, currency_obj=currency)" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Stayovers</h4>
+            <table class="table table-sm table-bordered">
+                <thead>
+                    <tr>
+                        <th>Guest</th>
+                        <th>Arrival</th>
+                        <th>Departure</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="movements['stayovers']" t-as="line">
+                        <td>
+                            <t t-esc="line.partner_id.name" />
+                        </td>
+                        <td>
+                            <t t-esc="format_datetime(line.check_in)" />
+                        </td>
+                        <td>
+                            <t t-esc="format_datetime(line.check_out)" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </template>
+    </odoo>
