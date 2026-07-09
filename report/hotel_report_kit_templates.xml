@@ -885,7 +885,7 @@
                 </t>
             </t>
         </t>
-    </template>emplate>
+    </template>
     
     <template id="report_quarterly_strategic_document">
          <t t-call="web.external_layout">
