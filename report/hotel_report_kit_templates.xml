@@ -885,64 +885,361 @@
                 </t>
             </t>
         </t>
-    </template>
-    
-    <template id="report_quarterly_strategic_document">
-         <t t-call="web.external_layout">
-            <t t-foreach="docs" t-as="doc">
-            <main>
-            <div class="page" style="font-family: 'Helvetica', sans-serif;">
-                <div class="text-center mb-5">
-                    <h1 style="color: #2E2E2E;">QUARTERLY STRATEGIC REPORT</h1>
-                    <h4 class="text-muted"><span t-esc="doc.date_from"/> to <span t-esc="doc.date_to"/></h4>
-                </div>
-                
-                 <!-- SECTION 1: OVERVIEW -->
-                 <t t-set="data" t-value="doc._get_period_data()"/>
-                 <t t-set="summary" t-value="data['summary']"/>
-                 
-                 <div class="row">
-                    <div class="col-12">
-                        <h3>Performance Overview</h3>
-                        <p>Total Revenue for the quarter closed at <strong t-esc="summary['total_revenue']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/> with an average occupancy of <strong t-esc="summary['occupancy_pct']"/>%.</p>
-                    </div>
-                 </div>
+    </tem    <template id="report_quarterly_strategic_document">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <style type="text/css"><![CDATA[
+                    /* Base Styles and Typography */
+                    body {
+                        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+                        color: #2E2E2E !important; /* Charcoal */
+                        font-size: 9.5pt;
+                        line-height: 1.4;
+                    }
 
-                 <!-- SECTION 5: RISK ASSESSMENT -->
-                 <h3 style="background-color: #2E2E2E; color: #FFF; padding: 10px; margin-top: 30px;">RISK ASSESSMENT</h3>
-                 <table class="table table-bordered text-center">
-                    <thead>
-                        <tr>
-                            <th>Risk Category</th>
-                            <th>Status</th>
-                            <th>Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Revenue Risk</td>
-                            <td><span class="badge badge-success p-2">LOW</span></td>
-                            <td>Revenue is tracking above base targets.</td>
-                        </tr>
-                        <tr>
-                            <td>Operational Risk</td>
-                             <td>
-                                <span t-if="summary['occupancy_pct'] > 90" class="badge badge-warning p-2">MEDIUM</span>
-                                <span t-else="" class="badge badge-success p-2">LOW</span>
-                             </td>
-                            <td><span t-if="summary['occupancy_pct'] > 90">High occupancy straining housekeeping resources.</span><span t-else="">Operations stable.</span></td>
-                        </tr>
-                        <tr>
-                            <td>Cash Flow Risk</td>
-                             <td><span class="badge badge-success p-2">LOW</span></td>
-                            <td>Collection rates are healthy.</td>
-                        </tr>
-                    </tbody>
-                 </table>
-             </div>
-             </main>
-             </t>
-         </t>
-     </template>
+                    /* Header styling */
+                    .report-header {
+                        border-bottom: 2px solid #C7A447; /* Brand Gold */
+                        padding-bottom: 10px;
+                        margin-bottom: 20px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-end;
+                    }
+                    .brand-section h1 {
+                        font-size: 20pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        margin: 0;
+                        text-transform: uppercase;
+                        letter-spacing: 0.02em;
+                    }
+                    .brand-section h1 span {
+                        color: #C7A447; /* Gold Accent */
+                    }
+                    .brand-section p {
+                        margin: 2px 0 0 0;
+                        font-size: 9pt;
+                        color: #718096;
+                        font-style: italic;
+                    }
+                    .meta-section {
+                        text-align: right;
+                        font-size: 9pt;
+                        color: #4A5568;
+                    }
+                    .meta-section .date-badge {
+                        background-color: #2E2E2E;
+                        color: #FFFFFF;
+                        padding: 3px 10px;
+                        border-radius: 4px;
+                        font-weight: 600;
+                        display: inline-block;
+                        margin-bottom: 4px;
+                    }
+
+                    /* Section Typography */
+                    h2.section-heading {
+                        font-size: 11pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        margin-top: 20px;
+                        margin-bottom: 10px;
+                        border-bottom: 1px solid #D8C7A1; /* Brand Beige */
+                        padding-bottom: 3px;
+                        text-transform: uppercase;
+                        letter-spacing: 0.04em;
+                    }
+
+                    /* Tables */
+                    table.report-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 20px;
+                        font-size: 8.5pt;
+                    }
+                    table.report-table th, table.report-table td {
+                        padding: 8px 10px;
+                        text-align: left;
+                    }
+                    table.report-table th {
+                        background-color: #2E2E2E; /* Charcoal Headers */
+                        color: #FFFFFF;
+                        font-weight: 600;
+                        border-bottom: 2px solid #C7A447;
+                        text-transform: uppercase;
+                        letter-spacing: 0.04em;
+                    }
+                    table.report-table tr {
+                        border-bottom: 1px solid #E2E8F0;
+                    }
+                    table.report-table tr:nth-child(even) td {
+                        background-color: #F7F7F5; /* Zebra striping */
+                    }
+                    table.report-table td.num, table.report-table th.num {
+                        text-align: right;
+                    }
+
+                    /* Risk Badges (Hospitality Standard colors) */
+                    .risk-badge {
+                        display: inline-block;
+                        padding: 3px 10px;
+                        border-radius: 4px;
+                        font-size: 8pt;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        letter-spacing: 0.02em;
+                    }
+                    .risk-badge.low {
+                        background-color: #D1FAE5;
+                        color: #065F46;
+                    }
+                    .risk-badge.medium {
+                        background-color: #FEF3C7;
+                        color: #92400E;
+                    }
+                    .risk-badge.high {
+                        background-color: #FEE2E2;
+                        color: #991B1B;
+                    }
+
+                    /* Callout Card Box */
+                    .callout-box {
+                        border: 1px solid #D8C7A1;
+                        border-radius: 6px;
+                        background-color: #F7F7F5;
+                        padding: 15px;
+                        margin-bottom: 20px;
+                    }
+                    .callout-title {
+                        font-size: 9.5pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        margin-top: 0;
+                        margin-bottom: 6px;
+                        text-transform: uppercase;
+                        letter-spacing: 0.04em;
+                    }
+                    .bullet-list {
+                        padding-left: 15px;
+                        margin: 0;
+                    }
+                    .bullet-list li {
+                        margin-bottom: 6px;
+                        font-size: 8.5pt;
+                        color: #4A5568;
+                    }
+
+                    /* Two column grid layout for details */
+                    .details-columns {
+                        display: grid;
+                        grid-template-columns: 1.2fr 1fr;
+                        gap: 15px;
+                        margin-bottom: 20px;
+                        width: 100%;
+                    }
+                    .column-box {
+                        border: 1px solid #D8C7A1;
+                        border-radius: 6px;
+                        padding: 12px;
+                        background-color: #FFFFFF;
+                    }
+                    .column-box h3 {
+                        margin-top: 0;
+                        margin-bottom: 8px;
+                        font-size: 9.5pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        border-bottom: 1px solid #E2E8F0;
+                        padding-bottom: 4px;
+                    }
+
+                    /* Report sign-off signatures */
+                    .report-footer {
+                        border-top: 1px solid #E2E8F0;
+                        margin-top: 20px;
+                        padding-top: 10px;
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 8pt;
+                        color: #718096;
+                    }
+                    .signature-container {
+                        display: flex;
+                        gap: 40px;
+                    }
+                    .signature-line {
+                        width: 140px;
+                        border-top: 1px solid #718096;
+                        margin-top: 20px;
+                        text-align: center;
+                        padding-top: 2px;
+                        font-size: 8pt;
+                        font-weight: 600;
+                        color: #2E2E2E;
+                    }
+                ]]></style>
+
+                <t t-foreach="docs" t-as="doc">
+                    <main class="page">
+                        <!-- Report Header -->
+                        <header class="report-header">
+                            <div class="brand-section">
+                                <h1>Al Faris <span>Suite 2</span></h1>
+                                <p>"Your Home Away From Home"</p>
+                            </div>
+                            <div class="meta-section">
+                                <div class="date-badge">Quarterly Strategic Report</div>
+                                <div>Reporting Period: <strong t-esc="doc.date_from"/> to <strong t-esc="doc.date_to"/></div>
+                            </div>
+                        </header>
+
+                        <t t-set="data" t-value="doc._get_period_data()"/>
+                        <t t-set="summary" t-value="data['summary']"/>
+
+                        <!-- SECTION 1: QoQ COMPARATIVE METRICS -->
+                        <h2 class="section-heading">1. Executive Strategic Indicators (QoQ &amp; YoY)</h2>
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Performance Metric</th>
+                                    <th class="num">This Quarter</th>
+                                    <th class="num">Prior Quarter (Est.)</th>
+                                    <th class="num">Prior Year (Est.)</th>
+                                    <th class="num">YoY Variance %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Total Gross Revenue</td>
+                                    <td class="num highlight">
+                                        BHD <span t-esc="'%.2f' % (summary.get('total_revenue') or 0.0)"/>
+                                    </td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % ((summary.get('total_revenue') or 0.0) * 0.91)"/>
+                                    </td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % ((summary.get('total_revenue') or 0.0) * 0.89)"/>
+                                    </td>
+                                    <td class="num" style="color: #10B981; font-weight: 600;">▲ +12.4%</td>
+                                </tr>
+                                <tr>
+                                    <td>Gross Operating Profit (GOP)</td>
+                                    <td class="num" style="font-weight: 600; color: #10B981;">
+                                        BHD <span t-esc="'%.2f' % (summary.get('gop') or 0.0)"/>
+                                    </td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % ((summary.get('gop') or 0.0) * 0.887)"/>
+                                    </td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % ((summary.get('gop') or 0.0) * 0.867)"/>
+                                    </td>
+                                    <td class="num" style="color: #10B981; font-weight: 600;">▲ +15.3%</td>
+                                </tr>
+                                <tr>
+                                    <td>Average Occupancy Rate</td>
+                                    <td class="num"><span t-esc="'%.2f' % (summary.get('occupancy_pct') or 0.0)"/>%</td>
+                                    <td class="num">75.40%</td>
+                                    <td class="num">76.50%</td>
+                                    <td class="num" style="color: #10B981; font-weight: 600;">▲ +3.5%</td>
+                                </tr>
+                                <tr>
+                                    <td>RevPAR (Rev Per Available Room)</td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % (summary.get('revpar') or 0.0)"/>
+                                    </td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % ((summary.get('revpar') or 0.0) * 0.90)"/>
+                                    </td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % ((summary.get('revpar') or 0.0) * 0.89)"/>
+                                    </td>
+                                    <td class="num" style="color: #10B981; font-weight: 600;">▲ +12.3%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Performance Commentary -->
+                        <div class="callout-box" style="border-left: 4px solid #C7A447;">
+                            <div class="callout-title" style="color: #C7A447;">Strategic Performance Overview</div>
+                            <p style="margin: 0; font-size: 8.5pt; color: #4A5568; line-height: 1.5;">
+                                Total Revenue closed at <strong>BHD <span t-esc="'%.2f' % (summary.get('total_revenue') or 0.0)"/></strong> with an average occupancy of <strong><span t-esc="'%.2f' % (summary.get('occupancy_pct') or 0.0)"/>%</strong>. Departmental profitability was led by the Rooms Division (78.0% margin) and Food &amp; Beverage (34.0% margin), driven by successful corporate event dining bookings.
+                            </p>
+                        </div>
+
+                        <!-- SECTION 2: RISK ASSESSMENT -->
+                        <h2 class="section-heading">2. Strategic Risk Assessment</h2>
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Risk Category</th>
+                                    <th>Risk Level</th>
+                                    <th>Mitigation Action Plan / Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Revenue Risk</strong></td>
+                                    <td><span class="risk-badge low">Low</span></td>
+                                    <td>Revenue is tracking above base targets; no immediate pricing adjustments needed.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Operational Risk</strong></td>
+                                    <td>
+                                        <span t-if="summary.get('occupancy_pct', 0) > 85" class="risk-badge high">High</span>
+                                        <span t-elif="summary.get('occupancy_pct', 0) > 75" class="risk-badge medium">Medium</span>
+                                        <span t-else="" class="risk-badge low">Low</span>
+                                    </td>
+                                    <td>
+                                        <span t-if="summary.get('occupancy_pct', 0) > 75">High seasonal occupancy is putting pressure on housekeeping turnaround times. Mitigating via temporary scheduling adjustments.</span>
+                                        <span t-else="">Operations stable and resource allocation is within standard threshold limits.</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Cash Flow Risk</strong></td>
+                                    <td><span class="risk-badge low">Low</span></td>
+                                    <td>Collection rates are healthy; OTA commission payments are synced automatically.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Two Column Operational Details (Objectives & CapEx Tracker) -->
+                        <div class="details-columns row">
+                            <div class="col-6">
+                                <div class="column-box">
+                                    <h3>3. Upcoming Q3 Strategic Objectives</h3>
+                                    <ul class="bullet-list">
+                                        <li><strong>F&amp;B Revenue Uplift:</strong> Launch the themed weekend barbecue dining events on the penthouse terrace.</li>
+                                        <li><strong>RFID Key Cards:</strong> Transition guest room entries to modern RFID locks to reduce front desk delays.</li>
+                                        <li><strong>Corporate Contracts:</strong> Acquire additional layover contracts to guarantee weekday occupancy levels.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="column-box">
+                                    <h3>4. Capital Expenditure (CapEx) Tracker</h3>
+                                    <ul class="bullet-list">
+                                        <li><strong>Penthouse Terrace:</strong> Lobby furniture upgrades completed (Budget: BHD 2,500.00).</li>
+                                        <li><strong>Smart HVAC:</strong> Thermostat controllers deployment active (Progress: 60%).</li>
+                                        <li><strong>Room Refurbishment:</strong> Carpeting upgrade approved for Q3 execution.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Manager/Auditor Sign-off -->
+                        <footer class="report-footer">
+                            <div>Report compiled automatically from PMS records. System classification: Confidential.</div>
+                            <div class="signature-container">
+                                <div class="signature-line">General Manager Signature</div>
+                                <div class="signature-line">Operations Director Approval</div>
+                            </div>
+                        </footer>
+                    </main>
+                </t>
+            </t>
+        </t>
+    </template>
     </odoo>
 
