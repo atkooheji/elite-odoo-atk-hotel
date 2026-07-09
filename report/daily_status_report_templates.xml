@@ -3,216 +3,435 @@
     <template id="report_hotel_daily_status_document">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
-                <style type="text/css">/* --- Matrix Styles --- */
+                <style type="text/css">
+                    /* Base Styles & Typography */
+                    body {
+                        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+                        color: #2E2E2E !important; /* Charcoal */
+                        font-size: 9.5pt;
+                        line-height: 1.4;
+                    }
+
+                    /* Header styling */
+                    .report-header {
+                        border-bottom: 2px solid #C7A447; /* Brand Gold */
+                        padding-bottom: 10px;
+                        margin-bottom: 15px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-end;
+                    }
+                    .brand-section h1 {
+                        font-size: 20pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        margin: 0;
+                        text-transform: uppercase;
+                        letter-spacing: 0.02em;
+                    }
+                    .brand-section h1 span {
+                        color: #C7A447; /* Gold Accent */
+                    }
+                    .brand-section p {
+                        margin: 2px 0 0 0;
+                        font-size: 9pt;
+                        color: #718096;
+                        font-style: italic;
+                    }
+                    .meta-section {
+                        text-align: right;
+                        font-size: 9pt;
+                        color: #4A5568;
+                    }
+                    .meta-section .date-badge {
+                        background-color: #2E2E2E;
+                        color: #FFFFFF;
+                        padding: 3px 10px;
+                        border-radius: 4px;
+                        font-weight: 600;
+                        display: inline-block;
+                        margin-bottom: 4px;
+                    }
+
+                    /* 2 Column Main Layout */
+                    .report-grid {
+                        display: grid;
+                        grid-template-columns: 2.1fr 1fr;
+                        gap: 15px;
+                        width: 100%;
+                    }
+
+                    /* Left Side: Room View Matrix */
+                    .matrix-title {
+                        font-size: 11pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        margin-top: 0;
+                        margin-bottom: 8px;
+                        border-bottom: 1px solid #D8C7A1;
+                        padding-bottom: 4px;
+                        display: flex;
+                        justify-content: space-between;
+                    }
                     .room-matrix {
                         width: 100%;
                         border-collapse: collapse;
                         table-layout: fixed;
                     }
-                    .room-matrix th,
-                    .room-matrix td {
-                        border: 1px solid #dfe6e9;
-                        padding: 6px;
+                    .room-matrix th, .room-matrix td {
+                        border: 1px solid #E2E8F0;
+                        padding: 4px 2px;
                         text-align: center;
                         vertical-align: middle;
-                        font-size: 12px;
+                        font-size: 8.5pt;
+                        height: 32px;
                     }
-                    .room-matrix .room-type {
-                        background: #f4f6f7;
-                        font-weight: 700;
+                    .room-matrix th.room-type-header {
+                        background-color: #2E2E2E;
+                        color: #FFFFFF;
+                        font-weight: 600;
                         text-align: left;
-                        width: 140px;
-                        font-size: 13px;
+                        padding-left: 8px;
+                        width: 130px;
+                        font-size: 9pt;
                     }
-                    .room-matrix .room-header {
-                        background: #eef2f7;
-                        font-weight: 700;
-                        font-size: 11px;
+                    .room-matrix th.col-header {
+                        background-color: #F7F7F5;
+                        color: #2E2E2E;
+                        font-weight: 600;
+                        font-size: 8pt;
                     }
+                    .room-matrix th.row-type-label {
+                        background-color: #F7F7F5;
+                        font-weight: 600;
+                        text-align: left;
+                        padding-left: 8px;
+                        color: #2E2E2E;
+                        font-size: 8.5pt;
+                        border-left: 3px solid #C7A447; /* Gold Sidebar */
+                    }
+                    
+                    /* Room Cells Status styling (Standard Hospitality Palette) */
                     .room-cell {
-                        height: 38px;
-                        font-weight: 700;
-                        color: #fff;
+                        font-weight: 600;
+                        color: #FFFFFF;
+                        border-radius: 2px;
+                        font-size: 8pt;
                     }
                     .room-cell.empty {
-                        background: #fafafa;
+                        background-color: #FAFAFA;
+                        color: #CBD5E1;
+                        border: 1px dashed #E2E8F0;
                     }
+                    .status-occupied { background-color: #EF4444 !important; }   /* Red */
+                    .status-available { background-color: #10B981 !important; }  /* Green */
+                    .status-dirty { background-color: #6B7280 !important; }      /* Gray */
+                    .status-maintenance { background-color: #8B5CF6 !important; }/* Purple (OOO) */
+                    .status-blocked { background-color: #EC4899 !important; }    /* Magenta (OOS) */
+                    .status-reserved { background-color: #F59E0B !important; }   /* Orange/Yellow */
+                    .status-provision { background-color: #3B82F6 !important; }  /* Blue */
 
-                    /* --- Status Colors --- */
-                    .status-occupied { background: #e74c3c !important; }
-                    .status-available { background: #3498db !important; }
-                    .status-dirty { background: #7f8c8d !important; }
-                    .status-maintenance { background: #8e44ad !important; }
-                    .status-reserved { background: #27ae60 !important; }
-                    .status-provision { background: #16a085 !important; }
-                    .status-blocked { background: #95a5a6 !important; }
-
-                    /* --- Summary Styles --- */
-                    .summary-panel {
-                        border: 1px solid #dfe6e9;
-                        padding: 12px;
-                        background: #fbfbfb;
-                        border-radius: 4px;
-                    }
-                    .summary-table th,
-                    .summary-table td {
-                        padding: 4px 2px;
-                        font-size: 12px;
-                    }
-                    .status-box {
-                        display: inline-block;
-                        padding: 4px 8px;
-                        margin: 3px 3px 0 0;
-                        border-radius: 3px;
-                        font-size: 11px;
-                        color: #fff;
-                    }
-                    .legend-title {
-                        font-weight: 700;
-                        margin-bottom: 4px;
-                    }
-                    .graph-wrapper {
-                        margin-top: 10px;
-                    }
-
-                    .occupancy-bar {
-                        width: 100%;
-                        height: 12px;
-                        background: #ecf0f1;
+                    /* Right Side: Details Panel */
+                    .panel-box {
+                        border: 1px solid #D8C7A1;
                         border-radius: 6px;
-                        overflow: hidden;
-                        margin: 4px 0;
+                        padding: 12px;
+                        background-color: #F7F7F5;
                         display: flex;
-                        flex-wrap: nowrap;
+                        flex-direction: column;
+                        gap: 12px;
                     }
-                    .occupancy-bar .fill {
+                    .panel-section {
+                        border-bottom: 1px solid #E2E8F0;
+                        padding-bottom: 8px;
+                    }
+                    .panel-section:last-child {
+                        border-bottom: none;
+                        padding-bottom: 0;
+                    }
+                    .panel-title {
+                        font-size: 10pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        margin-top: 0;
+                        margin-bottom: 8px;
+                        text-transform: uppercase;
+                        letter-spacing: 0.04em;
+                    }
+                    
+                    /* Metrics Table */
+                    .summary-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        font-size: 8.5pt;
+                    }
+                    .summary-table td, .summary-table th {
+                        padding: 4px 0;
+                        border-bottom: 1px dotted #E2E8F0;
+                    }
+                    .summary-table th {
+                        font-weight: 500;
+                        color: #4A5568;
+                        text-align: left;
+                    }
+                    .summary-table td {
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        text-align: right;
+                    }
+                    .summary-table tr:last-child td, .summary-table tr:last-child th {
+                        border-bottom: none;
+                    }
+                    .summary-table .highlight-row td {
+                        color: #C7A447; /* Gold highlight */
+                        font-size: 9.5pt;
+                    }
+
+                    /* Distribution bar */
+                    .dist-title {
+                        font-size: 8pt;
+                        font-weight: 600;
+                        color: #4A5568;
+                        margin-bottom: 4px;
+                        text-transform: uppercase;
+                    }
+                    .progress-bar-container {
+                        width: 100%;
+                        height: 8px;
+                        background-color: #E2E8F0;
+                        border-radius: 4px;
+                        overflow: hidden;
+                        display: flex;
+                        margin-bottom: 8px;
+                    }
+                    .progress-segment {
                         height: 100%;
-                        display: inline-block;
-                    }</style>
+                    }
+
+                    /* Legend Cards */
+                    .legend-grid {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 4px;
+                    }
+                    .legend-item {
+                        display: flex;
+                        align-items: center;
+                        font-size: 7.5pt;
+                        font-weight: 600;
+                        color: #4A5568;
+                    }
+                    .legend-color-dot {
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 2px;
+                        margin-right: 4px;
+                        flex-shrink: 0;
+                    }
+
+                    /* Sign-off signatures */
+                    .report-footer {
+                        border-top: 1px solid #E2E8F0;
+                        margin-top: 15px;
+                        padding-top: 10px;
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 8pt;
+                        color: #718096;
+                    }
+                    .signature-container {
+                        display: flex;
+                        gap: 40px;
+                    }
+                    .signature-line {
+                        width: 140px;
+                        border-top: 1px solid #718096;
+                        margin-top: 15px;
+                        text-align: center;
+                        padding-top: 2px;
+                        font-size: 7.5pt;
+                        font-weight: 600;
+                        color: #4A5568;
+                    }
+                </style>
+
                 <main class="page">
-                    <h3 class="text-center">
-                        Room View for the Business Date
-                        <span t-esc="format_date(report_date)" />
-                    </h3>
-                    <div class="row mt16">
+                    <!-- Report Header -->
+                    <header class="report-header">
+                        <div class="brand-section">
+                            <h1>Al Faris <span>Suite 2</span></h1>
+                            <p>"Your Home Away From Home"</p>
+                        </div>
+                        <div class="meta-section">
+                            <div class="date-badge">Daily Operations Report</div>
+                            <div>Business Date: <strong t-esc="format_date(report_date)"/></div>
+                        </div>
+                    </header>
+
+                    <!-- Content Grid -->
+                    <div class="report-grid row">
+                        
+                        <!-- Left side: Matrix (Bootstrap Column) -->
                         <div class="col-8">
+                            <div class="matrix-title">
+                                <span>Room Occupancy &amp; Housekeeping Matrix</span>
+                                <span style="font-size: 8.5pt; color: #C7A447; font-weight: 600;">
+                                    VIP Guests In-House: <span t-esc="summary.get('vips_count', 0)"/>
+                                </span>
+                            </div>
                             <table class="room-matrix">
                                 <thead>
                                     <tr>
-                                        <th class="room-type">Room Type</th>
+                                        <th class="room-type-header">Room Type</th>
                                         <t t-foreach="range(max_room_columns)" t-as="col_index">
-                                            <th t-esc="col_index + 1" class="room-header" />
+                                            <th class="col-header" t-esc="col_index + 1"/>
                                         </t>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <t t-foreach="room_types" t-as="room_type_entry">
                                         <tr>
-                                            <th t-esc="room_type_entry['room_type'].name" class="room-type" />
-                                            <t t-set="rooms" t-value="room_type_entry['rooms']" />
+                                            <th class="row-type-label" t-esc="room_type_entry['room_type'].name"/>
+                                            <t t-set="rooms" t-value="room_type_entry['rooms']"/>
                                             <t t-foreach="rooms" t-as="room">
                                                 <td t-attf-class="room-cell status-{{ room['status'] }}">
-                                                    <span t-esc="room['name']" />
+                                                    <span t-esc="room['name']"/>
+                                                    <t t-if="room.get('is_vip')">
+                                                        <span style="color: #FFFFFF;">★</span>
+                                                    </t>
                                                 </td>
                                             </t>
                                             <t t-foreach="range(max_room_columns - len(rooms))" t-as="empty_cell">
-                                                <td class="room-cell empty" />
+                                                <td class="room-cell empty"/>
                                             </t>
                                         </tr>
                                     </t>
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- Right side: Control Panel (Bootstrap Column) -->
                         <div class="col-4">
-                            <div class="summary-panel">
-                                <h4 class="text-center">Details</h4>
-                                <table class="table table-sm table-borderless summary-table">
-                                    <tr>
-                                        <th>Total No. of Rooms</th>
-                                        <td t-esc="summary.get('total_rooms', 0)" class="text-right" />
-                                    </tr>
-                                    <tr>
-                                        <th>No. of Rooms Occupied</th>
-                                        <td t-esc="summary.get('occupied', 0)" class="text-right" />
-                                    </tr>
-                                    <tr>
-                                        <th>No. of Rooms Free</th>
-                                        <td t-esc="summary.get('vacant', 0)" class="text-right" />
-                                    </tr>
-                                    <tr>
-                                        <th>No. of Rooms Dirty</th>
-                                        <td t-esc="summary.get('dirty', 0)" class="text-right" />
-                                    </tr>
-                                    <tr>
-                                        <th>No. of Rooms Blocked</th>
-                                        <td t-esc="summary.get('blocked', 0)" class="text-right" />
-                                    </tr>
-                                    <tr>
-                                        <th>No. of Rooms Repair</th>
-                                        <td t-esc="summary.get('maintenance', 0)" class="text-right" />
-                                    </tr>
-                                    <tr>
-                                        <th>No. of Rooms Booking Confirmed</th>
-                                        <td t-esc="summary.get('reserved', 0)" class="text-right" />
-                                    </tr>
-                                    <tr>
-                                        <th>No. of Rooms Provision Booking</th>
-                                        <td t-esc="summary.get('provision', 0)" class="text-right" />
-                                    </tr>
-                                    <tr>
-                                        <th>No. of Rooms Check-out Today</th>
-                                        <td t-esc="summary.get('checkouts_today', 0)" class="text-right" />
-                                    </tr>
-                                    <tr>
-                                        <th>Room Occupancy %</th>
-                                        <td class="text-right">
-                                            <span t-esc="'%.2f' % (summary.get('occupancy_rate') or 0)" />
-                                            %
-                                        </td>
-                                    </tr>
-                                </table>
-                                <div class="graph-wrapper">
-                                    <div class="legend-title">Room Status Distribution:</div>
-                                    <div class="occupancy-bar">
-                                        <t t-set="total_rooms" t-value="summary.get('total_rooms', 0) or 1" />
-                                        <t t-set="occupied_rate" t-value="float(summary.get('occupied', 0) or 0) * 100 / total_rooms" />
-                                        <div t-attf-style="width: #{occupied_rate}%;" class="fill status-occupied" />
-                                        <t t-set="available_rate" t-value="float(summary.get('vacant', 0) or 0) * 100 / total_rooms" />
-                                        <div t-attf-style="width: #{available_rate}%;" class="fill status-available" />
-                                        <t t-set="reserved_rate" t-value="float(summary.get('reserved', 0) or 0) * 100 / total_rooms" />
-                                        <div t-attf-style="width: #{reserved_rate}%;" class="fill status-reserved" />
-                                        <t t-set="dirty_rate" t-value="float(summary.get('dirty', 0) or 0) * 100 / total_rooms" />
-                                        <div t-attf-style="width: #{dirty_rate}%;" class="fill status-dirty" />
-                                        <t t-set="maintenance_rate" t-value="float(summary.get('maintenance', 0) or 0) * 100 / total_rooms" />
-                                        <div t-attf-style="width: #{maintenance_rate}%;" class="fill status-maintenance" />
-                                        <t t-set="blocked_rate" t-value="float(summary.get('blocked', 0) or 0) * 100 / total_rooms" />
-                                        <div t-attf-style="width: #{blocked_rate}%;" class="fill status-blocked" />
-                                        <t t-set="provision_rate" t-value="float(summary.get('provision', 0) or 0) * 100 / total_rooms" />
-                                        <div t-attf-style="width: #{provision_rate}%;" class="fill status-provision" />
+                            <div class="panel-box">
+                                
+                                <!-- Section 1: Room Summary -->
+                                <div class="panel-section">
+                                    <h2 class="panel-title">Inventory Summary</h2>
+                                    <table class="summary-table">
+                                        <tr>
+                                            <th>Total Available Rooms</th>
+                                            <td t-esc="summary.get('total_rooms', 0)"/>
+                                        </tr>
+                                        <tr>
+                                            <th>Rooms Occupied</th>
+                                            <td t-esc="summary.get('occupied', 0)"/>
+                                        </tr>
+                                        <tr>
+                                            <th>Vacant Clean</th>
+                                            <td t-esc="summary.get('vacant', 0)"/>
+                                        </tr>
+                                        <tr>
+                                            <th>Dirty / Needs Cleaning</th>
+                                            <td t-esc="summary.get('dirty', 0)"/>
+                                        </tr>
+                                        <tr>
+                                            <th>Out of Service (OOS)</th>
+                                            <td t-esc="summary.get('blocked', 0)"/>
+                                        </tr>
+                                        <tr>
+                                            <th>Out of Order (OOO)</th>
+                                            <td t-esc="summary.get('maintenance', 0)"/>
+                                        </tr>
+                                        <tr class="highlight-row">
+                                            <th>Occupancy Rate</th>
+                                            <td>
+                                                <span t-esc="'%.2f' % (summary.get('occupancy_rate') or 0.0)"/>%
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <!-- Section 2: Expected Activity -->
+                                <div class="panel-section">
+                                    <h2 class="panel-title">Front Desk Activity</h2>
+                                    <table class="summary-table">
+                                        <tr>
+                                            <th>Expected Arrivals (Check-Ins)</th>
+                                            <td><span t-esc="summary.get('checkins_today', 0)"/> Rooms</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Expected Departures (Check-Outs)</th>
+                                            <td><span t-esc="summary.get('checkouts_today', 0)"/> Rooms</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Stay-Overs</th>
+                                            <td><span t-esc="summary.get('stay_overs', 0)"/> Rooms</td>
+                                        </tr>
+                                        <tr>
+                                            <th>VIP Guests</th>
+                                            <td><span t-esc="summary.get('vips_count', 0)"/> VIPs</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <!-- Section 3: Financial Yield -->
+                                <div class="panel-section">
+                                    <h2 class="panel-title">Daily Financial Yield</h2>
+                                    <table class="summary-table">
+                                        <tr>
+                                            <th>Today's ADR</th>
+                                            <td>BHD <span t-esc="'%.2f' % (summary.get('adr') or 0.0)"/></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Today's RevPAR</th>
+                                            <td>BHD <span t-esc="'%.2f' % (summary.get('revpar') or 0.0)"/></td>
+                                        </tr>
+                                        <tr style="border-top: 1px solid #C7A447;">
+                                            <th>Est. Room Revenue</th>
+                                            <td style="color: #C7A447; font-weight: 700;">
+                                                BHD <span t-esc="'%.2f' % (summary.get('total_room_revenue') or 0.0)"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <!-- Section 4: Progress Bar & Legend -->
+                                <div class="panel-section">
+                                    <div class="dist-title">Status Ratio &amp; Legend</div>
+                                    <div class="progress-bar-container">
+                                        <t t-set="tot_rooms" t-value="summary.get('total_rooms', 0) or 1"/>
+                                        <div class="progress-segment status-occupied" t-attf-style="width: #{float(summary.get('occupied', 0) or 0) * 100 / tot_rooms}%"/>
+                                        <div class="progress-segment status-available" t-attf-style="width: #{float(summary.get('vacant', 0) or 0) * 100 / tot_rooms}%"/>
+                                        <div class="progress-segment status-reserved" t-attf-style="width: #{float(summary.get('reserved', 0) or 0) * 100 / tot_rooms}%"/>
+                                        <div class="progress-segment status-dirty" t-attf-style="width: #{float(summary.get('dirty', 0) or 0) * 100 / tot_rooms}%"/>
+                                        <div class="progress-segment status-maintenance" t-attf-style="width: #{float(summary.get('maintenance', 0) or 0) * 100 / tot_rooms}%"/>
+                                        <div class="progress-segment status-blocked" t-attf-style="width: #{float(summary.get('blocked', 0) or 0) * 100 / tot_rooms}%"/>
                                     </div>
-                                    <div class="text-right" style="font-size: 11px;">
-                                        Occupancy:
-                                        <span t-esc="'%.2f' % (summary.get('occupancy_rate') or 0)" />
-                                        %
+                                    <div class="legend-grid">
+                                        <div class="legend-item"><div class="legend-color-dot status-occupied"/>Occupied</div>
+                                        <div class="legend-item"><div class="legend-color-dot status-available"/>Vacant</div>
+                                        <div class="legend-item"><div class="legend-color-dot status-dirty"/>Dirty</div>
+                                        <div class="legend-item"><div class="legend-color-dot status-reserved"/>Reserved</div>
+                                        <div class="legend-item"><div class="legend-color-dot status-maintenance"/>OOO</div>
+                                        <div class="legend-item"><div class="legend-color-dot status-blocked"/>OOS</div>
                                     </div>
                                 </div>
-                                <div class="legend mt8">
-                                    <div class="legend-title">Legend:</div>
-                                    <div>
-                                        <span class="status-box status-occupied">Occupied</span>
-                                        <span class="status-box status-available">Vacant</span>
-                                        <span class="status-box status-dirty">Dirty</span>
-                                        <span class="status-box status-reserved">Booking Confirmed</span>
-                                        <span class="status-box status-maintenance">Repair</span>
-                                        <span class="status-box status-provision">Provision Booking</span>
-                                        <span class="status-box status-blocked">Blocked</span>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
+
                     </div>
+
+                    <!-- Manager/Auditor Sign-off -->
+                    <footer class="report-footer">
+                        <div>Report compiled automatically from PMS records. System classification: Confidential.</div>
+                        <div class="signature-container">
+                            <div class="signature-line">Night Auditor Signature</div>
+                            <div class="signature-line">General Manager Approval</div>
+                        </div>
+                    </footer>
                 </main>
             </t>
         </t>
     </template>
-    </odoo>
+</odoo>

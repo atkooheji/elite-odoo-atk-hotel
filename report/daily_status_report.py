@@ -15,9 +15,9 @@ class ReportHotelDailyStatus(models.AbstractModel):
             'reserved': _('Booking Confirmed'),
             'available': _('Vacant'),
             'dirty': _('Dirty'),
-            'maintenance': _('Repair'),
+            'maintenance': _('OOO'),
             'provision': _('Provision Booking'),
-            'blocked': _('Blocked'),
+            'blocked': _('OOS'),
         }
 
     def _get_room_status(self, room, bookings_today, future_bookings):
@@ -92,6 +92,7 @@ class ReportHotelDailyStatus(models.AbstractModel):
                 'name': room.name,
                 'status': status_key,
                 'status_label': self.STATUS_LABELS[status_key],
+                'is_vip': any(getattr(b.partner_id, 'vip', False) or getattr(b.partner_id, 'is_vip', False) for b in bookings_by_room.get(room.id, [])),
             })
 
         total_rooms = len(rooms)
@@ -110,6 +111,28 @@ class ReportHotelDailyStatus(models.AbstractModel):
 
         max_room_columns = max((len(entry['rooms']) for entry in room_types), default=1)
 
+        # Front Desk Activity Calculations
+        checkins_today = len([b for b in bookings_today if b.check_in >= start_dt and b.check_in <= end_dt])
+        stay_overs = len([b for b in bookings_today if b.check_in < start_dt and b.check_out > end_dt])
+        vips_count = len([b for b in bookings_today if getattr(b.partner_id, 'vip', False) or getattr(b.partner_id, 'is_vip', False)])
+
+        # Financial Yield Calculations
+        occupied_bookings = [b for b in bookings_today if b.state in ('checked_in', 'checked_out')]
+        total_room_revenue = 0.0
+        for b in occupied_bookings:
+            day_price = 0.0
+            if hasattr(b, 'daily_line_ids') and b.daily_line_ids:
+                today_line = b.daily_line_ids.filtered(lambda l: l.date == report_date)
+                if today_line:
+                    day_price = today_line[0].price if hasattr(today_line[0], 'price') else getattr(today_line[0], 'price_unit', 0.0)
+            if not day_price:
+                days = b.duration_days_decimal or 1.0
+                day_price = b.total_amount / days
+            total_room_revenue += day_price
+
+        adr = (total_room_revenue / len(occupied_bookings)) if occupied_bookings else 0.0
+        revpar = (total_room_revenue / total_rooms) if total_rooms else 0.0
+
         summary = {
             'total_rooms': total_rooms,
             'occupied': summary_counts['occupied'],
@@ -120,6 +143,12 @@ class ReportHotelDailyStatus(models.AbstractModel):
             'reserved': summary_counts['reserved'],
             'blocked': summary_counts['blocked'],
             'checkouts_today': checkouts_today,
+            'checkins_today': checkins_today,
+            'stay_overs': stay_overs,
+            'vips_count': vips_count,
+            'adr': adr,
+            'revpar': revpar,
+            'total_room_revenue': total_room_revenue,
             'occupancy_rate': (summary_counts['occupied'] / total_rooms * 100.0) if total_rooms else 0.0,
         }
 
