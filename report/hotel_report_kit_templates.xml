@@ -884,8 +884,9 @@
                     </main>
                 </t>
             </t>
-        </t>
-    </tem    <template id="report_quarterly_strategic_document">
+    </template>
+
+    <template id="report_quarterly_strategic_document">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
                 <style type="text/css"><![CDATA[
