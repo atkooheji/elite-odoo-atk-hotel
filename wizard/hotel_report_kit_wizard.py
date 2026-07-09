@@ -160,6 +160,121 @@ class HotelReportKitWizard(models.TransientModel):
             self.company_id.id
         )
 
+    def _get_matrix_data(self):
+        """Fetch matrix data (occupancy status per room) for the wizard date."""
+        report_date = self.date_from or fields.Date.context_today(self)
+        start_dt = datetime.combine(report_date, time.min)
+        end_dt = datetime.combine(report_date, time.max)
+
+        room_model = self.env['hotel.room']
+        booking_model = self.env['hotel.book.history']
+
+        rooms = room_model.search([], order='room_type, name')
+        room_ids = rooms.ids
+
+        bookings_today = booking_model.search([
+            ('room_id', 'in', room_ids),
+            ('state', '!=', 'cancelled'),
+            ('check_in', '<=', end_dt),
+            ('check_out', '>=', start_dt),
+        ])
+        bookings_by_room = {}
+        for booking in bookings_today:
+            bookings_by_room.setdefault(booking.room_id.id, []).append(booking)
+
+        future_booking_rooms = set(
+            booking_model.search([
+                ('room_id', 'in', room_ids),
+                ('state', '=', 'confirmed'),
+                ('check_in', '>', end_dt),
+            ]).mapped('room_id').ids
+        )
+
+        status_labels = {
+            'occupied': _('Occupied'),
+            'reserved': _('Booking Confirmed'),
+            'available': _('Vacant'),
+            'dirty': _('Dirty'),
+            'maintenance': _('OOO'),
+            'provision': _('Provision Booking'),
+            'blocked': _('OOS'),
+        }
+
+        def get_status(room):
+            room_bookings = bookings_by_room.get(room.id, [])
+            if any(booking.state == 'checked_in' for booking in room_bookings):
+                return 'occupied'
+            if any(booking.state == 'confirmed' for booking in room_bookings):
+                return 'reserved'
+            if room.state == 'maintenance':
+                return 'maintenance'
+            if room.state == 'unavailable':
+                return 'blocked'
+            if room.cleaning_status == 'dirty':
+                return 'dirty'
+            if room.id in future_booking_rooms:
+                return 'provision'
+            return 'available'
+
+        summary_counts = {k: 0 for k in status_labels.keys()}
+        room_type_map = {}
+        
+        for room in rooms:
+            status_key = get_status(room)
+            summary_counts[status_key] += 1
+
+            room_type_map.setdefault(room.room_type.id, {
+                'room_type': room.room_type,
+                'rooms': [],
+            })['rooms'].append({
+                'name': room.name,
+                'status': status_key,
+                'status_label': status_labels[status_key],
+                'is_vip': any(getattr(b.partner_id, 'vip', False) or getattr(b.partner_id, 'is_vip', False) for b in bookings_by_room.get(room.id, [])),
+            })
+
+        total_rooms = len(rooms)
+        checkouts_today = booking_model.search_count([
+            ('state', 'in', ['confirmed', 'checked_in', 'checked_out']),
+            ('check_out', '>=', start_dt),
+            ('check_out', '<=', end_dt),
+        ])
+        vips_count = len([b for b in bookings_today if getattr(b.partner_id, 'vip', False) or getattr(b.partner_id, 'is_vip', False)])
+
+        # Max columns calculation
+        max_cols = 0
+        for rtype_id, val in room_type_map.items():
+            max_cols = max(max_cols, len(val['rooms']))
+
+        # Calculate KPIs using hotel.kpi.engine compute_day_kpis
+        day_kpi = self._get_day_kpi_data()
+
+        summary = {
+            'total_rooms': total_rooms,
+            'occupied': summary_counts['occupied'],
+            'vacant': summary_counts['available'] + summary_counts['dirty'],
+            'dirty': summary_counts['dirty'],
+            'reserved': summary_counts['reserved'],
+            'ooo': summary_counts['maintenance'] + summary_counts['blocked'],
+            'maintenance': summary_counts['maintenance'],
+            'blocked': summary_counts['blocked'],
+            'checkins_today': len([b for b in bookings_today if b.check_in >= start_dt and b.check_in <= end_dt]),
+            'checkouts_today': checkouts_today,
+            'stay_overs': summary_counts['occupied'] - len([b for b in bookings_today if b.check_in >= start_dt and b.check_in <= end_dt]),
+            'vips_count': vips_count,
+            'occupancy_rate': (summary_counts['occupied'] / total_rooms) * 100 if total_rooms else 0.0,
+            'adr': day_kpi.get('adr', 0.0),
+            'revpar': day_kpi.get('revpar', 0.0),
+            'total_room_revenue': day_kpi.get('revenue', 0.0),
+        }
+
+        return {
+            'room_types': list(room_type_map.values()),
+            'max_room_columns': max_cols,
+            'summary': summary,
+            'report_date': report_date,
+        }
+
     def action_generate_report(self):
         self.ensure_one()
         

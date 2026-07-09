@@ -1,101 +1,467 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_daily_operations_document">
-        <t t-call="web.external_layout">
-            <t t-foreach="docs" t-as="doc">
-            <main>
-            <div class="page" style="font-family: 'Helvetica', sans-serif; color: #2E2E2E;">
-                <!-- Header -->
-                <div class="text-center mb-4">
-                    <h2 style="color: #C7A447; letter-spacing: 2px;">DAILY OPERATIONS REPORT</h2>
-                    <h5 class="text-muted"><span t-esc="doc.date_from"/></h5>
-                </div>
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <style type="text/css"><![CDATA[
+                    /* Base Styles and Typography */
+                    body {
+                        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+                        color: #2E2E2E !important; /* Charcoal */
+                        font-size: 9.5pt;
+                        line-height: 1.4;
+                    }
 
-                <!-- SECTION A: DAILY SNAPSHOT -->
-                <h3 style="background-color: #2E2E2E; color: #F7F7F5; padding: 5px 10px; margin-top: 20px;">1. DAILY SNAPSHOT</h3>
-                <t t-set="kpi" t-value="doc._get_day_kpi_data()"/>
-                <div class="row mt-3">
-                    <div class="col-3 text-center">
-                        <div style="font-size: 24px; font-weight: bold; color: #C7A447;" t-esc="kpi['occupancy_pct']" t-options='{"widget": "float", "precision": 1}'/>%
-                        <div class="text-muted text-uppercase small">Occupancy</div>
-                    </div>
-                     <div class="col-3 text-center">
-                        <div style="font-size: 24px; font-weight: bold;" t-esc="kpi['adr']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/>
-                        <div class="text-muted text-uppercase small">ADR</div>
-                    </div>
-                     <div class="col-3 text-center">
-                        <div style="font-size: 24px; font-weight: bold;" t-esc="kpi['revpar']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/>
-                        <div class="text-muted text-uppercase small">RevPAR</div>
-                    </div>
-                     <div class="col-3 text-center">
-                        <div style="font-size: 24px; font-weight: bold;" t-esc="kpi['revenue']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/>
-                        <div class="text-muted text-uppercase small">Revenue</div>
-                    </div>
-                </div>
+                    /* Header styling */
+                    .report-header {
+                        border-bottom: 2px solid #C7A447; /* Brand Gold */
+                        padding-bottom: 10px;
+                        margin-bottom: 15px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-end;
+                    }
+                    .brand-section h1 {
+                        font-size: 20pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        margin: 0;
+                        text-transform: uppercase;
+                        letter-spacing: 0.02em;
+                    }
+                    .brand-section h1 span {
+                        color: #C7A447; /* Gold Accent */
+                    }
+                    .brand-section p {
+                        margin: 2px 0 0 0;
+                        font-size: 9pt;
+                        color: #718096;
+                        font-style: italic;
+                    }
+                    .meta-section {
+                        text-align: right;
+                        font-size: 9pt;
+                        color: #4A5568;
+                    }
+                    .meta-section .date-badge {
+                        background-color: #2E2E2E;
+                        color: #FFFFFF;
+                        padding: 3px 10px;
+                        border-radius: 4px;
+                        font-weight: 600;
+                        display: inline-block;
+                        margin-bottom: 4px;
+                    }
 
-                <table class="table table-sm table-bordered mt-3">
-                    <thead style="background-color: #D8C7A1;">
-                        <tr>
-                            <th>Rooms Available</th>
-                            <th>Rooms Sold</th>
-                            <th>Arrivals</th>
-                            <th>Departures</th>
-                            <th>In-House</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span t-esc="kpi['available_rooms']"/></td>
-                            <td><span t-esc="kpi['occupied_rooms']"/></td>
-                            <td><span t-esc="kpi['arrivals']"/></td>
-                            <td><span t-esc="kpi['departures']"/></td>
-                            <td><span t-esc="kpi['occupied_rooms']"/></td>
-                        </tr>
-                    </tbody>
-                </table>
+                    /* 2 Column Main Layout */
+                    .report-grid {
+                        display: table;
+                        width: 100%;
+                        table-layout: fixed;
+                    }
+                    .report-grid-left {
+                        display: table-cell;
+                        width: 68%;
+                        vertical-align: top;
+                        padding-right: 15px;
+                    }
+                    .report-grid-right {
+                        display: table-cell;
+                        width: 32%;
+                        vertical-align: top;
+                    }
 
-                <!-- SECTION B: OPERATIONAL ALERTS -->
-                <h3 style="background-color: #2E2E2E; color: #F7F7F5; padding: 5px 10px; margin-top: 30px;">2. OPERATIONAL ALERTS</h3>
-                <t t-set="alerts" t-value="doc._get_operational_alerts()"/>
-                <div class="row text-center mt-3">
-                    <div class="col-3">
-                        <div class="alert alert-danger p-2" t-if="alerts['dirty_arrivals'] > 0" role="alert">
-                            <strong><span t-esc="alerts['dirty_arrivals']"/></strong> Dirty Arrivals
-                        </div>
-                        <div class="p-2 text-muted bg-light" t-else="">
-                            <i class="fa fa-check text-success"/> No Dirty Arrivals
-                        </div>
-                    </div>
-                    <div class="col-3">
-                        <div class="alert alert-warning p-2" t-if="alerts['pending_deposits'] > 0" role="status">
-                            <strong><span t-esc="alerts['pending_deposits']"/></strong> Deposits Due
-                        </div>
-                         <div class="p-2 text-muted bg-light" t-else="">
-                            <i class="fa fa-check text-success"/> Payments OK
-                        </div>
-                    </div>
-                     <div class="col-3">
-                        <div class="alert alert-warning p-2" t-if="alerts['missing_ids'] > 0" role="alert">
-                            <strong><span t-esc="alerts['missing_ids']"/></strong> Missing IDs
-                        </div>
-                         <div class="p-2 text-muted bg-light" t-else="">
-                            <i class="fa fa-check text-success"/> IDs OK
-                        </div>
-                    </div>
-                    <div class="col-3">
-                        <div class="bg-light p-2 border">
-                            <strong><span t-esc="alerts['ooo_rooms']"/></strong> Rooms OOO
-                        </div>
-                    </div>
-                </div>
+                    /* Left Side: Room View Matrix */
+                    .matrix-title {
+                        font-size: 11pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        margin-top: 0;
+                        margin-bottom: 8px;
+                        border-bottom: 1px solid #D8C7A1;
+                        padding-bottom: 4px;
+                        display: flex;
+                        justify-content: space-between;
+                    }
+                    .room-matrix {
+                        width: 100%;
+                        border-collapse: collapse;
+                        table-layout: fixed;
+                    }
+                    .room-matrix th, .room-matrix td {
+                        border: 1px solid #E2E8F0;
+                        padding: 4px 2px;
+                        text-align: center;
+                        vertical-align: middle;
+                        font-size: 8.5pt;
+                        height: 32px;
+                    }
+                    .room-matrix th.room-type-header {
+                        background-color: #2E2E2E;
+                        color: #FFFFFF;
+                        font-weight: 600;
+                        text-align: left;
+                        padding-left: 8px;
+                        width: 130px;
+                        font-size: 9pt;
+                    }
+                    .room-matrix th.col-header {
+                        background-color: #F7F7F5;
+                        color: #2E2E2E;
+                        font-weight: 600;
+                        font-size: 8pt;
+                    }
+                    .room-matrix th.row-type-label {
+                        background-color: #F7F7F5;
+                        font-weight: 600;
+                        text-align: left;
+                        padding-left: 8px;
+                        color: #2E2E2E;
+                        font-size: 8.5pt;
+                        border-left: 3px solid #C7A447; /* Gold Sidebar */
+                    }
+                    
+                    /* Room Cells Status styling (Standard Hospitality Palette) */
+                    .room-cell {
+                        font-weight: 600;
+                        color: #FFFFFF;
+                        border-radius: 2px;
+                        font-size: 8pt;
+                    }
+                    .room-cell.empty {
+                        background-color: #FAFAFA;
+                        color: #CBD5E1;
+                        border: 1px dashed #E2E8F0;
+                    }
+                    .status-occupied { background-color: #EF4444 !important; }   /* Red */
+                    .status-available { background-color: #10B981 !important; }  /* Green */
+                    .status-dirty { background-color: #6B7280 !important; }      /* Gray */
+                    .status-maintenance { background-color: #8B5CF6 !important; }/* Purple (OOO) */
+                    .status-blocked { background-color: #EC4899 !important; }    /* Magenta (OOS) */
+                    .status-reserved { background-color: #F59E0B !important; }   /* Orange/Yellow */
+                    .status-provision { background-color: #3B82F6 !important; }  /* Blue */
 
-                 <!-- SECTION C: REVENUE OPPORTUNITIES -->
-                <h3 style="background-color: #2E2E2E; color: #F7F7F5; padding: 5px 10px; margin-top: 30px;">3. REVENUE OPPORTUNITIES</h3>
-                <div class="alert alert-info" role="status">
-                    <strong>Upsell Opportunity:</strong> You have <span t-esc="kpi['available_rooms']"/> unsold rooms for tonight. Consider last-minute upgrades for standard bookings.
-                </div>
-            </div>
-            </main>
+                    /* Right Side: Details Panel */
+                    .panel-box {
+                        border: 1px solid #D8C7A1;
+                        border-radius: 6px;
+                        padding: 12px;
+                        background-color: #F7F7F5;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 12px;
+                    }
+                    .panel-section {
+                        border-bottom: 1px solid #E2E8F0;
+                        padding-bottom: 8px;
+                    }
+                    .panel-section:last-child {
+                        border-bottom: none;
+                        padding-bottom: 0;
+                    }
+                    .panel-title {
+                        font-size: 10pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        margin-top: 0;
+                        margin-bottom: 8px;
+                        text-transform: uppercase;
+                        letter-spacing: 0.04em;
+                    }
+                    
+                    /* Metrics Table */
+                    .summary-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        font-size: 8.5pt;
+                    }
+                    .summary-table td, .summary-table th {
+                        padding: 4px 0;
+                        border-bottom: 1px dotted #E2E8F0;
+                    }
+                    .summary-table th {
+                        font-weight: 500;
+                        color: #4A5568;
+                        text-align: left;
+                    }
+                    .summary-table td {
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        text-align: right;
+                    }
+                    .summary-table tr:last-child td, .summary-table tr:last-child th {
+                        border-bottom: none;
+                    }
+                    .summary-table .highlight-row td {
+                        color: #C7A447; /* Gold highlight */
+                        font-size: 9.5pt;
+                    }
+
+                    /* Distribution bar */
+                    .dist-title {
+                        font-size: 8pt;
+                        font-weight: 600;
+                        color: #4A5568;
+                        margin-bottom: 4px;
+                        text-transform: uppercase;
+                    }
+                    .progress-bar-container {
+                        width: 100%;
+                        height: 8px;
+                        background-color: #E2E8F0;
+                        border-radius: 4px;
+                        overflow: hidden;
+                        display: flex;
+                        margin-bottom: 8px;
+                    }
+                    .progress-segment {
+                        height: 100%;
+                    }
+
+                    /* Legend Cards */
+                    .legend-grid {
+                        display: table;
+                        width: 100%;
+                    }
+                    .legend-row {
+                        display: table-row;
+                    }
+                    .legend-cell {
+                        display: table-cell;
+                        width: 50%;
+                        padding: 2px 0;
+                    }
+                    .legend-item {
+                        display: flex;
+                        align-items: center;
+                        font-size: 7.5pt;
+                        font-weight: 600;
+                        color: #4A5568;
+                    }
+                    .legend-color-dot {
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 2px;
+                        margin-right: 4px;
+                        flex-shrink: 0;
+                    }
+
+                    /* Sign-off signatures */
+                    .report-footer {
+                        border-top: 1px solid #E2E8F0;
+                        margin-top: 15px;
+                        padding-top: 10px;
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 8pt;
+                        color: #718096;
+                    }
+                    .signature-container {
+                        display: flex;
+                        gap: 40px;
+                    }
+                    .signature-line {
+                        width: 140px;
+                        border-top: 1px solid #718096;
+                        margin-top: 15px;
+                        text-align: center;
+                        padding-top: 2px;
+                        font-size: 7.5pt;
+                        font-weight: 600;
+                        color: #4A5568;
+                    }
+                ]]></style>
+
+                <t t-foreach="docs" t-as="doc">
+                    <t t-set="matrix" t-value="doc._get_matrix_data()"/>
+                    <t t-set="room_types" t-value="matrix['room_types']"/>
+                    <t t-set="max_room_columns" t-value="matrix['max_room_columns']"/>
+                    <t t-set="summary" t-value="matrix['summary']"/>
+                    <t t-set="report_date" t-value="matrix['report_date']"/>
+
+                    <main class="page">
+                        <!-- Report Header -->
+                        <header class="report-header">
+                            <div class="brand-section">
+                                <h1>Al Faris <span>Suite 2</span></h1>
+                                <p>"Your Home Away From Home"</p>
+                            </div>
+                            <div class="meta-section">
+                                <div class="date-badge">Daily Operations Report</div>
+                                <div>Business Date: <strong t-esc="format_date(report_date)"/></div>
+                            </div>
+                        </header>
+
+                        <!-- Content Grid -->
+                        <div class="report-grid">
+                            
+                            <!-- Left side: Matrix -->
+                            <div class="report-grid-left">
+                                <div class="matrix-title">
+                                    <span>Room Occupancy &amp; Housekeeping Matrix</span>
+                                    <span style="font-size: 8.5pt; color: #C7A447; font-weight: 600;">
+                                        VIP Guests In-House: <span t-esc="summary.get('vips_count', 0)"/>
+                                    </span>
+                                </div>
+                                <table class="room-matrix">
+                                    <thead>
+                                        <tr>
+                                            <th class="room-type-header">Room Type</th>
+                                            <t t-foreach="range(max_room_columns)" t-as="col_index">
+                                                <th class="col-header" t-esc="col_index + 1"/>
+                                            </t>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="room_types" t-as="room_type_entry">
+                                            <tr>
+                                                <th class="row-type-label" t-esc="room_type_entry['room_type'].name"/>
+                                                <t t-set="rooms" t-value="room_type_entry['rooms']"/>
+                                                <t t-foreach="rooms" t-as="room">
+                                                    <td t-attf-class="room-cell status-{{ room['status'] }}">
+                                                        <span t-esc="room['name']"/>
+                                                        <t t-if="room.get('is_vip')">
+                                                            <span style="color: #FFFFFF;">★</span>
+                                                        </t>
+                                                    </td>
+                                                </t>
+                                                <t t-foreach="range(max_room_columns - len(rooms))" t-as="empty_cell">
+                                                    <td class="room-cell empty"/>
+                                                </t>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Right side: Control Panel -->
+                            <div class="report-grid-right">
+                                <div class="panel-box">
+                                    
+                                    <!-- Section 1: Room Summary -->
+                                    <div class="panel-section">
+                                        <h2 class="panel-title">Inventory Summary</h2>
+                                        <table class="summary-table">
+                                            <tr>
+                                                <th>Total Available Rooms</th>
+                                                <td t-esc="summary.get('total_rooms', 0)"/>
+                                            </tr>
+                                            <tr>
+                                                <th>Rooms Occupied</th>
+                                                <td t-esc="summary.get('occupied', 0)"/>
+                                            </tr>
+                                            <tr>
+                                                <th>Vacant Clean</th>
+                                                <td t-esc="summary.get('vacant', 0)"/>
+                                            </tr>
+                                            <tr>
+                                                <th>Dirty / Needs Cleaning</th>
+                                                <td t-esc="summary.get('dirty', 0)"/>
+                                            </tr>
+                                            <tr>
+                                                <th>Out of Service (OOS)</th>
+                                                <td t-esc="summary.get('blocked', 0)"/>
+                                            </tr>
+                                            <tr>
+                                                <th>Out of Order (OOO)</th>
+                                                <td t-esc="summary.get('maintenance', 0)"/>
+                                            </tr>
+                                            <tr class="highlight-row">
+                                                <th>Occupancy Rate</th>
+                                                <td>
+                                                    <span t-esc="'%.2f' % (summary.get('occupancy_rate') or 0.0)"/>%
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                    <!-- Section 2: Expected Activity -->
+                                    <div class="panel-section">
+                                        <h2 class="panel-title">Front Desk Activity</h2>
+                                        <table class="summary-table">
+                                            <tr>
+                                                <th>Expected Arrivals (Check-Ins)</th>
+                                                <td><span t-esc="summary.get('checkins_today', 0)"/> Rooms</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Expected Departures (Check-Outs)</th>
+                                                <td><span t-esc="summary.get('checkouts_today', 0)"/> Rooms</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Stay-Overs</th>
+                                                <td><span t-esc="summary.get('stay_overs', 0)"/> Rooms</td>
+                                            </tr>
+                                            <tr>
+                                                <th>VIP Guests</th>
+                                                <td><span t-esc="summary.get('vips_count', 0)"/> VIPs</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                    <!-- Section 3: Financial Yield -->
+                                    <div class="panel-section">
+                                        <h2 class="panel-title">Daily Financial Yield</h2>
+                                        <table class="summary-table">
+                                            <tr>
+                                                <th>Today's ADR</th>
+                                                <td>BHD <span t-esc="'%.2f' % (summary.get('adr') or 0.0)"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Today's RevPAR</th>
+                                                <td>BHD <span t-esc="'%.2f' % (summary.get('revpar') or 0.0)"/></td>
+                                            </tr>
+                                            <tr style="border-top: 1px solid #C7A447;">
+                                                <th>Est. Room Revenue</th>
+                                                <td style="color: #C7A447; font-weight: 700;">
+                                                    BHD <span t-esc="'%.2f' % (summary.get('total_room_revenue') or 0.0)"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                    <!-- Section 4: Progress Bar & Legend -->
+                                    <div class="panel-section">
+                                        <div class="dist-title">Status Ratio and Legend</div>
+                                        <div class="progress-bar-container">
+                                            <t t-set="tot_rooms" t-value="summary.get('total_rooms', 0) or 1"/>
+                                            <div class="progress-segment status-occupied" t-attf-style="width: #{float(summary.get('occupied', 0) or 0) * 100 / tot_rooms}%"/>
+                                            <div class="progress-segment status-available" t-attf-style="width: #{float(summary.get('vacant', 0) or 0) * 100 / tot_rooms}%"/>
+                                            <div class="progress-segment status-reserved" t-attf-style="width: #{float(summary.get('reserved', 0) or 0) * 100 / tot_rooms}%"/>
+                                            <div class="progress-segment status-dirty" t-attf-style="width: #{float(summary.get('dirty', 0) or 0) * 100 / tot_rooms}%"/>
+                                            <div class="progress-segment status-maintenance" t-attf-style="width: #{float(summary.get('maintenance', 0) or 0) * 100 / tot_rooms}%"/>
+                                            <div class="progress-segment status-blocked" t-attf-style="width: #{float(summary.get('blocked', 0) or 0) * 100 / tot_rooms}%"/>
+                                        </div>
+                                        <div class="legend-grid">
+                                            <div class="legend-row">
+                                                <div class="legend-cell"><div class="legend-item"><div class="legend-color-dot status-occupied"/>Occupied</div></div>
+                                                <div class="legend-cell"><div class="legend-item"><div class="legend-color-dot status-available"/>Vacant</div></div>
+                                            </div>
+                                            <div class="legend-row">
+                                                <div class="legend-cell"><div class="legend-item"><div class="legend-color-dot status-dirty"/>Dirty</div></div>
+                                                <div class="legend-cell"><div class="legend-item"><div class="legend-color-dot status-reserved"/>Reserved</div></div>
+                                            </div>
+                                            <div class="legend-row">
+                                                <div class="legend-cell"><div class="legend-item"><div class="legend-color-dot status-maintenance"/>OOO</div></div>
+                                                <div class="legend-cell"><div class="legend-item"><div class="legend-color-dot status-blocked"/>OOS</div></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Manager/Auditor Sign-off -->
+                        <footer class="report-footer">
+                            <div>Report compiled automatically from PMS records. System classification: Confidential.</div>
+                            <div class="signature-container">
+                                <div class="signature-line">Night Auditor Signature</div>
+                                <div class="signature-line">General Manager Approval</div>
+                            </div>
+                        </footer>
+                    </main>
+                </t>
             </t>
         </t>
     </template>
@@ -168,17 +534,20 @@
 
                     /* KPI Summary Cards Grid */
                     .metrics-summary-grid {
-                        display: grid;
-                        grid-template-columns: repeat(4, 1fr);
-                        gap: 12px;
+                        display: table;
+                        width: 100%;
+                        table-layout: fixed;
                         margin-bottom: 20px;
+                        border-spacing: 10px 0;
                     }
                     .kpi-summary-card {
+                        display: table-cell;
                         background-color: #F7F7F5; /* Ivory */
                         border: 1px solid #D8C7A1;
                         border-radius: 6px;
                         padding: 12px 8px;
                         text-align: center;
+                        vertical-align: middle;
                     }
                     .kpi-val {
                         font-size: 15pt;
@@ -271,11 +640,16 @@
 
                     /* Two column grid layout for details */
                     .details-columns {
-                        display: grid;
-                        grid-template-columns: 1fr 1fr;
-                        gap: 15px;
-                        margin-bottom: 20px;
+                        display: table;
                         width: 100%;
+                        table-layout: fixed;
+                        margin-bottom: 20px;
+                        border-spacing: 15px 0;
+                    }
+                    .details-column-cell {
+                        display: table-cell;
+                        width: 50%;
+                        vertical-align: top;
                     }
                     .column-box {
                         border: 1px solid #D8C7A1;
@@ -377,6 +751,7 @@
                                     BHD <span t-esc="'%.2f' % (summary.get('revpar') or 0.0)"/>
                                 </div>
                                 <span class="wow-ticker positive">▲ +3.5% WoW</span>
+                            </div>
                             </div>
                         </div>
 
@@ -490,8 +865,8 @@
                         </table>
 
                         <!-- Two Column Operational Details (Events & Maintenance SLAs) -->
-                        <div class="details-columns row">
-                            <div class="col-6">
+                        <div class="details-columns">
+                            <div class="details-column-cell">
                                 <div class="column-box">
                                     <h3>Weekly Operational Highlights</h3>
                                     <ul class="bullet-list">
@@ -501,8 +876,9 @@
                                     </ul>
                                 </div>
                             </div>
+                            </div>
 
-                            <div class="col-6">
+                            <div class="details-column-cell">
                                 <div class="column-box">
                                     <h3>Maintenance and Housekeeping SLAs</h3>
                                     <ul class="bullet-list">
@@ -511,6 +887,7 @@
                                         <li><strong>Quality Inspections:</strong> Housekeeping scores maintained at high-luxury benchmarks.</li>
                                     </ul>
                                 </div>
+                            </div>
                             </div>
                         </div>
 
@@ -831,6 +1208,7 @@
                                     BHD <span t-esc="'%.2f' % (summary.get('goppar') or 0.0)"/>
                                 </div>
                             </div>
+                            </div>
                         </div>
 
                         <!-- OWNER CASH DISTRIBUTION STATEMENT -->
@@ -1034,11 +1412,16 @@
 
                     /* Two column grid layout for details */
                     .details-columns {
-                        display: grid;
-                        grid-template-columns: 1.2fr 1fr;
-                        gap: 15px;
-                        margin-bottom: 20px;
+                        display: table;
                         width: 100%;
+                        table-layout: fixed;
+                        margin-bottom: 20px;
+                        border-spacing: 15px 0;
+                    }
+                    .details-column-cell {
+                        display: table-cell;
+                        width: 50%;
+                        vertical-align: top;
                     }
                     .column-box {
                         border: 1px solid #D8C7A1;
@@ -1206,8 +1589,8 @@
                         </table>
 
                         <!-- Two Column Operational Details (Objectives & CapEx Tracker) -->
-                        <div class="details-columns row">
-                            <div class="col-6">
+                        <div class="details-columns">
+                            <div class="details-column-cell">
                                 <div class="column-box">
                                     <h3>3. Upcoming Q3 Strategic Objectives</h3>
                                     <ul class="bullet-list">
@@ -1217,8 +1600,9 @@
                                     </ul>
                                 </div>
                             </div>
+                            </div>
 
-                            <div class="col-6">
+                            <div class="details-column-cell">
                                 <div class="column-box">
                                     <h3>4. Capital Expenditure (CapEx) Tracker</h3>
                                     <ul class="bullet-list">
@@ -1227,6 +1611,7 @@
                                         <li><strong>Room Refurbishment:</strong> Carpeting upgrade approved for Q3 execution.</li>
                                     </ul>
                                 </div>
+                            </div>
                             </div>
                         </div>
 
