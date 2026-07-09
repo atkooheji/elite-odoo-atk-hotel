@@ -3,8 +3,8 @@
     <template id="report_hotel_daily_status_document">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
-                <style type="text/css">
-                    /* Base Styles & Typography */
+                <style type="text/css"><![CDATA[
+                    /* Base Styles and Typography */
                     body {
                         font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
                         color: #2E2E2E !important; /* Charcoal */
@@ -253,7 +253,7 @@
                         font-weight: 600;
                         color: #4A5568;
                     }
-                </style>
+                ]]></style>
 
                 <main class="page">
                     <!-- Report Header -->
@@ -397,7 +397,7 @@
 
                                 <!-- Section 4: Progress Bar & Legend -->
                                 <div class="panel-section">
-                                    <div class="dist-title">Status Ratio &amp; Legend</div>
+                                    <div class="dist-title">Status Ratio and Legend</div>
                                     <div class="progress-bar-container">
                                         <t t-set="tot_rooms" t-value="summary.get('total_rooms', 0) or 1"/>
                                         <div class="progress-segment status-occupied" t-attf-style="width: #{float(summary.get('occupied', 0) or 0) * 100 / tot_rooms}%"/>

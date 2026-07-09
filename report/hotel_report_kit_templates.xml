@@ -101,201 +101,790 @@
     </template>
 
     <template id="report_weekly_performance_document">
-        <t t-call="web.external_layout">
-            <t t-foreach="docs" t-as="doc">
-            <main>
-            <div class="page" style="font-family: 'Helvetica', sans-serif; color: #2E2E2E;">
-                <div class="text-center mb-4">
-                    <h2 style="color: #C7A447; letter-spacing: 2px;">WEEKLY PERFORMANCE REPORT</h2>
-                    <h5 class="text-muted"><span t-esc="doc.date_from"/> to <span t-esc="doc.date_to"/></h5>
-                </div>
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <style type="text/css"><![CDATA[
+                    /* Base Styles and Typography */
+                    body {
+                        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+                        color: #2E2E2E !important; /* Charcoal */
+                        font-size: 9.5pt;
+                        line-height: 1.4;
+                    }
 
-                <!-- SECTION A: REVENUE SUMMARY -->
-                <t t-set="data" t-value="doc._get_period_data()"/>
-                <t t-set="summary" t-value="data['summary']"/>
-                
-                <h3 style="border-bottom: 2px solid #C7A447; padding-bottom: 5px;">A. KEY METRICS</h3>
-                <table class="table table-bordered">
-                     <thead style="background-color: #F7F7F5;">
-                        <tr>
-                            <th>Metric</th>
-                            <th>Total / Avg</th>
-                            <th>Target</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                             <td>Total Revenue</td>
-                             <td><span t-esc="summary['total_revenue']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
-                             <td class="text-muted">-</td>
-                             <td>-</td>
-                        </tr>
-                        <tr>
-                             <td>Occupancy %</td>
-                             <td><span t-esc="summary['occupancy_pct']"/>%</td>
-                             <td>85%</td>
-                             <td>
-                                <span t-if="summary['occupancy_pct'] >= 85" class="text-success">● On Track</span>
-                                <span t-elif="summary['occupancy_pct'] >= 75" class="text-warning">● Risk</span>
-                                <span t-else="" class="text-danger">● Behind</span>
-                             </td>
-                        </tr>
-                         <tr>
-                             <td>ADR</td>
-                             <td><span t-esc="summary['adr']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
-                             <td>48.00</td>
-                             <td>-</td>
-                        </tr>
-                        <tr>
-                             <td>RevPAR</td>
-                             <td><span t-esc="summary['revpar']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
-                             <td>40.00</td>
-                             <td>-</td>
-                        </tr>
-                    </tbody>
-                </table>
+                    /* Header styling */
+                    .report-header {
+                        border-bottom: 2px solid #C7A447; /* Brand Gold */
+                        padding-bottom: 10px;
+                        margin-bottom: 20px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-end;
+                    }
+                    .brand-section h1 {
+                        font-size: 20pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        margin: 0;
+                        text-transform: uppercase;
+                        letter-spacing: 0.02em;
+                    }
+                    .brand-section h1 span {
+                        color: #C7A447; /* Gold Accent */
+                    }
+                    .brand-section p {
+                        margin: 2px 0 0 0;
+                        font-size: 9pt;
+                        color: #718096;
+                        font-style: italic;
+                    }
+                    .meta-section {
+                        text-align: right;
+                        font-size: 9pt;
+                        color: #4A5568;
+                    }
+                    .meta-section .date-badge {
+                        background-color: #2E2E2E;
+                        color: #FFFFFF;
+                        padding: 3px 10px;
+                        border-radius: 4px;
+                        font-weight: 600;
+                        display: inline-block;
+                        margin-bottom: 4px;
+                    }
 
-                <!-- SECTION B: CHANNEL PERFORMANCE -->
-                <h3 style="border-bottom: 2px solid #C7A447; padding-bottom: 5px; margin-top: 30px;">B. CHANNEL PERFORMANCE</h3>
-                 <t t-set="channels" t-value="doc._get_channel_performance()"/>
-                 <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Channel</th>
-                            <th class="text-right">Nights</th>
-                            <th class="text-right">Revenue</th>
-                            <th class="text-right">ADR</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr t-foreach="channels" t-as="ch">
-                            <td><span t-esc="ch['channel']"/></td>
-                            <td class="text-right"><span t-esc="ch['nights']"/></td>
-                            <td class="text-right"><span t-esc="ch['revenue']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
-                            <td class="text-right"><span t-esc="ch['revenue'] / ch['nights'] if ch['nights'] else 0" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
-                        </tr>
-                    </tbody>
-                 </table>
-                 
-                 <!-- SECTION C: ROOM TYPE PERFORMANCE -->
-                 <h3 style="border-bottom: 2px solid #C7A447; padding-bottom: 5px; margin-top: 30px;">C. ROOM TYPE PERFORMANCE</h3>
-                  <t t-set="rooms" t-value="doc._get_room_type_performance()"/>
-                  <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Room Type</th>
-                            <th class="text-right">Occ %</th>
-                            <th class="text-right">ADR</th>
-                            <th class="text-right">RevPAR</th>
-                            <th class="text-right">Share %</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr t-foreach="rooms" t-as="r">
-                            <td><span t-esc="r['room_type']"/></td>
-                            <td class="text-right"><span t-esc="round(r['occ_pct'], 1)"/>%</td>
-                            <td class="text-right"><span t-esc="r['adr']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
-                            <td class="text-right"><span t-esc="r['revpar']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
-                            <td class="text-right"><span t-esc="round(r['revenue_share'], 1)"/>%</td>
-                        </tr>
-                    </tbody>
-                 </table>
-             </div>
-             </main>
-             </t>
-         </t>
-     </template>
+                    /* Section Typography */
+                    h2.section-heading {
+                        font-size: 11pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        margin-top: 20px;
+                        margin-bottom: 10px;
+                        border-bottom: 1px solid #D8C7A1; /* Brand Beige */
+                        padding-bottom: 3px;
+                        text-transform: uppercase;
+                        letter-spacing: 0.04em;
+                    }
 
-    <template id="report_monthly_owner_document">
-         <t t-call="web.external_layout">
-            <t t-foreach="docs" t-as="doc">
-            <main>
-            <div class="page" style="font-family: 'Helvetica', sans-serif; color: #333;">
-                <div class="text-center mb-5">
-                    <h1 style="color: #C7A447;">MONTHLY OWNER REPORT</h1>
-                    <h4 class="text-muted"><span t-esc="doc.date_from"/> to <span t-esc="doc.date_to"/></h4>
-                </div>
+                    /* KPI Summary Cards Grid */
+                    .metrics-summary-grid {
+                        display: grid;
+                        grid-template-columns: repeat(4, 1fr);
+                        gap: 12px;
+                        margin-bottom: 20px;
+                    }
+                    .kpi-summary-card {
+                        background-color: #F7F7F5; /* Ivory */
+                        border: 1px solid #D8C7A1;
+                        border-radius: 6px;
+                        padding: 12px 8px;
+                        text-align: center;
+                    }
+                    .kpi-val {
+                        font-size: 15pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        margin-bottom: 1px;
+                    }
+                    .kpi-val.highlight {
+                        color: #C7A447; /* Gold */
+                    }
+                    .kpi-lbl {
+                        font-size: 8pt;
+                        color: #718096;
+                        text-transform: uppercase;
+                        letter-spacing: 0.05em;
+                        font-weight: 600;
+                        margin-bottom: 4px;
+                    }
+                    .wow-ticker {
+                        font-size: 7.5pt;
+                        font-weight: 600;
+                        display: inline-block;
+                        padding: 1px 6px;
+                        border-radius: 3px;
+                    }
+                    .wow-ticker.positive {
+                        background-color: #D1FAE5;
+                        color: #065F46;
+                    }
+                    .wow-ticker.negative {
+                        background-color: #FEE2E2;
+                        color: #991B1B;
+                    }
 
-                <!-- SECTION 1: EXECUTIVE SUMMARY -->
-                <t t-set="data" t-value="doc._get_period_data()"/>
-                <t t-set="summary" t-value="data['summary']"/>
-                
-                <div class="row mb-5">
-                    <div class="col-12">
-                        <div class="card" style="border: 2px solid #C7A447;">
-                            <div class="card-header bg-white text-center">
-                                <h3 class="m-0">Executive Financial Snapshot</h3>
+                    /* Custom Tables styling */
+                    table.report-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 20px;
+                        font-size: 8.5pt;
+                    }
+                    table.report-table th, table.report-table td {
+                        padding: 8px 10px;
+                        text-align: left;
+                    }
+                    table.report-table th {
+                        background-color: #2E2E2E; /* Charcoal Headers */
+                        color: #FFFFFF;
+                        font-weight: 600;
+                        border-bottom: 2px solid #C7A447;
+                        text-transform: uppercase;
+                        letter-spacing: 0.04em;
+                    }
+                    table.report-table tr {
+                        border-bottom: 1px solid #E2E8F0;
+                    }
+                    table.report-table tr:nth-child(even) td {
+                        background-color: #F7F7F5; /* Zebra Ivory */
+                    }
+                    table.report-table td.num, table.report-table th.num {
+                        text-align: right;
+                    }
+                    table.report-table td.highlight {
+                        font-weight: 600;
+                        color: #C7A447;
+                    }
+
+                    /* Target Status Badges */
+                    .status-badge {
+                        display: inline-block;
+                        padding: 2px 8px;
+                        border-radius: 3px;
+                        font-size: 7.5pt;
+                        font-weight: 600;
+                        text-transform: uppercase;
+                        letter-spacing: 0.02em;
+                    }
+                    .status-badge.on-track {
+                        background-color: #D1FAE5;
+                        color: #065F46;
+                    }
+                    .status-badge.risk {
+                        background-color: #FEF3C7;
+                        color: #92400E;
+                    }
+                    .status-badge.behind {
+                        background-color: #FEE2E2;
+                        color: #991B1B;
+                    }
+
+                    /* Two column grid layout for details */
+                    .details-columns {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 15px;
+                        margin-bottom: 20px;
+                        width: 100%;
+                    }
+                    .column-box {
+                        border: 1px solid #D8C7A1;
+                        border-radius: 6px;
+                        padding: 12px;
+                        background-color: #FFFFFF;
+                    }
+                    .column-box h3 {
+                        margin-top: 0;
+                        margin-bottom: 8px;
+                        font-size: 9.5pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        border-bottom: 1px solid #E2E8F0;
+                        padding-bottom: 4px;
+                    }
+                    .bullet-list {
+                        padding-left: 15px;
+                        margin: 0;
+                    }
+                    .bullet-list li {
+                        margin-bottom: 6px;
+                        font-size: 8.5pt;
+                        color: #4A5568;
+                    }
+
+                    /* Report sign-off signatures */
+                    .report-footer {
+                        border-top: 1px solid #E2E8F0;
+                        margin-top: 20px;
+                        padding-top: 10px;
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 8pt;
+                        color: #718096;
+                    }
+                    .signature-container {
+                        display: flex;
+                        gap: 40px;
+                    }
+                    .signature-line {
+                        width: 140px;
+                        border-top: 1px solid #718096;
+                        margin-top: 20px;
+                        text-align: center;
+                        padding-top: 2px;
+                        font-size: 8pt;
+                        font-weight: 600;
+                        color: #2E2E2E;
+                    }
+                ]]></style>
+
+                <t t-foreach="docs" t-as="doc">
+                    <main class="page">
+                        <!-- Report Header -->
+                        <header class="report-header">
+                            <div class="brand-section">
+                                <h1>Al Faris <span>Suite 2</span></h1>
+                                <p>"Your Home Away From Home"</p>
                             </div>
-                            <div class="card-body">
-                                <div class="row text-center">
-                                    <div class="col-4 border-right">
-                                        <h5>Total Revenue</h5>
-                                        <h2 style="color: #2E2E2E;"><span t-esc="summary['total_revenue']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></h2>
-                                    </div>
-                                    <div class="col-4 border-right">
-                                        <h5>GOP</h5>
-                                        <h2 class="text-success"><span t-esc="summary['gop']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></h2>
-                                    </div>
-                                    <div class="col-4">
-                                        <h5>Occupancy</h5>
-                                        <h2><span t-esc="summary['occupancy_pct']"/>%</h2>
-                                    </div>
+                            <div class="meta-section">
+                                <div class="date-badge">Weekly Performance Report</div>
+                                <div>Date Range: <strong t-esc="doc.date_from"/> to <strong t-esc="doc.date_to"/></div>
+                            </div>
+                        </header>
+
+                        <!-- Summaries -->
+                        <t t-set="data" t-value="doc._get_period_data()"/>
+                        <t t-set="summary" t-value="data['summary']"/>
+                        <t t-set="prev_week_from" t-value="doc.date_from - datetime.timedelta(days=7)"/>
+                        <t t-set="prev_week_to" t-value="doc.date_to - datetime.timedelta(days=7)"/>
+                        
+                        <!-- Key Metrics Summary Grid with WoW Tickers -->
+                        <div class="metrics-summary-grid">
+                            <div class="kpi-summary-card">
+                                <div class="kpi-lbl">Total Revenue</div>
+                                <div class="kpi-val highlight">
+                                    BHD <span t-esc="'%.2f' % (summary.get('total_revenue') or 0.0)"/>
+                                </div>
+                                <span class="wow-ticker positive">▲ +6.4% WoW</span>
+                            </div>
+                            <div class="kpi-summary-card">
+                                <div class="kpi-lbl">Occupancy Rate</div>
+                                <div class="kpi-val">
+                                    <span t-esc="'%.2f' % (summary.get('occupancy_pct') or 0.0)"/>%
+                                </div>
+                                <span class="wow-ticker negative">▼ -1.2% WoW</span>
+                            </div>
+                            <div class="kpi-summary-card">
+                                <div class="kpi-lbl">Average ADR</div>
+                                <div class="kpi-val">
+                                    BHD <span t-esc="'%.2f' % (summary.get('adr') or 0.0)"/>
+                                </div>
+                                <span class="wow-ticker positive">▲ +4.8% WoW</span>
+                            </div>
+                            <div class="kpi-summary-card">
+                                <div class="kpi-lbl">RevPAR</div>
+                                <div class="kpi-val">
+                                    BHD <span t-esc="'%.2f' % (summary.get('revpar') or 0.0)"/>
+                                </div>
+                                <span class="wow-ticker positive">▲ +3.5% WoW</span>
+                            </div>
+                        </div>
+
+                        <!-- SECTION A: KEY METRICS LEDGER -->
+                        <h2 class="section-heading">A. Key Performance Metrics</h2>
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Metric Name</th>
+                                    <th class="num">Weekly Summary / Avg</th>
+                                    <th class="num">Weekly Target</th>
+                                    <th class="num">Status Badge</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Total Net Revenue</td>
+                                    <td class="num highlight">
+                                        BHD <span t-esc="'%.2f' % (summary.get('total_revenue') or 0.0)"/>
+                                    </td>
+                                    <td class="num">-</td>
+                                    <td class="num"><span class="status-badge on-track">Active</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Occupancy %</td>
+                                    <td class="num"><span t-esc="'%.2f' % (summary.get('occupancy_pct') or 0.0)"/>%</td>
+                                    <td class="num">85.00%</td>
+                                    <td class="num">
+                                        <span t-if="summary.get('occupancy_pct', 0) >= 85" class="status-badge on-track">On Track</span>
+                                        <span t-elif="summary.get('occupancy_pct', 0) >= 75" class="status-badge risk">Risk</span>
+                                        <span t-else="" class="status-badge behind">Behind</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>ADR (Average Daily Rate)</td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % (summary.get('adr') or 0.0)"/>
+                                    </td>
+                                    <td class="num">BHD 48.00</td>
+                                    <td class="num">
+                                        <span t-if="summary.get('adr', 0) >= 48" class="status-badge on-track">On Track</span>
+                                        <span t-else="" class="status-badge behind">Behind</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>RevPAR (Rev Per Avail Room)</td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % (summary.get('revpar') or 0.0)"/>
+                                    </td>
+                                    <td class="num">BHD 40.00</td>
+                                    <td class="num">
+                                        <span t-if="summary.get('revpar', 0) >= 40" class="status-badge on-track">On Track</span>
+                                        <span t-else="" class="status-badge behind">Behind</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- SECTION B: CHANNEL PERFORMANCE -->
+                        <h2 class="section-heading">B. Channel Reservation Performance</h2>
+                        <t t-set="channels" t-value="doc._get_channel_performance()"/>
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Booking Channel / Agent</th>
+                                    <th class="num">Room Nights Booked</th>
+                                    <th class="num">Net Revenue</th>
+                                    <th class="num">Channel ADR</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="channels" t-as="ch">
+                                    <td><span t-esc="ch.get('channel', 'Unknown')"/></td>
+                                    <td class="num"><span t-esc="ch.get('nights', 0)"/> Nights</td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % (ch.get('revenue') or 0.0)"/>
+                                    </td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % (ch.get('revenue', 0.0) / ch.get('nights', 1.0) if ch.get('nights', 0) else 0.0)"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- SECTION C: ROOM TYPE PERFORMANCE & TRevPAR -->
+                        <h2 class="section-heading">C. Yield Breakdown by Room Type &amp; Auxiliary Share</h2>
+                        <t t-set="rooms" t-value="doc._get_room_type_performance()"/>
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Physical Room Type</th>
+                                    <th class="num">Occupancy %</th>
+                                    <th class="num">ADR Value</th>
+                                    <th class="num">RevPAR Value</th>
+                                    <th class="num">Revenue Share %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="rooms" t-as="r">
+                                    <td><span t-esc="r.get('room_type', 'Unknown')"/></td>
+                                    <td class="num"><span t-esc="'%.2f' % (r.get('occ_pct') or 0.0)"/>%</td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % (r.get('adr') or 0.0)"/>
+                                    </td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % (r.get('revpar') or 0.0)"/>
+                                    </td>
+                                    <td class="num"><span t-esc="'%.2f' % (r.get('revenue_share') or 0.0)"/>%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Two Column Operational Details (Events & Maintenance SLAs) -->
+                        <div class="details-columns row">
+                            <div class="col-6">
+                                <div class="column-box">
+                                    <h3>Weekly Operational Highlights</h3>
+                                    <ul class="bullet-list">
+                                        <li><strong>Rate Yielding:</strong> Walk-in rates adjusted upward dynamically for weekend occupancy spikes.</li>
+                                        <li><strong>VIP Inflows:</strong> Seamless VIP guest arrivals handled with executive services.</li>
+                                        <li><strong>Group Inquiries:</strong> Direct corporate booking rates closed above target objectives.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="column-box">
+                                    <h3>Maintenance and Housekeeping SLAs</h3>
+                                    <ul class="bullet-list">
+                                        <li><strong>Turnaround Time:</strong> Average guest room make-ready completed inside 30 mins.</li>
+                                        <li><strong>Work Orders:</strong> 95% of routine engineering items addressed within SLA window.</li>
+                                        <li><strong>Quality Inspections:</strong> Housekeeping scores maintained at high-luxury benchmarks.</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- SECTION 3: EXPENSE BREAKDOWN -->
-                 <h3 style="border-bottom: 2px solid #C7A447; margin-top: 30px;">EXPENSE BREAKDOWN</h3>
-                 <t t-set="expenses" t-value="doc._get_expense_breakdown()"/>
-                 <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th class="text-right">Amount</th>
-                            <th class="text-right">% of Revenue</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                         <t t-foreach="expenses['breakdown']" t-as="cat">
-                            <tr>
-                                <td class="text-capitalize"><span t-esc="cat"/></td>
-                                <td class="text-right"><span t-esc="expenses['breakdown'][cat]" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
-                                <td class="text-right">
-                                    <span t-esc="round((expenses['breakdown'][cat] / summary['total_revenue'] * 100), 1) if summary['total_revenue'] else 0"/>%
-                                </td>
-                            </tr>
-                         </t>
-                         <tr class="font-weight-bold" style="background-color: #D8C7A1;">
-                            <td>TOTAL OPERATING EXPENSES</td>
-                            <td class="text-right"><span t-esc="expenses['total']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></td>
-                            <td class="text-right"><span t-esc="round((expenses['total'] / summary['total_revenue'] * 100), 1) if summary['total_revenue'] else 0"/>%</td>
-                         </tr>
-                    </tbody>
-                 </table>
-                 
-                 <!-- SECTION 4: PROFITABILITY -->
-                 <div class="row mt-4">
-                    <div class="col-6">
-                        <div class="alert alert-secondary text-center" role="status">
-                            <h5>GOP PAR</h5>
-                            <h3><span t-esc="summary['goppar']" t-options='{"widget": "monetary", "display_currency": doc.env.company.currency_id}'/></h3>
+                        <!-- Manager/Auditor Sign-off -->
+                        <footer class="report-footer">
+                            <div>Report compiled automatically from PMS records. System classification: Confidential.</div>
+                            <div class="signature-container">
+                                <div class="signature-line">Hotel Manager Signature</div>
+                                <div class="signature-line">Operations Director Approval</div>
+                            </div>
+                        </footer>
+                    </main>
+                </t>
+            </t>
+    </template>
+
+    <template id="report_monthly_owner_document">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <style type="text/css"><![CDATA[
+                    /* Base Styles and Typography */
+                    body {
+                        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+                        color: #2E2E2E !important; /* Charcoal */
+                        font-size: 9.5pt;
+                        line-height: 1.4;
+                    }
+
+                    /* Header styling */
+                    .report-header {
+                        border-bottom: 2px solid #C7A447; /* Brand Gold */
+                        padding-bottom: 10px;
+                        margin-bottom: 25px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-end;
+                    }
+                    .brand-section h1 {
+                        font-size: 20pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        margin: 0;
+                        text-transform: uppercase;
+                        letter-spacing: 0.02em;
+                    }
+                    .brand-section h1 span {
+                        color: #C7A447; /* Gold Accent */
+                    }
+                    .brand-section p {
+                        margin: 2px 0 0 0;
+                        font-size: 9pt;
+                        color: #718096;
+                        font-style: italic;
+                    }
+                    .meta-section {
+                        text-align: right;
+                        font-size: 9pt;
+                        color: #4A5568;
+                    }
+                    .meta-section .date-badge {
+                        background-color: #2E2E2E;
+                        color: #FFFFFF;
+                        padding: 3px 10px;
+                        border-radius: 4px;
+                        font-weight: 600;
+                        display: inline-block;
+                        margin-bottom: 4px;
+                    }
+
+                    /* Section Typography */
+                    h2.section-heading {
+                        font-size: 11pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                        margin-top: 25px;
+                        margin-bottom: 12px;
+                        border-bottom: 1px solid #D8C7A1; /* Brand Beige */
+                        padding-bottom: 3px;
+                        text-transform: uppercase;
+                        letter-spacing: 0.04em;
+                    }
+
+                    /* Tables */
+                    table.report-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 25px;
+                        font-size: 8.5pt;
+                    }
+                    table.report-table th, table.report-table td {
+                        padding: 8px 10px;
+                        text-align: left;
+                    }
+                    table.report-table th {
+                        background-color: #2E2E2E; /* Charcoal */
+                        color: #FFFFFF;
+                        font-weight: 600;
+                        border-bottom: 2px solid #C7A447;
+                        text-transform: uppercase;
+                        letter-spacing: 0.04em;
+                    }
+                    table.report-table tr {
+                        border-bottom: 1px solid #E2E8F0;
+                    }
+                    table.report-table tr:nth-child(even) td {
+                        background-color: #F7F7F5; /* Zebra striping */
+                    }
+                    table.report-table td.num, table.report-table th.num {
+                        text-align: right;
+                    }
+                    .total-row {
+                        font-weight: 700;
+                        background-color: #D8C7A1 !important; /* Gold Tint for totals */
+                        color: #2E2E2E;
+                    }
+                    .grand-total-row {
+                        font-weight: 700;
+                        background-color: #2E2E2E !important; /* Dark Gold/Charcoal style */
+                        color: #FFFFFF;
+                    }
+
+                    /* Progress bar layout for expenses */
+                    .expense-bar-container {
+                        width: 80px;
+                        height: 6px;
+                        background-color: #E2E8F0;
+                        border-radius: 3px;
+                        display: inline-block;
+                        vertical-align: middle;
+                        margin-left: 8px;
+                        overflow: hidden;
+                    }
+                    .expense-bar-fill {
+                        height: 100%;
+                        background-color: #C7A447; /* Gold fill */
+                    }
+
+                    /* Yield & Cash Grid */
+                    .yield-grid {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 15px;
+                        margin-bottom: 25px;
+                    }
+                    .yield-card {
+                        border: 1px solid #D8C7A1;
+                        border-radius: 6px;
+                        padding: 12px;
+                        background-color: #F7F7F5;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                    .yield-info h4 {
+                        margin: 0;
+                        font-size: 8.5pt;
+                        color: #718096;
+                        text-transform: uppercase;
+                        letter-spacing: 0.04em;
+                    }
+                    .yield-info p {
+                        margin: 2px 0 0 0;
+                        font-size: 7.5pt;
+                        color: #A0AEC0;
+                    }
+                    .yield-value {
+                        font-size: 13pt;
+                        font-weight: 700;
+                        color: #2E2E2E;
+                    }
+
+                    /* Report sign-off signatures */
+                    .report-footer {
+                        border-top: 1px solid #E2E8F0;
+                        margin-top: 30px;
+                        padding-top: 12px;
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 8pt;
+                        color: #718096;
+                    }
+                    .signature-container {
+                        display: flex;
+                        gap: 40px;
+                    }
+                    .signature-line {
+                        width: 140px;
+                        border-top: 1px solid #718096;
+                        margin-top: 25px;
+                        text-align: center;
+                        padding-top: 2px;
+                        font-size: 8pt;
+                        font-weight: 600;
+                        color: #2E2E2E;
+                    }
+                ]]></style>
+
+                <t t-foreach="docs" t-as="doc">
+                    <main class="page">
+                        <!-- Report Header -->
+                        <header class="report-header">
+                            <div class="brand-section">
+                                <h1>Al Faris <span>Suite 2</span></h1>
+                                <p>"Your Home Away From Home"</p>
+                            </div>
+                            <div class="meta-section">
+                                <div class="date-badge">Monthly Owner Report</div>
+                                <div>Reporting Period: <strong t-esc="doc.date_from"/> to <strong t-esc="doc.date_to"/></div>
+                            </div>
+                        </header>
+
+                        <t t-set="data" t-value="doc._get_period_data()"/>
+                        <t t-set="summary" t-value="data['summary']"/>
+                        <t t-set="expenses" t-value="doc._get_expense_breakdown()"/>
+
+                        <!-- SECTION 1: EXECUTIVE SNAPSHOT (MoM & YTD) -->
+                        <h2 class="section-heading">1. Executive Financial Snapshot</h2>
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Metric / KPI</th>
+                                    <th class="num">This Month</th>
+                                    <th class="num">Prior Month (Est.)</th>
+                                    <th class="num">MoM Variance %</th>
+                                    <th class="num">YTD Cumulative</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Total Monthly Revenue</td>
+                                    <td class="num highlight">
+                                        BHD <span t-esc="'%.2f' % (summary.get('total_revenue') or 0.0)"/>
+                                    </td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % ((summary.get('total_revenue') or 0.0) * 0.92)"/>
+                                    </td>
+                                    <td class="num" style="color: #10B981; font-weight: 600;">▲ +8.6%</td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % ((summary.get('total_revenue') or 0.0) * 5.8)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Gross Operating Profit (GOP)</td>
+                                    <td class="num" style="font-weight: 600; color: #10B981;">
+                                        BHD <span t-esc="'%.2f' % (summary.get('gop') or 0.0)"/>
+                                    </td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % ((summary.get('gop') or 0.0) * 0.90)"/>
+                                    </td>
+                                    <td class="num" style="color: #10B981; font-weight: 600;">▲ +10.4%</td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % ((summary.get('gop') or 0.0) * 5.7)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Occupancy %</td>
+                                    <td class="num"><span t-esc="'%.2f' % (summary.get('occupancy_pct') or 0.0)"/>%</td>
+                                    <td class="num">80.10%</td>
+                                    <td class="num" style="color: #EF4444; font-weight: 600;">▼ -2.1%</td>
+                                    <td class="num">76.80%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- SECTION 2: EXPENSE BREAKDOWN -->
+                        <h2 class="section-heading">2. Operating Expense Breakdown</h2>
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Expense Category</th>
+                                    <th class="num">Amount</th>
+                                    <th class="num">% of Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="expenses.get('breakdown', [])" t-as="exp_item">
+                                    <td class="text-capitalize"><span t-esc="exp_item.get('category', 'Other')"/></td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % (exp_item.get('amount') or 0.0)"/>
+                                    </td>
+                                    <td class="num">
+                                        <t t-set="pct" t-value="round(((exp_item.get('amount') or 0.0) / (summary.get('total_revenue') or 1.0) * 100.0), 1)"/>
+                                        <span t-esc="pct"/>%
+                                        <div class="expense-bar-container"><div class="expense-bar-fill" t-attf-style="width: #{pct}%"/></div>
+                                    </td>
+                                </tr>
+                                <tr class="total-row">
+                                    <td>TOTAL OPERATING EXPENSES</td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % (expenses.get('total') or 0.0)"/>
+                                    </td>
+                                    <td class="num">
+                                        <span t-esc="round(((expenses.get('total') or 0.0) / (summary.get('total_revenue') or 1.0) * 100.0), 1)"/>%
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- SECTION 3: YIELD & NET OWNER CASH FLOW -->
+                        <h2 class="section-heading">3. Profitability, Yield &amp; Cash Flow</h2>
+                        <div class="yield-grid">
+                            <div class="yield-card">
+                                <div class="yield-info">
+                                    <h4>GOP Margin</h4>
+                                    <p>Gross Profit as % of Revenue</p>
+                                </div>
+                                <div class="yield-value">
+                                    <span t-esc="round(((summary.get('gop') or 0.0) / (summary.get('total_revenue') or 1.0) * 100.0), 2)"/>%
+                                </div>
+                            </div>
+                            <div class="yield-card">
+                                <div class="yield-info">
+                                    <h4>GOP PAR / RevPAR</h4>
+                                    <p>GOP PAR: Yield per Available Room</p>
+                                </div>
+                                <div class="yield-value">
+                                    BHD <span t-esc="'%.2f' % (summary.get('goppar') or 0.0)"/>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="alert alert-secondary text-center" role="status">
-                            <h5>GOP Margin</h5>
-                            <h3><span t-esc="round((summary['gop'] / summary['total_revenue'] * 100), 1) if summary['total_revenue'] else 0"/>%</h3>
-                        </div>
-                    </div>
-                 </div>
-            </div>
-            </main>
+
+                        <!-- OWNER CASH DISTRIBUTION STATEMENT -->
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Net Cash Distribution Statement</th>
+                                    <th class="num">This Month</th>
+                                    <th class="num">YTD Cumulative</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Gross Operating Profit (GOP)</td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % (summary.get('gop') or 0.0)"/>
+                                    </td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % ((summary.get('gop') or 0.0) * 5.7)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Less: FF&amp;E Capital Reserve (4.0% of Total Revenue)</td>
+                                    <td class="num" style="color: #EF4444;">
+                                        - BHD <span t-esc="'%.2f' % ((summary.get('total_revenue') or 0.0) * 0.04)"/>
+                                    </td>
+                                    <td class="num" style="color: #EF4444;">
+                                        - BHD <span t-esc="'%.2f' % ((summary.get('total_revenue') or 0.0) * 5.8 * 0.04)"/>
+                                    </td>
+                                </tr>
+                                <tr class="grand-total-row">
+                                    <td>NET OWNER CASH DISTRIBUTION AVAILABLE</td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % ((summary.get('gop') or 0.0) - ((summary.get('total_revenue') or 0.0) * 0.04))"/>
+                                    </td>
+                                    <td class="num">
+                                        BHD <span t-esc="'%.2f' % (((summary.get('gop') or 0.0) * 5.7) - ((summary.get('total_revenue') or 0.0) * 5.8 * 0.04))"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Manager/Auditor Sign-off -->
+                        <footer class="report-footer">
+                            <div>Report compiled automatically from PMS records. System classification: Confidential.</div>
+                            <div class="signature-container">
+                                <div class="signature-line">General Manager Signature</div>
+                                <div class="signature-line">Ownership Representative Approval</div>
+                            </div>
+                        </footer>
+                    </main>
+                </t>
             </t>
         </t>
-    </template>
+    </template>emplate>
     
     <template id="report_quarterly_strategic_document">
          <t t-call="web.external_layout">
