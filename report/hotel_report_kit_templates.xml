@@ -251,14 +251,12 @@
                         border-top: 1px solid #E2E8F0;
                         margin-top: 15px;
                         padding-top: 10px;
-                        display: flex;
-                        justify-content: space-between;
                         font-size: 8pt;
                         color: #718096;
+                        overflow: hidden;
                     }
                     .signature-container {
-                        display: flex;
-                        gap: 40px;
+                        float: right;
                     }
                     .signature-line {
                         width: 140px;
@@ -864,31 +862,26 @@
                         </table>
 
                         <!-- Two Column Operational Details (Events & Maintenance SLAs) -->
-                        <div class="details-columns">
-                            <div class="details-column-cell">
-                                <div class="column-box">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 50%; vertical-align: top; padding-right: 10px;">
                                     <h3>Weekly Operational Highlights</h3>
                                     <ul class="bullet-list">
                                         <li><strong>Rate Yielding:</strong> Walk-in rates adjusted upward dynamically for weekend occupancy spikes.</li>
                                         <li><strong>VIP Inflows:</strong> Seamless VIP guest arrivals handled with executive services.</li>
                                         <li><strong>Group Inquiries:</strong> Direct corporate booking rates closed above target objectives.</li>
                                     </ul>
-                                </div>
-                            </div>
-                            </div>
-
-                            <div class="details-column-cell">
-                                <div class="column-box">
+                                </td>
+                                <td style="width: 50%; vertical-align: top; padding-left: 10px;">
                                     <h3>Maintenance and Housekeeping SLAs</h3>
                                     <ul class="bullet-list">
                                         <li><strong>Turnaround Time:</strong> Average guest room make-ready completed inside 30 mins.</li>
                                         <li><strong>Work Orders:</strong> 95% of routine engineering items addressed within SLA window.</li>
                                         <li><strong>Quality Inspections:</strong> Housekeeping scores maintained at high-luxury benchmarks.</li>
                                     </ul>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
+                                </td>
+                            </tr>
+                        </table>
 
                         <!-- Manager/Auditor Sign-off -->
                         <footer class="report-footer">
@@ -1027,19 +1020,20 @@
 
                     /* Yield & Cash Grid */
                     .yield-grid {
-                        display: grid;
-                        grid-template-columns: 1fr 1fr;
-                        gap: 15px;
+                        display: table;
+                        width: 100%;
+                        table-layout: fixed;
                         margin-bottom: 25px;
+                        border-spacing: 15px 0;
                     }
                     .yield-card {
+                        display: table-cell;
                         border: 1px solid #D8C7A1;
                         border-radius: 6px;
                         padding: 12px;
                         background-color: #F7F7F5;
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
+                        vertical-align: middle;
+                        width: 50%;
                     }
                     .yield-info h4 {
                         margin: 0;
@@ -1064,14 +1058,12 @@
                         border-top: 1px solid #E2E8F0;
                         margin-top: 30px;
                         padding-top: 12px;
-                        display: flex;
-                        justify-content: space-between;
                         font-size: 8pt;
                         color: #718096;
+                        overflow: hidden;
                     }
                     .signature-container {
-                        display: flex;
-                        gap: 40px;
+                        float: right;
                     }
                     .signature-line {
                         width: 140px;
@@ -1206,7 +1198,6 @@
                                 <div class="yield-value">
                                     BHD <span t-esc="'%.2f' % (summary.get('goppar') or 0.0)"/>
                                 </div>
-                            </div>
                             </div>
                         </div>
 
@@ -1587,32 +1578,31 @@
                             </tbody>
                         </table>
 
-                        <!-- Two Column Operational Details (Objectives & CapEx Tracker) -->
-                        <div class="details-columns">
-                            <div class="details-column-cell">
-                                <div class="column-box">
-                                    <h3>3. Upcoming Q3 Strategic Objectives</h3>
-                                    <ul class="bullet-list">
-                                        <li><strong>F&amp;B Revenue Uplift:</strong> Launch the themed weekend barbecue dining events on the penthouse terrace.</li>
-                                        <li><strong>RFID Key Cards:</strong> Transition guest room entries to modern RFID locks to reduce front desk delays.</li>
-                                        <li><strong>Corporate Contracts:</strong> Acquire additional layover contracts to guarantee weekday occupancy levels.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            </div>
-
-                            <div class="details-column-cell">
-                                <div class="column-box">
-                                    <h3>4. Capital Expenditure (CapEx) Tracker</h3>
-                                    <ul class="bullet-list">
-                                        <li><strong>Penthouse Terrace:</strong> Lobby furniture upgrades completed (Budget: BHD 2,500.00).</li>
-                                        <li><strong>Smart HVAC:</strong> Thermostat controllers deployment active (Progress: 60%).</li>
-                                        <li><strong>Room Refurbishment:</strong> Carpeting upgrade approved for Q3 execution.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
+                        <!-- Two Column Operational Details (Objectives &amp; CapEx Tracker) -->
+                        <table style="width: 100%; table-layout: fixed; margin-bottom: 20px;">
+                            <tr>
+                                <td style="width: 50%; vertical-align: top; padding-right: 10px;">
+                                    <div class="column-box">
+                                        <h3>3. Upcoming Q3 Strategic Objectives</h3>
+                                        <ul class="bullet-list">
+                                            <li><strong>F&amp;B Revenue Uplift:</strong> Launch the themed weekend barbecue dining events on the penthouse terrace.</li>
+                                            <li><strong>RFID Key Cards:</strong> Transition guest room entries to modern RFID locks to reduce front desk delays.</li>
+                                            <li><strong>Corporate Contracts:</strong> Acquire additional layover contracts to guarantee weekday occupancy levels.</li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td style="width: 50%; vertical-align: top; padding-left: 10px;">
+                                    <div class="column-box">
+                                        <h3>4. Capital Expenditure (CapEx) Tracker</h3>
+                                        <ul class="bullet-list">
+                                            <li><strong>Penthouse Terrace:</strong> Lobby furniture upgrades completed (Budget: BHD 2,500.00).</li>
+                                            <li><strong>Smart HVAC:</strong> Thermostat controllers deployment active (Progress: 60%).</li>
+                                            <li><strong>Room Refurbishment:</strong> Carpeting upgrade approved for Q3 execution.</li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
 
                         <!-- Manager/Auditor Sign-off -->
                         <footer class="report-footer">
