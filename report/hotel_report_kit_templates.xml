@@ -286,7 +286,7 @@
                             </div>
                             <div class="meta-section">
                                 <div class="date-badge">Daily Operations Report</div>
-                                <div>Business Date: <strong t-esc="format_date(report_date)"/></div>
+                                <div>Business Date: <strong t-esc="str(report_date)"/></div>
                             </div>
                         </header>
 
@@ -679,14 +679,27 @@
                         border-top: 1px solid #E2E8F0;
                         margin-top: 20px;
                         padding-top: 10px;
-                        display: flex;
-                        justify-content: space-between;
                         font-size: 8pt;
                         color: #718096;
+                        width: 100%;
+                    }
+                    .footer-table {
+                        width: 100%;
+                        table-layout: fixed;
+                    }
+                    .footer-left {
+                        vertical-align: middle;
+                        color: #718096;
+                        font-size: 8pt;
+                        width: 50%;
+                    }
+                    .footer-right {
+                        vertical-align: bottom;
+                        text-align: right;
+                        width: 50%;
                     }
                     .signature-container {
-                        display: flex;
-                        gap: 40px;
+                        display: inline-block;
                     }
                     .signature-line {
                         width: 140px;
@@ -697,6 +710,8 @@
                         font-size: 8pt;
                         font-weight: 600;
                         color: #2E2E2E;
+                        display: inline-block;
+                        margin-left: 20px;
                     }
                 ]]></style>
 
@@ -885,11 +900,15 @@
 
                         <!-- Manager/Auditor Sign-off -->
                         <footer class="report-footer">
-                            <div>Report compiled automatically from PMS records. System classification: Confidential.</div>
-                            <div class="signature-container">
-                                <div class="signature-line">Hotel Manager Signature</div>
-                                <div class="signature-line">Operations Director Approval</div>
-                            </div>
+                            <table class="footer-table">
+                                <tr>
+                                    <td class="footer-left">Report compiled automatically from PMS records. System classification: Confidential.</td>
+                                    <td class="footer-right">
+                                        <span class="signature-line">Hotel Manager Signature</span>
+                                        <span class="signature-line">Operations Director Approval</span>
+                                    </td>
+                                </tr>
+                            </table>
                         </footer>
                     </main>
                 </t>
